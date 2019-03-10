@@ -10,27 +10,30 @@ contract RestaurantFactory {
 	address controller;
 	
 	mapping(uint => address) public restaurants;
-	uint public restaurantCount = 0;
+	uint public restaurantCount;
 
 	event LOG_NEWRestaurantContract(address indexed theNewRestaurant, address indexed theRestaurantCreater);
 
-	constructor() public {
-		owner = tx.origin;
+	constructor(address _owner) public {
+		owner = _owner;
 		controller = msg.sender;
+		restaurantCount = 0;
 	}
 
 	// factory function creates a new restaurant
 	function createRestaurant(string calldata name, string calldata _address, string calldata contactNumber) external returns(address newRestaurant){
 		//require deposit to create a restaurant
-		restaurantCount ++;
-		Restaurant theNewRestaurant = new Restaurant(restaurantCount, name, _address, contactNumber);
+
+		Restaurant theNewRestaurant = new Restaurant(controller,msg.sender,restaurantCount, name, _address, contactNumber);
 		restaurants[restaurantCount] = address(theNewRestaurant);
+		restaurantCount ++;
 		return restaurants[restaurantCount];
+
 	}
 	
 	function restaurantExists(address restaurant) public view returns(bool RestaurantExists){
 	    for(uint i = 0; i < restaurantCount;i++){
-	        if(restaurants[i+1] == restaurant){
+	        if(restaurants[i] == restaurant){
 	            return true;
 	        }
 	    }

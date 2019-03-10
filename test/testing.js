@@ -1,31 +1,76 @@
+var Controller = artifacts.require("Controller");
 var RestaurantFactory = artifacts.require("RestaurantFactory");
 var Restaurant = artifacts.require("Restaurant");
 var Order = artifacts.require("Order");
+var RiderFactory = artifacts.require("./RiderFactory.sol");
+var Rider = artifacts.require("./Rider.sol");
+var CustomerFactory = artifacts.require("./CustomerFactory.sol");
+var Customer = artifacts.require("./Customer.sol");
 
+var controllerInstance;
 var restaurantFactoryInstance;
 var restaurantInstance;
 var orderInstance;
+var customerFactoryInstance;
+var customerInstance;
+var riderFactoryInstance;
+var riderInstance;
 
 var theAccounts;
 
-contract('RestaurantFactory', function(accounts){
+let catchRevert = require("./exceptions.js").catchRevert; // see exceptions.js for code reference
 
+contract('controller', function(accounts){
 	theAccounts = accounts;
 
+
+	it("Initialises all factories", function(){
+		return Controller.deployed().then(function(instance){
+			controllerInstance = instance;
+			return controllerInstance.restaurantFactoryAddress().then(function(address){
+				return new web3.eth.Contract(RestaurantFactory.abi,address);
+			}).then(function(instance){
+				restaurantFactoryInstance = instance;
+				return restaurantFactoryInstance.methods.owner().call();
+			}).then(function(owner){;
+				assert(theAccounts[0], owner);
+				return controllerInstance.customerFactoryAddress();
+			}).then(function(address){
+				return new web3.eth.Contract(CustomerFactory.abi,address);
+			}).then(function(instance){
+				customerFactoryInstance = instance;
+				return customerFactoryInstance.methods.owner().call();
+			}).then(function(owner){
+				assert(theAccounts[0], owner);
+				return controllerInstance.riderFactoryAddress();
+			}).then(function(address){
+				return new web3.eth.Contract(RiderFactory.abi,address);
+			}).then(function(instance){
+				riderFactoryInstance = instance;
+				return riderFactoryInstance.methods.owner().call();
+			}).then(function(owner){
+				assert(theAccounts[0], owner);
+			})
+		});
+	});
+	
+})
+
+describe('Contract: RestaurantFactory', function(){
+
+
 	it("Initialises with no restaurants", function(){
-		return RestaurantFactory.deployed().then(function(instance){
-			restaurantFactoryInstance = instance;
-			return instance.restaurantCount();
-		}).then(function(count){
+		return restaurantFactoryInstance.methods.restaurantCount().call().then(function(count){
 			assert.equal(count,0);
 		});
 	});
 
 	it("Can create a restaurant", function(){
-		restaurantFactoryInstance.createRestaurant("Test Restaurant", "41 Test Address, Cardiff", "0123456789",{from: theAccounts[2]});
-		return restaurantFactoryInstance.restaurantCount().then(function(count){
-			assert.equal(count,1,"restaurant count is now 1");
-			return restaurantFactoryInstance.restaurants(1);
+		return restaurantFactoryInstance.methods.createRestaurant("Test Restaurant", "41 Test Address, Cardiff", "0123456789").send({from: theAccounts[2], gas: 3000000}).then(function(){
+			return restaurantFactoryInstance.methods.restaurantCount().call();
+		}).then(function(count){
+			assert.equal(count,1);
+			return restaurantFactoryInstance.methods.restaurants(0).call();
 		}).then(function(restaurantAddress){
 			return new web3.eth.Contract(Restaurant.abi,restaurantAddress);
 		}).then(function(instance){
@@ -35,7 +80,49 @@ contract('RestaurantFactory', function(accounts){
 			assert.equal(restaurantName,"Test Restaurant", "Able to access the restaurant name");
 		});
 	});
-});
+})
+
+describe("Contract: CustomerFactory", function(){
+
+	it("Initialises with no Customers", function(){
+		return customerFactoryInstance.methods.customerCount().call().then(function(count){
+			assert.equal(count,0);
+		});
+	});
+
+	it("Can make a customer", function(){
+		return customerFactoryInstance.methods.makeCustomer("Bilbo Baggins", "0987654321").send({from: theAccounts[6], gas: 3000000}).then(function(){
+			return customerFactoryInstance.methods.customerCount().call();
+		}).then(function(count){
+			assert.equal(count,1);
+		}).then(function(){
+			return customerFactoryInstance.methods.customers2(theAccounts[6]).call();
+		}).then(function(customerAddress){
+			console.log(customerAddress);
+			return new web3.eth.Contract(Customer.abi,customerAddress);
+		}).then(function(instance){
+			customerInstance = instance;
+		});
+	});
+})
+
+
+describe("Contract: RiderFactory", function(){
+
+	it("Initialises with no Riders", function(){
+		return riderFactoryInstance.methods.riderCount().call().then(function(count){
+			assert.equal(count,0);
+		});
+	});
+
+	it("Can make a rider", function(){
+		return riderFactoryInstance.methods.makeRider("Gandalf", "0987654321").send({from: theAccounts[6], gas: 3000000}).then(function(){
+			return riderFactoryInstance.methods.riderCount().call();
+		}).then(function(count){
+			assert.equal(count,1);
+		});
+	});
+})
 
 
 describe('Contract: Restaurant', function(){
@@ -96,29 +183,46 @@ describe('Contract: Restaurant', function(){
 		})
 	})
 
+	it("can check if an order is valid (if its items exist)",function(){
+		return restaurantInstance.methods.validOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).call().then(function(validOrder){
+			assert.equal(validOrder,true,"thinks valid order is invalid");
+			return restaurantInstance.methods.validOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Lasagnia")]).call();
+		}).then(function(validOrder){
+			assert.equal(validOrder,false,"thinks invalid order is valid");
+		})
+	})
+
+	it("Can not make order from address that isnt a customer smart contract", async function() {
+        await catchRevert(restaurantInstance.methods.makeOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[1],gas:6000000}));
+    });
+	
+});
+
+describe("Contract: Customer", function(){
 	it("Can make an order",function(){
-		return restaurantInstance.methods.makeOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[1],gas:6000000}).then(function(){
-			return restaurantInstance.methods.totalOrders().call().then(function(totalOrders){
+		return customerInstance.methods.makeOrder(restaurantInstance.options.address,[web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[6],gas:6000000}).then(function(){
+			return customerInstance.methods.getTotalOrders().call({from:theAccounts[6]}).then(function(totalOrders){
 				assert.equal(totalOrders,1);
 			});
 		});
 	});
+})
 
-	
-});
+
 
 describe("Contract: Order", function(){
 	it("can access order Deetails", function(){
-		return restaurantInstance.methods.orders(1).call().then(function(orderAddress){
-			return new web3.eth.Contract(Order.abi,orderAddress);
+		return restaurantInstance.methods.orders(0).call().then(function(orderAddress){
+			return new web3.eth.Contract(Order.abi,orderAddress[1]);
 		}).then(function(instance){
 			orderInstance = instance;
 			return orderInstance.methods.id().call();
 		}).then(function(id){
-			assert.equal(id,1);
+			assert.equal(id,0);
 			return orderInstance.methods.totalItems().call();
 		}).then(function(totalItems){
 			assert.equal(totalItems,2);
 		});
 	});
 });
+

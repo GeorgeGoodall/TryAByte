@@ -3,6 +3,8 @@ pragma solidity ^0.5.0;
  import "./lib.sol";
  import "./Order.sol";
  import "./RestaurantFactory.sol";
+ import "./CustomerFactory.sol";
+ import "./Controller.sol";
 
 contract Restaurant {
 
@@ -13,12 +15,15 @@ contract Restaurant {
 	string public location;
 	string public contactNumber;
 	uint public rating;
-	address public owner;
-	address public restaurantFactoryAddress;
-	address public CustomerFactory;
 
+	address public owner;
+    address public controllerAddress;
+	address public restaurantFactoryAddress;
+
+
+    struct order{bool open; address orderAddress;}
 	uint public totalOrders;
-	mapping(uint => address) public orders;
+	mapping(uint => order) public orders;
 	
 	struct Item{
 		bytes32 itemName;
@@ -28,13 +33,15 @@ contract Restaurant {
 	Item[] public menu; // should probably change this to a mapping
 	
 
-	constructor(uint _id, string memory _name,string memory _address,string memory _contactNumber) public {
+	constructor(address _controller, address _owner, uint _id, string memory _name,string memory _address,string memory _contactNumber) public {
 		id = _id;
 		name = _name;
 		location = _address;
 		contactNumber = _contactNumber;
 		totalOrders = 0;
-		owner = tx.origin; // assign owner of the order to the account that called the restaurant factory 
+
+        controllerAddress = _controller;
+		owner = _owner;
 		restaurantFactoryAddress = msg.sender;
 	}
 
@@ -89,10 +96,19 @@ contract Restaurant {
         }
         return -1;
     }
+
+    function validOrder(bytes32[] memory items) public view returns (bool isValid){
+        for(uint i = 0; i < items.length; i++){
+            if(menuSearch(lib.bytes32ToString(items[i])) == -1){
+                return false;
+            }
+        }
+        return true;
+    }
     
     function makeOrder(bytes32[] calldata items) external returns (address orderAddress) {
         //require this comes from a customer smart contract
-        //require(RestaurantFactory(restaurantFactoryAddress).restaurantExists(msg.sender));
+        require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender));
         
 
         uint[] memory prices = new uint[](items.length);
@@ -105,19 +121,25 @@ contract Restaurant {
                 prices[i] = menu[uint(index)].itemCost;
             }
             else{
-                revert();
+                revert("Invalid Items");
             }
         }
         
 
-        totalOrders ++;
+        
 		Order newOrder = new Order(totalOrders,restaurantFactoryAddress,items,prices);
-		orders[totalOrders] = address(newOrder);
-		return orders[totalOrders];       
+		orders[totalOrders] = order(true,address(newOrder));
+        totalOrders ++;
+		return orders[totalOrders].orderAddress;       
     }
     
     function getMenuItem(uint itemId)public view returns(bytes32 itemname, uint cost){
         return (menu[itemId].itemName,menu[itemId].itemCost);
+    }
+
+    function handOrderOver(uint _id) public{
+        // require rider and restaurant
+        orders[_id].open = false;
     }
     
 }

@@ -6,9 +6,12 @@ import './RestaurantFactory.sol';
 contract Order{
     
 	uint public id;
-	address public parentRestaurant;
+	address public restaurant;
 	address public restaurantFactoryAddress;
+	address rider;
 	address customer; // this should be encrypted
+
+	bytes32 deliveryAddress;
     
 
 	uint public totalItems;
@@ -27,8 +30,8 @@ contract Order{
 		
 		// set contract infomation
 		id = _id;
-		parentRestaurant = msg.sender;
-		customer = tx.origin;
+		restaurant = msg.sender;
+		customer = tx.origin; // this needs changing as is vunrability
 		restaurantFactoryAddress = _restaurantFactoryAddress;
 		
 		// set items
@@ -39,6 +42,16 @@ contract Order{
 		}
 		
 		
+	}
+
+	function getItem(uint _id) public view returns(bytes32 itemName, uint itemCost){
+		require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender);
+		return (lib.stringToBytes32(items[_id].itemName),items[_id].itemCost);
+	}  
+
+	function getDeliveryAddress() public view returns(bytes32 _deliveryAddress){
+		require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender);
+		return deliveryAddress;
 	}
 
 }

@@ -1,5 +1,7 @@
 pragma solidity ^0.5.0;
 
+// need to reference the source of this code!!!
+
 library lib{    
   
     function strConcat(string memory _a, string memory _b) public pure returns (string memory concatString){

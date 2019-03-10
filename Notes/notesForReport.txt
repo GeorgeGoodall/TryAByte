@@ -1,0 +1,3 @@
+Tx Origin attacks: had to modify code to not use this 
+
+had to use code to detect reverts in testing: https://ethereum.stackexchange.com/questions/48627/how-to-catch-revert-error-in-truffle-test-javascript
