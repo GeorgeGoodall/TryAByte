@@ -13,19 +13,19 @@ contract Restaurant {
 	string public location;
 	string public contactNumber;
 	uint public rating;
-	address owner;
-	address restaurantFactoryAddress;
-	address CustomerFactory;
+	address public owner;
+	address public restaurantFactoryAddress;
+	address public CustomerFactory;
 
-	uint totalOrders;
-	mapping(uint => address) orders;
+	uint public totalOrders;
+	mapping(uint => address) public orders;
 	
 	struct Item{
 		bytes32 itemName;
 		uint itemCost; // in wei (10^-18 Eth)
 	}
 	
-	Item[] public menu;
+	Item[] public menu; // should probably change this to a mapping
 	
 
 	constructor(uint _id, string memory _name,string memory _address,string memory _contactNumber) public {
@@ -37,6 +37,10 @@ contract Restaurant {
 		owner = tx.origin; // assign owner of the order to the account that called the restaurant factory 
 		restaurantFactoryAddress = msg.sender;
 	}
+
+    function getMenuLength() external view returns(uint length){
+        return menu.length;
+    }
 
     function clearMenu() external {
         require(msg.sender == owner);
@@ -60,19 +64,17 @@ contract Restaurant {
         require(itemNames.length>0);
         result = "";
         for(uint i = 0; i<itemNames.length;i++){
-            //result = lib.strConcat(result,lib.strConcat(lib.bytes32ToString(itemNames[i]),":"));
-            //int index = menuSearch(lib.bytes32ToString(itemNames[i]));
-            int index = 0;
+            result = lib.strConcat(result,lib.strConcat(lib.bytes32ToString(itemNames[i]),":"));
+            int index = menuSearch(lib.bytes32ToString(itemNames[i]));
             if(index!=-1){
                 delete menu[uint(index)];
                 menu[uint(index)] = menu[menu.length-1];
                 delete menu[menu.length-1];
-                //result = lib.strConcat(result," Removed Sucessfully");
+                result = lib.strConcat(result," Removed Sucessfully");
                 menu.length--;
             }
             else{
-                int a = 5;
-                //result = lib.strConcat(result, " Error, could not find in menu");
+                result = lib.strConcat(result, " Error, could not find in menu");
             }
         }
         
@@ -90,7 +92,7 @@ contract Restaurant {
     
     function makeOrder(bytes32[] calldata items) external returns (address orderAddress) {
         //require this comes from a customer smart contract
-        require(RestaurantFactory(restaurantFactoryAddress).restaurantExists(msg.sender));
+        //require(RestaurantFactory(restaurantFactoryAddress).restaurantExists(msg.sender));
         
 
         uint[] memory prices = new uint[](items.length);
@@ -109,13 +111,13 @@ contract Restaurant {
         
 
         totalOrders ++;
-		Order newOrder = new Order(totalOrders,items,prices);
+		Order newOrder = new Order(totalOrders,restaurantFactoryAddress,items,prices);
 		orders[totalOrders] = address(newOrder);
 		return orders[totalOrders];       
     }
     
     function getMenuItem(uint itemId)public view returns(bytes32 itemname, uint cost){
-        return (menu[id].itemName,menu[id].itemCost);
+        return (menu[itemId].itemName,menu[itemId].itemCost);
     }
     
 }

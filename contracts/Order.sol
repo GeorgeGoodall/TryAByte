@@ -5,23 +5,23 @@ import './RestaurantFactory.sol';
 
 contract Order{
     
-	uint id;
-	address parentRestaurant;
-	address restaurantFactoryAddress;
+	uint public id;
+	address public parentRestaurant;
+	address public restaurantFactoryAddress;
 	address customer; // this should be encrypted
     
 
-	uint totalItems;
-	mapping(uint=>Item) public items; 
+	uint public totalItems;
+	mapping(uint=>Item) public items; // this should be encrypted
 
 	struct Item{
 		string itemName;
 		uint itemCost; // in wei (10^-18 Eth)
 	}
 
-	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices) public {
+	constructor(uint _id, address _restaurantFactoryAddress, bytes32[] memory itemNames, uint[] memory prices) public {
 	    // require sent from a restaurant contract
-	    require(RestaurantFactory(restaurantFactoryAddress).restaurantExists(msg.sender));
+	    require(RestaurantFactory(_restaurantFactoryAddress).restaurantExists(msg.sender));
 	    require(itemNames.length == prices.length);
 
 		
@@ -29,11 +29,13 @@ contract Order{
 		id = _id;
 		parentRestaurant = msg.sender;
 		customer = tx.origin;
+		restaurantFactoryAddress = _restaurantFactoryAddress;
 		
 		// set items
 		totalItems = 0;
 		for(uint i = 0; i < itemNames.length; i++){
 		    items[totalItems] = Item(lib.bytes32ToString(itemNames[i]),prices[i]);
+		    totalItems++;
 		}
 		
 		

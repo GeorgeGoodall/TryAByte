@@ -1,0 +1,6 @@
+fact = await RestaurantFactory.deployed()
+rest = await fact.createRestaurant("Test Restaurant", "41 Test Address, Cardiff", "0123456789")
+address = await fact.restaurants(1)
+restaurant = new web3.eth.Contract(Restaurant.abi,address)
+web3.eth.getAccounts(function(err,res){addresses=res;});
+restaurant.methods.menuAddItems([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")],[300,200]).send({from: addresses[0]})

@@ -9,7 +9,7 @@ contract RestaurantFactory {
 	address public owner;
 	address controller;
 	
-	mapping(uint => address) restaurants;
+	mapping(uint => address) public restaurants;
 	uint public restaurantCount = 0;
 
 	event LOG_NEWRestaurantContract(address indexed theNewRestaurant, address indexed theRestaurantCreater);
