@@ -2,17 +2,32 @@ pragma solidity ^0.5.0;
 
 import './lib.sol';
 import './RestaurantFactory.sol';
+import './RiderFactory.sol';
+import './Controller.sol';
 
 contract Order{
+
+	enum riderState{unassigned, accepted, hasCargo, Delivered}
+	enum restaurantState{acceptedOrder, preparingCargo, HandedOver}
+	enum customerState{madeOrder,hasCargo}
     
+	uint public riderStatus;
+	uint public restaurantStatus;
+	uint public customerStatus;
+
 	uint public id;
-	address public restaurant;
 	address public restaurantFactoryAddress;
-	address rider;
+	
+
+	address public restaurant;
+	address rider; 	  // this should be encrypted
 	address customer; // this should be encrypted
+
+	address controller;
 
 	bytes32 deliveryAddress;
     
+
 
 	uint public totalItems;
 	mapping(uint=>Item) public items; // this should be encrypted
@@ -22,7 +37,7 @@ contract Order{
 		uint itemCost; // in wei (10^-18 Eth)
 	}
 
-	constructor(uint _id, address _restaurantFactoryAddress, bytes32[] memory itemNames, uint[] memory prices) public {
+	constructor(uint _id, address _restaurantFactoryAddress, bytes32[] memory itemNames, uint[] memory prices, address _controller, address _customer) public {
 	    // require sent from a restaurant contract
 	    require(RestaurantFactory(_restaurantFactoryAddress).restaurantExists(msg.sender));
 	    require(itemNames.length == prices.length);
@@ -31,8 +46,10 @@ contract Order{
 		// set contract infomation
 		id = _id;
 		restaurant = msg.sender;
-		customer = tx.origin; // this needs changing as is vunrability
+		customer = _customer; // this needs changing as is vunrability
 		restaurantFactoryAddress = _restaurantFactoryAddress;
+
+		controller = _controller;
 		
 		// set items
 		totalItems = 0;
@@ -40,6 +57,10 @@ contract Order{
 		    items[totalItems] = Item(lib.bytes32ToString(itemNames[i]),prices[i]);
 		    totalItems++;
 		}
+
+		riderStatus = uint(riderState.unassigned);
+		customerStatus = uint(customerState.madeOrder);
+		restaurantStatus = uint(restaurantState.acceptedOrder);
 		
 		
 	}
@@ -54,4 +75,22 @@ contract Order{
 		return deliveryAddress;
 	}
 
+	function riderOfferDelivery() public {
+		require(RiderFactory(Controller(controller).riderFactoryAddress()).riderExists(msg.sender));
+		riderStatus = uint(riderState.accepted);
+		rider = msg.sender;
+	}
+
+	function setOrderStatus(uint status) public {
+		require(msg.sender == rider || msg.sender == restaurant || msg.sender == customer, "You dont have permission to see this order, did you get the order address wrong?");
+
+		if(msg.sender == rider)
+			riderStatus = status;
+		else if(msg.sender == restaurant)
+			restaurantStatus = status;
+		else if(msg.sender == customer)
+			customerStatus = status;
+		else
+			revert("Error: unauthoriserd address accessing setOrderStatus");
+	}
 }

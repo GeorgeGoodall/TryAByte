@@ -13,7 +13,8 @@ contract Customer {
     string private contactNumber;
     uint totalOrders;
     mapping(uint => address) orders;
-    
+
+    enum customerState{madeOrder,hasCargo}    
     
     
     constructor(uint _id, string memory _name, string memory _contactNumber, address _owner) public
@@ -38,6 +39,11 @@ contract Customer {
         totalOrders++;
         return orders[totalOrders];
 
+    }
+
+    function signalDelivered(address orderAddress) public {
+        require(msg.sender == owner);
+        Order(orderAddress).setOrderStatus(uint(customerState.hasCargo));
     }
 
     function getContactNumber() public view returns(string memory _contactNumber){

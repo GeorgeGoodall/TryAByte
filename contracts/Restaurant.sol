@@ -23,7 +23,7 @@ contract Restaurant {
 
     struct order{bool open; address orderAddress;}
 	uint public totalOrders;
-	mapping(uint => order) public orders;
+	mapping(uint => order) public orders; // must be a better way to store the orders
 	
 	struct Item{
 		bytes32 itemName;
@@ -31,6 +31,8 @@ contract Restaurant {
 	}
 	
 	Item[] public menu; // should probably change this to a mapping
+
+    enum restaurantState{acceptedOrder, preparingCargo, HandedOver}
 	
 
 	constructor(address _controller, address _owner, uint _id, string memory _name,string memory _address,string memory _contactNumber) public {
@@ -127,7 +129,7 @@ contract Restaurant {
         
 
         
-		Order newOrder = new Order(totalOrders,restaurantFactoryAddress,items,prices);
+		Order newOrder = new Order(totalOrders,restaurantFactoryAddress,items,prices,controllerAddress, msg.sender);
 		orders[totalOrders] = order(true,address(newOrder));
         totalOrders ++;
 		return orders[totalOrders].orderAddress;       
@@ -137,9 +139,14 @@ contract Restaurant {
         return (menu[itemId].itemName,menu[itemId].itemCost);
     }
 
-    function handOrderOver(uint _id) public{
-        // require rider and restaurant
-        orders[_id].open = false;
+    // toDo, could pass in orderID instead reduce gas
+    function setStatusPrepairing(address orderAddress) public { 
+        require(msg.sender == owner);
+        Order(orderAddress).setOrderStatus(uint(restaurantState.preparingCargo));
+    }    
+
+    function handOverCargo(address orderAddress) public {
+        require(msg.sender == owner);
+        Order(orderAddress).setOrderStatus(uint(restaurantState.HandedOver));
     }
-    
 }

@@ -1,3 +1,7 @@
+// Rider account is theAccounts[7]
+// Restaurant account is theAccounts[2]
+// customer account is theAccounts[6]
+
 var Controller = artifacts.require("Controller");
 var RestaurantFactory = artifacts.require("RestaurantFactory");
 var Restaurant = artifacts.require("Restaurant");
@@ -15,6 +19,8 @@ var customerFactoryInstance;
 var customerInstance;
 var riderFactoryInstance;
 var riderInstance;
+
+var orderAddress;
 
 var theAccounts;
 
@@ -66,7 +72,7 @@ describe('Contract: RestaurantFactory', function(){
 	});
 
 	it("Can create a restaurant", function(){
-		return restaurantFactoryInstance.methods.createRestaurant("Test Restaurant", "41 Test Address, Cardiff", "0123456789").send({from: theAccounts[2], gas: 3000000}).then(function(){
+		return restaurantFactoryInstance.methods.createRestaurant("Test Restaurant", "41 Test Address, Cardiff", "0123456789").send({from: theAccounts[2], gas: 4000000}).then(function(){
 			return restaurantFactoryInstance.methods.restaurantCount().call();
 		}).then(function(count){
 			assert.equal(count,1);
@@ -116,7 +122,7 @@ describe("Contract: RiderFactory", function(){
 	});
 
 	it("Can make a rider", function(){
-		return riderFactoryInstance.methods.makeRider("Gandalf", "0987654321").send({from: theAccounts[6], gas: 3000000}).then(function(){
+		return riderFactoryInstance.methods.makeRider("Gandalf", "0987654321").send({from: theAccounts[7], gas: 3000000}).then(function(){
 			return riderFactoryInstance.methods.riderCount().call();
 		}).then(function(count){
 			assert.equal(count,1);
@@ -193,14 +199,14 @@ describe('Contract: Restaurant', function(){
 	})
 
 	it("Can not make order from address that isnt a customer smart contract", async function() {
-        await catchRevert(restaurantInstance.methods.makeOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[1],gas:6000000}));
+        await catchRevert(restaurantInstance.methods.makeOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[1],gas:3000000}));
     });
 	
 });
 
 describe("Contract: Customer", function(){
 	it("Can make an order",function(){
-		return customerInstance.methods.makeOrder(restaurantInstance.options.address,[web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[6],gas:6000000}).then(function(){
+		return customerInstance.methods.makeOrder(restaurantInstance.options.address,[web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[6],gas:3000000}).then(function(){
 			return customerInstance.methods.getTotalOrders().call({from:theAccounts[6]}).then(function(totalOrders){
 				assert.equal(totalOrders,1);
 			});
@@ -212,8 +218,9 @@ describe("Contract: Customer", function(){
 
 describe("Contract: Order", function(){
 	it("can access order Deetails", function(){
-		return restaurantInstance.methods.orders(0).call().then(function(orderAddress){
-			return new web3.eth.Contract(Order.abi,orderAddress[1]);
+		return restaurantInstance.methods.orders(0).call().then(function(_orderAddress){
+			orderAddress = _orderAddress[1];
+			return new web3.eth.Contract(Order.abi,_orderAddress[1]);
 		}).then(function(instance){
 			orderInstance = instance;
 			return orderInstance.methods.id().call();
@@ -222,7 +229,114 @@ describe("Contract: Order", function(){
 			return orderInstance.methods.totalItems().call();
 		}).then(function(totalItems){
 			assert.equal(totalItems,2);
+			return orderInstance.methods.riderStatus().call();
+		}).then(function(status){
+			assert.equal(status,0);
 		});
 	});
+});
+
+
+
+describe("Order Tracking",function(){
+	
+	it("Can access the rider instance",function(){
+		return riderFactoryInstance.methods.riders2(theAccounts[7]).call().then(function(riderAddress){
+			return new web3.eth.Contract(Rider.abi,riderAddress);
+		}).then(function(instance){
+			riderInstance = instance;
+			return riderInstance.methods.id().call();
+		}).then(function(_id){
+			assert.equal(_id,0);
+			return riderInstance.methods.owner().call();
+		}).then(function(owner){
+			assert.equal(owner,theAccounts[7]);
+			return riderInstance.methods.totalOrders().call();
+		}).then(function(totalOrders){
+			assert.equal(totalOrders,0);
+		});
+	});
+
+	it("Rider can not offer to deliver an order if invoked from an address that is not the owner of the rider smart contract", async function(){
+		await catchRevert(riderInstance.methods.offerDelivery(orderAddress).send({from:theAccounts[6],gas:3000000}));
+	});
+
+	it("Rider can offer to deliver the Order when invoked from the owners address", function(){
+		return riderInstance.methods.offerDelivery(orderAddress).send({from:theAccounts[7],gas:3000000}).then(function(){
+			return riderInstance.methods.totalOrders().call();
+		}).then(function(totalOrders){
+			assert.equal(totalOrders,1);
+			return orderInstance.methods.riderStatus().call();
+		}).then(function(status){
+			assert.equal(status,1);
+		});
+	});
+	
+
+
+	it("Restaurant Can not signal prepairing if invoked from an address that is not the owner of the restaurant smart contract", async function(){
+		await catchRevert(restaurantInstance.methods.setStatusPrepairing(orderAddress).send({from:theAccounts[9],gas:3000000}));
+	});
+
+	it("Restaurant Can not signal order picked up by rider if invoked from an address that is not the owner of the restaurant smart contract", async function(){
+		await catchRevert(restaurantInstance.methods.handOverCargo(orderAddress).send({from:theAccounts[9],gas:3000000}));
+	});
+	
+	it("Restaurant can signal prepairing if invoked from the owners account",function(){
+		return restaurantInstance.methods.setStatusPrepairing(orderAddress).send({from:theAccounts[2],gas:3000000}).then(function(){
+			return orderInstance.methods.restaurantStatus().call();
+		}).then(function(restaurantStatus){
+			assert.equal(restaurantStatus,1);
+		});
+	});
+	
+	it("Restaurant can signal order picked up by rider if invoked from the owners account",function(){
+		return restaurantInstance.methods.handOverCargo(orderAddress).send({from:theAccounts[2],gas:3000000}).then(function(){
+			return orderInstance.methods.restaurantStatus().call();
+		}).then(function(restaurantStatus){
+			assert.equal(restaurantStatus,2);
+		});
+	});
+
+
+
+	it("Rider Can not signal order picked up if invoked from an address that is not the owner of the rider smart contract", async function(){
+		await catchRevert(riderInstance.methods.pickupCargo(orderAddress).send({from:theAccounts[9],gas:3000000}));
+	});
+	
+	it("Rider can signal order picked up if invoked from the owners account",function(){
+		return riderInstance.methods.pickupCargo(orderAddress).send({from:theAccounts[7],gas:3000000}).then(function(){
+			return orderInstance.methods.riderStatus().call();
+		}).then(function(restaurantStatus){
+			assert.equal(restaurantStatus,2);
+		});
+	});
+
+	it("Rider Can not signal order dropped off if invoked from an address that is not the owner of the rider smart contract", async function(){
+		await catchRevert(riderInstance.methods.dropOffCargo(orderAddress).send({from:theAccounts[9],gas:3000000}));
+	});
+	
+	it("Rider can signal order dropped off if invoked from the owners account",function(){
+		return riderInstance.methods.dropOffCargo(orderAddress).send({from:theAccounts[7],gas:3000000}).then(function(){
+			return orderInstance.methods.riderStatus().call();
+		}).then(function(restaurantStatus){
+			assert.equal(restaurantStatus,3);
+		});
+	});
+
+	it("Customer Can not signal order dropped off if invoked from an address that is not the owner of the customer smart contract", async function(){
+		await catchRevert(customerInstance.methods.signalDelivered(orderAddress).send({from:theAccounts[9],gas:3000000}));
+	});
+	
+	it("Customer can signal order dropped off if invoked from the owners account",function(){
+		return customerInstance.methods.signalDelivered(orderAddress).send({from:theAccounts[6],gas:3000000}).then(function(){
+			return orderInstance.methods.customerStatus().call();
+		}).then(function(customerStatus){
+			assert.equal(customerStatus,1);
+		});
+	});
+	
+
+
 });
 

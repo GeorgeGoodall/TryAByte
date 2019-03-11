@@ -7,7 +7,8 @@ contract RiderFactory {
     address public controller;
     
     uint public riderCount;
-    mapping(uint => Rider) riders;
+    mapping(address => address) public riders1;
+    mapping(address => address) public riders2;
     
     constructor(address _owner) public
     {
@@ -17,8 +18,18 @@ contract RiderFactory {
     }
     
     function makeRider(string calldata name, string calldata contactNumber) external returns(address customer){
-        Rider newRider = new Rider(riderCount, name, contactNumber);
+        require(riders2[msg.sender] == address(0x0)); // the rider must not already be signed up
+        Rider newRider = new Rider(riderCount, name, contactNumber, msg.sender, controller);
+        riders1[address(newRider)] = msg.sender;
+        riders2[msg.sender] = address(newRider);
         riderCount++;
         return address(newRider);
+    }
+
+    function riderExists(address rider) public view returns(bool riderExists){
+        if(riders1[rider] != address(0x0))
+            return true;
+        else
+            return false;
     }
 }
