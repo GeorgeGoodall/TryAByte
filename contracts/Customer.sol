@@ -14,7 +14,7 @@ contract Customer {
     uint totalOrders;
     mapping(uint => address) orders;
 
-    enum customerState{madeOrder,hasCargo}    
+    enum customerState{madeOrder, payed, hasCargo}    
     
     
     constructor(uint _id, string memory _name, string memory _contactNumber, address _owner) public
@@ -27,17 +27,21 @@ contract Customer {
     }
     
     // this function will call the restaurant make order
-    function makeOrder(address restaurant, bytes32[] calldata items) external returns (address orderAddress){
+    function makeOrder(address restaurant, bytes32[] calldata items) external payable returns (address orderAddress){
         require(msg.sender == owner);
         //require(RestaurantFactory(restaurantFactoryAddress).restaurantExists(msg.sender));
-        require(Restaurant(restaurant).validOrder(items));
-        // require 
-
-
+        (bool isValid, uint price) = Restaurant(restaurant).validOrder(items);
+        require(isValid,"ordered items are not in the menu"); // this should return the price so you validate if the correct ether was sent
+        require(msg.value >= price,"sent ether is not enough to cover the order cost");
         
-        orders[totalOrders] = address(Restaurant(restaurant).makeOrder(items));
+        address orderAddr = Restaurant(restaurant).makeOrder(items);
+        orders[totalOrders] = orderAddress;
+
+        Order(orderAddr).customerPay.value(500)();
+        
+
         totalOrders++;
-        return orders[totalOrders];
+        return orders[totalOrders - 1];
 
     }
 

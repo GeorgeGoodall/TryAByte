@@ -26,7 +26,7 @@ contract RiderFactory {
         return address(newRider);
     }
 
-    function riderExists(address rider) public view returns(bool riderExists){
+    function riderExists(address rider) public view returns(bool exists){
         if(riders1[rider] != address(0x0))
             return true;
         else

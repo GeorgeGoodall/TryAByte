@@ -99,18 +99,23 @@ contract Restaurant {
         return -1;
     }
 
-    function validOrder(bytes32[] memory items) public view returns (bool isValid){
+    function validOrder(bytes32[] memory items) public view returns (bool isValid, uint price){
+        uint priceSum;
         for(uint i = 0; i < items.length; i++){
-            if(menuSearch(lib.bytes32ToString(items[i])) == -1){
-                return false;
+            int index = menuSearch(lib.bytes32ToString(items[i]));
+            if(index == -1){
+                return (false,0);
+            }
+            else{
+                priceSum += menu[uint(index)].itemCost; 
             }
         }
-        return true;
+        return (true,priceSum);
     }
     
-    function makeOrder(bytes32[] calldata items) external returns (address orderAddress) {
+    function makeOrder(bytes32[] calldata items) external payable returns (address orderAddress) {
         //require this comes from a customer smart contract
-        require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender));
+        require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender), "Customer doesnt exist");
         
 
         uint[] memory prices = new uint[](items.length);
@@ -132,7 +137,7 @@ contract Restaurant {
 		Order newOrder = new Order(totalOrders,restaurantFactoryAddress,items,prices,controllerAddress, msg.sender);
 		orders[totalOrders] = order(true,address(newOrder));
         totalOrders ++;
-		return orders[totalOrders].orderAddress;       
+		return orders[totalOrders - 1].orderAddress;       
     }
     
     function getMenuItem(uint itemId)public view returns(bytes32 itemname, uint cost){

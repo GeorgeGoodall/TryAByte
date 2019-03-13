@@ -9,7 +9,7 @@ contract Order{
 
 	enum riderState{unassigned, accepted, hasCargo, Delivered}
 	enum restaurantState{acceptedOrder, preparingCargo, HandedOver}
-	enum customerState{madeOrder,hasCargo}
+	enum customerState{madeOrder, payed, hasCargo}
     
 	uint public riderStatus;
 	uint public restaurantStatus;
@@ -26,6 +26,7 @@ contract Order{
 	address controller;
 
 	bytes32 deliveryAddress;
+	uint cost;
     
 
 
@@ -39,7 +40,7 @@ contract Order{
 
 	constructor(uint _id, address _restaurantFactoryAddress, bytes32[] memory itemNames, uint[] memory prices, address _controller, address _customer) public {
 	    // require sent from a restaurant contract
-	    require(RestaurantFactory(_restaurantFactoryAddress).restaurantExists(msg.sender));
+	    require(RestaurantFactory(_restaurantFactoryAddress).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");
 	    require(itemNames.length == prices.length);
 
 		
@@ -51,18 +52,25 @@ contract Order{
 
 		controller = _controller;
 		
+		cost = 0;
+
 		// set items
 		totalItems = 0;
 		for(uint i = 0; i < itemNames.length; i++){
 		    items[totalItems] = Item(lib.bytes32ToString(itemNames[i]),prices[i]);
+		    cost += prices[i];
 		    totalItems++;
 		}
 
 		riderStatus = uint(riderState.unassigned);
 		customerStatus = uint(customerState.madeOrder);
-		restaurantStatus = uint(restaurantState.acceptedOrder);
-		
-		
+		restaurantStatus = uint(restaurantState.acceptedOrder);	
+	}
+
+	function customerPay() public payable{
+		require(msg.sender == customer, "only the customer can pay for this order");
+		require(msg.value >= cost, "not enough ether sent to the order");
+		customerStatus = uint(customerState.payed);
 	}
 
 	function getItem(uint _id) public view returns(bytes32 itemName, uint itemCost){
