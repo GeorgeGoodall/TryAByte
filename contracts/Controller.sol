@@ -7,7 +7,7 @@ import "./RiderFactory.sol";
 
 contract Controller {
 
-	address owner;
+	address public owner;
 	address public restaurantFactoryAddress;
 	address public customerFactoryAddress;
 	address public riderFactoryAddress;

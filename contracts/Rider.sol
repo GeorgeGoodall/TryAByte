@@ -5,7 +5,7 @@ import "./Order.sol";
 // this should be done with inheritance for riders and customers
 contract Rider {
     
-    address public owner;
+    address payable public owner;
     address controller; // do you even need this?
 
     uint public id;
@@ -17,7 +17,7 @@ contract Rider {
 
     enum riderState{unassigned, accepted, hasCargo, Delivered}
     
-    constructor(uint _id, string memory _name, string memory _contactNumber, address _owner, address _controller) public
+    constructor(uint _id, string memory _name, string memory _contactNumber, address payable _owner, address _controller) public
     {
         id = _id;
         name = _name;
@@ -28,10 +28,17 @@ contract Rider {
     }
     
     // this function should be payable
-    function offerDelivery(address orderAddress) public {
+    function offerDelivery(address orderAddress) public payable{
         require(msg.sender == owner);
-        Order(orderAddress).riderOfferDelivery();
+        Order orderInstance = Order(orderAddress);
+        uint cost = orderInstance.getCost();
+        require(msg.value >= cost, "deposit value not high enough");
 
+        if(msg.value > cost){
+            owner.transfer(msg.value - cost);
+        }
+
+        orderInstance.riderOfferDelivery.value(cost)();
         orders[totalOrders] = orderAddress;
         totalOrders++;
     }
@@ -49,6 +56,10 @@ contract Rider {
     function getContactNumber() public view returns(string memory _contactNumber){
         // require the sender of the message to be either the delivery worker or the the restaurant
         return contactNumber;
+    }
+
+    function() external payable {
+
     }
 
 

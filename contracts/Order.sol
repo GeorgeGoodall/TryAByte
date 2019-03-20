@@ -19,14 +19,15 @@ contract Order{
 	address public restaurantFactoryAddress;
 	
 
-	address public restaurant;
-	address rider; 	  // this should be encrypted
-	address customer; // this should be encrypted
+	address payable public restaurant;
+	address payable rider; 	  // this should be encrypted
+	address payable customer; // this should be encrypted
 
 	address controller;
 
 	bytes32 deliveryAddress;
 	uint cost;
+	uint deliveryFee;
     
 
 
@@ -38,7 +39,7 @@ contract Order{
 		uint itemCost; // in wei (10^-18 Eth)
 	}
 
-	constructor(uint _id, address _restaurantFactoryAddress, bytes32[] memory itemNames, uint[] memory prices, address _controller, address _customer) public {
+	constructor(uint _id, address _restaurantFactoryAddress, bytes32[] memory itemNames, uint[] memory prices, address _controller, address payable _customer) public {
 	    // require sent from a restaurant contract
 	    require(RestaurantFactory(_restaurantFactoryAddress).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");
 	    require(itemNames.length == prices.length);
@@ -62,6 +63,8 @@ contract Order{
 		    totalItems++;
 		}
 
+		deliveryFee = 200;
+
 		riderStatus = uint(riderState.unassigned);
 		customerStatus = uint(customerState.madeOrder);
 		restaurantStatus = uint(restaurantState.acceptedOrder);	
@@ -69,7 +72,7 @@ contract Order{
 
 	function customerPay() public payable{
 		require(msg.sender == customer, "only the customer can pay for this order");
-		require(msg.value >= cost, "not enough ether sent to the order");
+		require(msg.value >= cost + deliveryFee, "not enough ether sent to the order");
 		customerStatus = uint(customerState.payed);
 	}
 
@@ -83,13 +86,15 @@ contract Order{
 		return deliveryAddress;
 	}
 
-	function riderOfferDelivery() public {
+	function riderOfferDelivery() public payable{
 		require(RiderFactory(Controller(controller).riderFactoryAddress()).riderExists(msg.sender));
+		require(msg.value >= cost);
+		
 		riderStatus = uint(riderState.accepted);
 		rider = msg.sender;
 	}
 
-	function setOrderStatus(uint status) public {
+	function setOrderStatus(uint status) public payable{
 		require(msg.sender == rider || msg.sender == restaurant || msg.sender == customer, "You dont have permission to see this order, did you get the order address wrong?");
 
 		if(msg.sender == rider)
@@ -100,5 +105,21 @@ contract Order{
 			customerStatus = status;
 		else
 			revert("Error: unauthoriserd address accessing setOrderStatus");
+
+		// if both rider and customer state the customer has the food
+		if(riderStatus == 3 && customerStatus == 2){
+			
+			address(rider).transfer(100);
+			// restaurant.transfer(100);
+		}
+	}
+
+	function getBalance() public view returns(uint){
+		return address(this).balance;
+	}
+
+	function getCost() public view returns(uint){
+		//require that this is one of the agents involved
+		return cost;
 	}
 }

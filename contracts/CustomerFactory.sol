@@ -7,7 +7,8 @@ contract CustomerFactory {
     address public controller;
 
     uint public customerCount;
-    mapping(address => address) public customers1; // customerContractAddress to customersOwnAddress
+    mapping(uint => address) public customers0; // id to customerContractAddress
+    mapping(address => address) private customers1; // customerContractAddress to customersOwnAddress
     mapping(address => address) public customers2; // customersOwnAddress to customerContractAddress
     
     constructor(address _owner) public
@@ -17,10 +18,12 @@ contract CustomerFactory {
         customerCount = 0;
     }
     
-    function makeCustomer(string calldata name, string calldata contactNumber) external returns(address customer){
+    // todo change name to createCustomer()
+    function makeCustomer(string calldata name, string calldata contactNumber) external returns(address customer){ 
         Customer newCustomer = new Customer(customerCount, name, contactNumber, msg.sender);
         customers1[address(newCustomer)] = msg.sender;
         customers2[msg.sender] = address(newCustomer);
+        customers0[customerCount] = address(newCustomer);
         customerCount++;
         return address(newCustomer);
     }

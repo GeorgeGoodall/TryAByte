@@ -22,7 +22,11 @@ contract RestaurantFactory {
 
 	// factory function creates a new restaurant
 	function createRestaurant(string calldata name, string calldata _address, string calldata contactNumber) external returns(address newRestaurant){
-		//require deposit to create a restaurant
+		//ToDo: require deposit to create a restaurant
+		require(bytes(name).length >0);
+		require(bytes(_address).length >0);
+		require(bytes(contactNumber).length >0);
+
 
 		Restaurant theNewRestaurant = new Restaurant(controller,msg.sender,restaurantCount, name, _address, contactNumber);
 		restaurants[restaurantCount] = address(theNewRestaurant);

@@ -7,8 +7,9 @@ contract RiderFactory {
     address public controller;
     
     uint public riderCount;
-    mapping(address => address) public riders1;
-    mapping(address => address) public riders2;
+    mapping(uint => address) public riders0; // ids to contract address
+    mapping(address => address) public riders1; // contract address to owner addresses, // todo check if need this
+    mapping(address => address) public riders2; // owner addresses to contract addresses
     
     constructor(address _owner) public
     {
@@ -22,6 +23,7 @@ contract RiderFactory {
         Rider newRider = new Rider(riderCount, name, contactNumber, msg.sender, controller);
         riders1[address(newRider)] = msg.sender;
         riders2[msg.sender] = address(newRider);
+        riders0[riderCount] = address(newRider);
         riderCount++;
         return address(newRider);
     }

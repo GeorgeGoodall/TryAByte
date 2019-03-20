@@ -10,7 +10,7 @@ contract Restaurant {
 
     using lib for bytes32;
 
-	uint id;
+	uint public id;
 	string public name;
 	string public location;
 	string public contactNumber;
