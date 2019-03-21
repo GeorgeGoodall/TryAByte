@@ -6,7 +6,7 @@ import "./Order.sol";
 
 contract Customer {
     
-    address owner;
+    address public owner;
     address customerFactory;
     uint public id;
     string name;
@@ -42,7 +42,6 @@ contract Customer {
 
         totalOrders++;
         return orders[totalOrders - 1];
-
     }
 
     function signalDelivered(address orderAddress) public {

@@ -172,6 +172,7 @@ App = {
         App.riderFactoryInstance = instance;
         App.renderRestaurant();
         App.renderCustomer();
+        App.renderRider();
       });
     });
 
@@ -206,20 +207,21 @@ App = {
 
         $('#restaurantArea').append("<p>id: "+id+"<br>name: " + name + "<br>location: " + location + "<br>contact number: " + contactNumber + "<br>address: " + address + "<br>owner: " + owner + "</p>");
         $('#restaurantArea').append("<div>"+
-                                      "<h3>Menu</h3>"+
+                                      "<h3 id='MenuTitle'>Menu</h3>"+
                                       "<div id='menuDisplay"+id+"' style='float: left; width: 150px; height:250px; padding: 10px'></div>"+
                                       "<textarea id='menuEdit"+id+"' rows='10' columns='20'></textarea>"+
                                       "<div id='menuControlls"+id+"'>"+
-                                        "<button id='menuAddBut"+id+"'>Add</button>"+
-                                        "<button id='menuRemoveBut"+id+"'>Remove</button>"+
+                                        "<button id='menuAddBut"+id+"' onclick='App.menuAddItems("+id+")'>Add</button>"+
+                                        "<button id='menuRemoveBut"+id+"' onclick='App.menuRemoveItems("+id+")'>Remove</button>"+
                                       "</div>"+
                                     "</div><br>");
         $('#restaurantArea').append("");
 
-        var menuLength = await instance.menuLength();
+        var menuLength = await instance.getMenuLength();
+        $('#MenuTitle').html("Menu (Count:"+menuLength+")");
         for(var j = 0; j < menuLength; j++){
-          var item = await iteminstance.getManuItem(j);
-          $('#menuDisplay').append(item[0] + ": " + item[1] + "<br>");
+          var item = await instance.getMenuItem(j);
+          $('#menuDisplay'+id).append(web3.toAscii(item[0]) + ": " + item[1] + "<br>");
         }
       })
     }
@@ -241,6 +243,28 @@ App = {
         var id = await instance.id();
         var address = await instance.address;
         $('#customerArea').append("<p>ID: " + id + "<br>Address: " + address + "</p>");
+        $('#customerArea').append("<div>"+
+                                      "<h3 id='OrderHere'>Menu</h3>"+
+                                      "RestaurantAddress: <input id='orderAddress"+id+"'><br>"+
+                                      "OrderItems:<br><textarea id='orderItems"+id+"' rows='6' columns='20'></textarea>"+
+                                      "<div id='menuControlls"+id+"'>"+
+                                        "<button id='orderButton"+id+"' onclick='App.makeOrder("+id+")'>Order Items</button>"+
+                                      "</div>"+
+                                    "</div><br>");
+        var owner = await instance.owner();
+        var orderCount = instance.getTotalOrders({from: owner, gas: 4000000});
+
+        for(var j = 0; j < orderCount; j++){
+            instance.getOrder(j,{from: owner, gas: 4000000}).then(function(address){
+              return new App.contracts.Order(address);
+            }).then(async function(instance){
+              var orderid = await instance.id();
+              var cost = await instance.getCost();
+              var totalItems = await instance.totalItems();
+              $('#customerArea').append("<p>id: "+orderid+"<br>cost: "+cost+"<br>Total Items: "+totalItems+"</p>");
+            })
+        }
+        
       })
     }
   },
@@ -307,6 +331,68 @@ App = {
       console.log("rider Made");
       App.renderRider();
     })
+  },
+
+  menuRemoveItems: function(id){
+    console.log("Removing items from menu");
+    items = App.parseMenuInput("menuEdit" + id)[0];
+    console.log(items);
+    for(var i = 0; i < items.length; i++){
+      console.log(items[i]);
+      items[i] = web3.fromAscii(items[i]);
+    }
+    App.restaurantFactoryInstance.restaurants(id).then(function(address){
+      return new App.contracts.Restaurant(address);
+    }).then(function(instance){
+      instance.menuRemoveItems(items,{from: App.account, gas: 4000000});
+    });
+    App.renderRestaurant();
+  },
+
+  menuAddItems: function(id){
+    console.log("Adding items to menu");
+    items = App.parseMenuInput("menuEdit" + id);
+    App.restaurantFactoryInstance.restaurants(id).then(function(address){
+      return new App.contracts.Restaurant(address);
+    }).then(function(instance){
+      instance.menuAddItems(items[0],items[1],{from: App.account, gas: 4000000});
+    });
+    App.renderRestaurant();
+  },
+
+  orderItems: function(id){
+    console.log("making an order");
+    items = App.parseMenuInput("orderItems"+id)[0];
+    for(var i = 0; i < items.length; i++){
+      console.log(items[i]);
+      items[i] = web3.fromAscii(items[i]);
+    }
+    App.customerFactoryInstance.customers0(id).then(function(address){
+      return new App.contracts.Customer(address);
+    }).then(function(instance){
+      instance.makeOrder(items,{from: App.account, gas: 4000000});
+    });
+    App.renderCustomer();
+  },
+
+  parseMenuInput: function(id){
+    var menuInput = document.getElementById(id).value;
+    var items = menuInput.split("\n");
+    var itemNames = [];
+    var itemPrices = [];
+    var count = 0;
+    for(var i = 0; i < items.length; i++){
+      if(typeof items[i] !== 'undefined'){
+        item = items[i].split(":");
+        if(typeof item[0] != 'undefined' && item[0].trim() != ""){
+          itemNames[count] = item[0].trim();
+          if(typeof item[1] != 'undefined')
+            itemPrices[count] = item[1].trim();
+          count++;
+        }
+      }
+    }
+    return [itemNames, itemPrices];
   },
 };
 
