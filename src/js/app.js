@@ -16,9 +16,13 @@ App = {
       App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
       web3 = new Web3(App.web3Provider);
     }
-    App.initContract();
-    return;
+    console.log("currentProvider" + window.web3.currentProvider)
+    web3.version.getNetwork(function(err,res){console.log("error: " + err);console.log("result: " + res)});
+    return App.initContract();
+    
   },
+
+
 
   initContract: function() {
     var controllerRequest = $.ajax({
@@ -76,45 +80,12 @@ App = {
 
   
   
-  $.when(controllerRequest,RestaurantFactory).done(function(){
-    App.renderInitial();
-  });
-    
-    
-    
-    
-    // $.getJSON("Customer.json",function(customer){
-    //   App.contracts.Customer = TruffleContract(customer);
-    //   App.contracts.Customer.setProvider(App.web3Provider);
-    //   return;
-    // });
-
-    // $.getJSON("RiderFactory.json",function(riderFactory){
-    //   App.contracts.RiderFactory = TruffleContract(riderFactory);
-    //   App.contracts.RiderFactory.setProvider(App.web3Provider);
-    // });
-    // $.getJSON("Rider.json",function(rider){
-    //   App.contracts.Rider = TruffleContract(rider);
-    //   App.contracts.Rider.setProvider(App.web3Provider);
-    // });
-
-    // $.getJSON("RestaurantFactory.json",function(restaurantFactory){
-    //   App.contracts.RestaurantFactory = TruffleContract(restaurantFactory);
-    //   App.contracts.RestaurantFactory.setProvider(App.web3Provider);
-    // });
-    // $.getJSON("Restaurant.json",function(restaurant){
-    //   App.contracts.Restaurant = TruffleContract(restaurant);
-    //   App.contracts.Restaurant.setProvider(App.web3Provider);
-    // });
-
-    // $.getJSON("Order.json",function(order){
-    //   App.contracts.Order = TruffleContract(order);
-    //   App.contracts.Order.setProvider(App.web3Provider);
-    // });    
-    // return App.render();
+    $.when(controllerRequest,RestaurantFactory).done(function(){
+      App.renderInitial();
+    });
   },
 
-  renderInitial: function() {
+  renderInitial: async function() {
 
     var controllerInstance;
 
@@ -128,16 +99,26 @@ App = {
 
     var orderInstance;
 
-    // get accounts and print account selection
-    web3.eth.getAccounts(function(err,_accounts){
-      if(err === null){
-        App.accounts = _accounts;
-        $('#accountAddress').append("<h2 class='text-center'>Accounts:</h2>");
-        for(var i = 0; i<App.accounts.length; i++){
-          if(App.accounts[i] !== null){
-            $('#accountAddress').append('<input type="radio" name="currentAccount" value="'+App.accounts[i]+'" onclick="setAddress()"> ' + App.accounts[i] + ' <br>');
-          }
-        }
+    // // get accounts and print account selection
+    // var accountsRequest = web3.eth.getAccounts(function(err,_accounts){
+    //   if(err === null){
+    //     App.accounts = _accounts;
+        
+    //     $('#accountAddress').append('<p name="currentAccount" onclick="setAddress()"> Account: ' + App.accounts[0] + ' <br>');
+    //     App.account = App.accounts[0];
+
+    //   }
+    //   else{
+    //     $('#accountAddress').append("Error: " + err);
+    //   }
+    // });
+
+        // get accounts and print account selection
+    var accountsRequest = web3.eth.getCoinbase(function(err,account){
+      if(err === null){       
+        
+        App.account = account;
+        $('#accountAddress').append('<p> Account: ' + App.account + '</p> <br>');
       }
       else{
         $('#accountAddress').append("Error: " + err);
@@ -147,7 +128,13 @@ App = {
     
 
     // get factory instances
-    App.contracts.Controller.deployed().then(function(instance){
+    console.log("deploying controller");
+    console.log(App.account);
+    App.contracts.Controller.deployed({from: "App.account"}).then(async function(instance){
+      console.log(instance);
+      var owner = await instance.owner();
+      console.log("owner: " + owner);
+      console.log("deploying controller");
       $('#factoryOwners').append('<h2 class="text-centre">FactoryAddress:</h2>');
       controllerInstance = instance;
       return controllerInstance.restaurantFactoryAddress().then(function(restaurantFactoryAddress){
@@ -176,7 +163,7 @@ App = {
       });
     });
 
-    ;
+    
   },
 
   render: function(){
