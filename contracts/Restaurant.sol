@@ -30,7 +30,8 @@ contract Restaurant {
 		uint itemCost; // in wei (10^-18 Eth)
 	}
 	
-	Item[] public menu; // should probably change this to a mapping
+    uint public menuLength;
+	mapping(uint => Item) public menu; // should probably change this to a mapping
 
     enum restaurantState{acceptedOrder, preparingCargo, HandedOver}
 	
@@ -47,92 +48,93 @@ contract Restaurant {
 		restaurantFactoryAddress = msg.sender;
 	}
 
+    // ToDo Remove this
     function getMenuLength() external view returns(uint length){
-        return menu.length;
+        return menuLength;
     }
 
-    function clearMenu() external {
-        require(msg.sender == owner);
-        delete menu;
-    }
+    // todo redo this 
+    // function clearMenu() external {
+    //     require(msg.sender == owner);
+    //     delete menu;
+    // }
     
+
     function menuAddItems(bytes32[] calldata itemNames, uint[] calldata prices) external {
         require(msg.sender == owner);
         require(itemNames.length == prices.length);
         
         // should add checks that an item isn't added twice
         for(uint i = 0; i<itemNames.length;i++){
-            menu.push(Item(itemNames[i], prices[i]));
+            menu[menuLength] = Item(itemNames[i],prices[i]);
+            menuLength++;
         }
     }
 
     
-    // could add ids to menu items then remove by id to lower gas cost
-    function menuRemoveItems(bytes32[] calldata itemNames) external returns(string memory result){
+    
+    function menuRemoveItems(uint[] calldata itemIds) external{
         require(msg.sender == owner);
-        require(itemNames.length>0);
-        result = "";
-        for(uint i = 0; i<itemNames.length;i++){
-            result = lib.strConcat(result,lib.strConcat(lib.bytes32ToString(itemNames[i]),":"));
-            int index = menuSearch(lib.bytes32ToString(itemNames[i]));
-            if(index!=-1){
-                delete menu[uint(index)];
-                menu[uint(index)] = menu[menu.length-1];
-                delete menu[menu.length-1];
-                result = lib.strConcat(result," Removed Sucessfully");
-                menu.length--;
+        require(itemIds.length>0);
+
+        uint totalItemsToKeep = menuLength - uint(itemIds.length);
+
+        uint[] memory itemsToKeep = new uint[](totalItemsToKeep);
+        uint counter = 0;
+        for(uint i = 0; i<menuLength;i++){
+            bool idUndeleted = true;
+            for(uint j = 0; j < itemIds.length; j++){
+                if(i == itemIds[j]){
+                    idUndeleted = false;
+                }
             }
-            else{
-                result = lib.strConcat(result, " Error, could not find in menu");
+            if(idUndeleted){
+                itemsToKeep[counter] = i;
+                counter++;
             }
         }
-        
-        return result;
+
+        for(uint i = 0; i < itemsToKeep.length; i++){
+            menu[i] = menu[itemsToKeep[i]];
+        }
+        menuLength = itemsToKeep.length;
     }
     
     function menuSearch(string memory query) private view returns(int index){
-        for(int i = 0; i<int(menu.length);i++){
-            if(lib.compareStrings(lib.bytes32ToString(menu[uint(i)].itemName),query)){
-                return i;
+        for(uint i = 0; i<menuLength;i++){
+            if(lib.compareStrings(lib.bytes32ToString(menu[i].itemName),query)){
+                return int(i);
             }
         }
         return -1;
     }
 
-    function validOrder(bytes32[] memory items) public view returns (bool isValid, uint price){
-        uint priceSum;
-        for(uint i = 0; i < items.length; i++){
-            int index = menuSearch(lib.bytes32ToString(items[i]));
-            if(index == -1){
-                return (false,0);
-            }
-            else{
-                priceSum += menu[uint(index)].itemCost; 
-            }
+    function getOrderPrice(uint[] memory itemIds) public view returns (uint){
+        uint price = 0;
+        for(uint i = 0; i < itemIds.length; i++){
+            price += menu[itemIds[i]].itemCost;
         }
-        return (true,priceSum);
+        return price;
     }
     
-    function makeOrder(bytes32[] calldata items) external payable returns (address orderAddress) {
+
+    function makeOrder(uint[] calldata itemIds) external payable returns (address orderAddress) {
         //require this comes from a customer smart contract
         require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender), "Customer doesnt exist");
         
 
-        uint[] memory prices = new uint[](items.length);
-        for(uint i = 0; i < items.length; i++)
+        uint[] memory prices = new uint[](itemIds.length);
+        bytes32[] memory items = new bytes32[](itemIds.length);
+        for(uint i = 0; i < itemIds.length; i++)
         {
-            string memory a = lib.bytes32ToString(items[i]); 
-            int index = menuSearch(a); 
-            
-            if (index != -1){
-                prices[i] = menu[uint(index)].itemCost;
+            if (itemIds[i] >= 0 && itemIds[i] < menuLength){
+                items[i] = menu[uint(itemIds[i])].itemName; 
+                prices[i] = menu[uint(itemIds[i])].itemCost;
             }
             else{
                 revert("Invalid Items");
             }
         }
-        
-
         
 		Order newOrder = new Order(totalOrders,restaurantFactoryAddress,items,prices,controllerAddress, msg.sender);
 		orders[totalOrders] = order(true,address(newOrder));

@@ -35,14 +35,14 @@ contract RestaurantFactory {
 		Restaurant theNewRestaurant = new Restaurant(controller,msg.sender,restaurantCount, name, _address, contactNumber);
 		restaurants0[restaurantCount] = address(theNewRestaurant);
 		restaurantCount ++;
-		restaurants1[msg.sender] = address(theNewRestaurant);
 		restaurants1[address(theNewRestaurant)] = msg.sender;
+		restaurants2[msg.sender] = address(theNewRestaurant);
 		return address(theNewRestaurant);
 
 	}
 	
 	function restaurantExists(address restaurant) public view returns(bool RestaurantExists){
-	    if(restaurants1(restaurant) != address(0x0)){
+	    if(restaurants1[restaurant] != address(0x0)){
 	    	return true;
 	    }else{
 	    	return false;	

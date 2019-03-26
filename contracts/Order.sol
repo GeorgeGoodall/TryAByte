@@ -27,7 +27,7 @@ contract Order{
 
 	bytes32 deliveryAddress;
 	uint cost;
-	uint deliveryFee;
+	uint public deliveryFee;
     
 
 
@@ -72,7 +72,7 @@ contract Order{
 
 	function customerPay() public payable{
 		require(msg.sender == customer, "only the customer can pay for this order");
-		require(msg.value >= cost + deliveryFee, "not enough ether sent to the order");
+		require(msg.value >= cost + deliveryFee, lib.strConcat("not enough ether sent to the order, needed: ",lib.uint2str(cost + deliveryFee)));
 		customerStatus = uint(customerState.payed);
 	}
 

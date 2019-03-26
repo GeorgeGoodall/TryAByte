@@ -23,22 +23,25 @@ contract Customer {
         name = _name;
         contactNumber = _contactNumber;
         owner = _owner;
+        totalOrders = 0;
         customerFactory = msg.sender;
     }
     
     // this function will call the restaurant make order
-    function makeOrder(address restaurant, bytes32[] calldata items) external payable returns (address orderAddress){
+    function makeOrder(address restaurant, uint[] calldata items) external payable returns (address orderAddress){
         require(msg.sender == owner, "you dont own the customer smart contract");
         //require(RestaurantFactory(restaurantFactoryAddress).restaurantExists(msg.sender));
-        (bool isValid, uint price) = Restaurant(restaurant).validOrder(items);
-        require(isValid,"ordered items are not in the menu"); // this should return the price so you validate if the correct ether was sent
-        require(msg.value >= price + 200,"sent ether is not enough to cover the order cost and delivery fee");
+        uint price = Restaurant(restaurant).getOrderPrice(items);
+        require(msg.value >= price,"sent ether is not enough to cover the order cost and delivery fee");
         
         address orderAddr = Restaurant(restaurant).makeOrder(items);
-        orders[totalOrders] = orderAddress;
+        orders[totalOrders] = orderAddr;
 
-        Order(orderAddr).customerPay.value(price + 200)(); // need to add excess for the cost of delviery
-        msg.sender.transfer(msg.value - (price + 200)); // return excess payment
+        uint deliveryFee = Order(orderAddr).deliveryFee();
+
+        // have to do this in a seperate function to avoid sending money through the Restaurant smart contract
+        Order(orderAddr).customerPay.value(price + deliveryFee)(); // need to add excess for the cost of delviery
+        msg.sender.transfer(msg.value - (price + deliveryFee)); // return excess payment
 
         totalOrders++;
         return orders[totalOrders - 1];

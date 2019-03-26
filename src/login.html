@@ -6,51 +6,59 @@
 </head>
 <body style="height: 30%">
 	<h1 class="text-center">TryAByte</h1>
-	<div style="height: 80%;">
-		<h2 class="text-center">What are you?</h2>
-		<div onclick="restaurantClick()" style="height:100%; width:30%; background-color: red; float: left; margin: 1.65%">
-			<p class="text-center" style="font-size: 60px">Restaurant</p>
+	<div id="loading" style="display: block">
+		<h1 class="text-center">Loading...</h1>
+	</div>
+	<div id="main" style="display: none">
+		<div style="height: 80%;">
+			<h2 class="text-center">What are you?</h2>
+			<div onclick="restaurantClick()" style="height:100%; width:30%; background-color: red; float: left; margin: 1.65%">
+				<p id="restaurantButton" class="text-center" style="font-size: 60px">Restaurant</p>
+			</div>
+			<div onclick="customerClick()" style="height:100%; width:30%; background-color: lightblue; float: left; margin: 1.65%">
+				<p id="customerButton" class="text-center" style="font-size: 60px">Customer</p>
+			</div>
+			<div onclick="riderClick()" style="height:100%; width:30%; background-color: lightgreen; float: left; margin: 1.65%">
+				<p id="riderButton" class="text-center" style="font-size: 60px">Delivery Worker</p>
+			</div>
 		</div>
-		<div onclick="customerClick()" style="height:100%; width:30%; background-color: lightblue; float: left; margin: 1.65%">
-			<p class="text-center" style="font-size: 60px">Customer</p>
+
+		<div id="RestaurantLoginArea">
+			<h2>No Restaurant Smart Contract Found for your address, create one now</h2>
+			<div id="RestaurantAccountCreation">
+			  Name: <input type="text" id="restaurantNameInput"><br>
+	          address: <input type="text" id="restaurantAddressInput"><br>
+	          phone: <input type="text" id="restaurantPhoneInput"><br>
+	          <button onclick='makeRestaurantClick()'>Submit</button>
+			</div>	
 		</div>
-		<div onclick="riderClick()" style="height:100%; width:30%; background-color: lightgreen; float: left; margin: 1.65%">
-			<p class="text-center" style="font-size: 60px">Delivery Worker</p>
+
+		<div id="CustomerLoginArea">
+			<h2>No Customer Smart Contract Found for your address, create one now</h2>
+			<div id="CustomerAccountCreation">
+			  Name: <input type="text" id="customerNameInput"><br>
+	          phone: <input type="text" id="customerPhoneInput"><br>
+	          <button onclick='makeCustomerClick()'>Submit</button>
+			</div>	
+		</div>
+
+		<div id="RiderLoginArea">
+			<h2>No Delivery Worker Smart Contract Found for your address, create one now</h2>
+			<div id="RiderAccountCreation">
+				Name: <input type="text" id="riderNameInput"><br>
+	            phone: <input type="text" id="riderPhoneInput"><br>
+	            <button onclick='makeRiderClick()'>Submit</button>
+			</div>	
 		</div>
 	</div>
 
-	<div id="RestaurantLoginArea">
-		<h2>No Restaurant Smart Contract Found for your address, create one now</h2>
-		<div id="RestaurantAccountCreation">
-		  Name: <input type="text" id="restaurantNameInput"><br>
-          address: <input type="text" id="restaurantAddressInput"><br>
-          phone: <input type="text" id="restaurantPhoneInput"><br>
-          <button onclick='makeRestaurantClick()'>Submit</button>
-		</div>	
-	</div>
-
-	<div id="CustomerLoginArea">
-		<h2>No Customer Smart Contract Found for your address, create one now</h2>
-		<div id="CustomerAccountCreation">
-		  Name: <input type="text" id="customerNameInput"><br>
-          phone: <input type="text" id="customerPhoneInput"><br>
-          <button onclick='makeCustomerClick()'>Submit</button>
-		</div>	
-	</div>
-
-	<div id="RiderLoginArea">
-		<h2>No Delivery Worker Smart Contract Found for your address, create one now</h2>
-		<div id="RiderAccountCreation">
-			Name: <input type="text" id="riderNameInput"><br>
-            phone: <input type="text" id="riderPhoneInput"><br>
-            <button onclick='makeRiderClick()'>Submit</button>
-		</div>	
-	</div>
+	
 	
 	<script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/login.js"></script>
+	<script src="js/app.js"></script>
 
 </body>
 </html>
