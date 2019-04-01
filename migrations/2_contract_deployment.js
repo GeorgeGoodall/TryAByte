@@ -9,12 +9,17 @@ var Customer = artifacts.require("./Customer.sol");
 var lib = artifacts.require("./lib.sol");
 
 module.exports = function(deployer) {
-	deployer.deploy(lib);
+	//deployer.deploy(lib);
 
-	deployer.link(lib,RestaurantFactory);
-	deployer.link(lib,Restaurant);
-	deployer.link(lib,Order);
-	deployer.link(lib,Controller);
+	//deployer.link(lib,Restaurant);
+	//deployer.link(lib,Order);
+	//deployer.link(lib,Controller);
 	
-  	deployer.deploy(Controller);
+
+	// deployer.deploy(RestaurantFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
+	// deployer.deploy(RiderFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
+	// deployer.deploy(CustomerFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
+  	deployer.deploy(Controller).then(function(instance){
+
+  	});
 };

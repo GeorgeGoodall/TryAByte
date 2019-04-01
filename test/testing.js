@@ -76,7 +76,7 @@ describe('Contract: RestaurantFactory', function(){
 			return restaurantFactoryInstance.methods.restaurantCount().call();
 		}).then(function(count){
 			assert.equal(count,1);
-			return restaurantFactoryInstance.methods.restaurants(0).call();
+			return restaurantFactoryInstance.methods.restaurants0(0).call();
 		}).then(function(restaurantAddress){
 			return new web3.eth.Contract(Restaurant.abi,restaurantAddress);
 		}).then(function(instance){
@@ -184,58 +184,37 @@ describe('Contract: Restaurant', function(){
 	});
 
 	it("Can remove menu items", function(){
-		return restaurantInstance.methods.menuRemoveItems([web3.utils.fromAscii("cake")]).send({from:theAccounts[2], gas:3000000}).then(function(){
+		return restaurantInstance.methods.menuRemoveItems([3]).send({from:theAccounts[2], gas:3000000}).then(function(){
 			return restaurantInstance.methods.getMenuLength().call().then(function(menuLength){
 				assert.equal(menuLength,7);
-				return restaurantInstance.methods.getMenuItem(4).call();
+				return restaurantInstance.methods.getMenuItem(3).call();
 			}).then(function(item){
 				assert.equal(web3.utils.hexToUtf8(item["itemname"]),"beans")
 				assert.equal(item["cost"],500);
 			});
 		})
-	})
-
-	it("can check if an order is valid and get its price",function(){
-		return restaurantInstance.methods.validOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).call().then(function(validOrder){
-			assert.equal(validOrder[0],true,"thinks valid order is invalid");
-			assert.equal(validOrder[1],500,"returned an incorrect price");
-			return restaurantInstance.methods.validOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Lasagnia")]).call();
-		}).then(function(validOrder){
-			assert.equal(validOrder[0],false,"thinks invalid order is valid");
-		})
-	})
-
-	it("Can not make order from address that isnt a customer smart contract", async function() {
-        await catchRevert(restaurantInstance.methods.makeOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[1],gas:3000000}));
-    });
-	
+	})	
 });
 
 describe("Contract: Customer", async function(){
 	it("Can not make order from address that isnt a customer smart contract", async function() {
-        await catchRevert(restaurantInstance.methods.makeOrder([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[1],gas:3000000}));
+        await catchRevert(restaurantInstance.methods.makeOrder([0,1],200,web3.utils.fromAscii("Fake Address")).send({from:theAccounts[1],gas:3000000}));
     });
 	it("Can not make order from address that doesn't own the customer smart contract", async function() {
-        await catchRevert(customerInstance.methods.makeOrder(restaurantInstance.options.address,[web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[9],gas:3000000}));
+        await catchRevert(customerInstance.methods.makeOrder(restaurantInstance.options.address,[0,1],2000000000000000,web3.utils.fromAscii("Fake Address")).send({from:theAccounts[9],gas:3000000,value:2000000000000500}));
+    });
+    it("Can not make order if the deliveryFee is too low", async function() {
+        await catchRevert(customerInstance.methods.makeOrder(restaurantInstance.options.address,[0,1],2,web3.utils.fromAscii("Fake Address")).send({from:theAccounts[9],gas:3000000,value:2000000000000500}));
     });
     it("Can not make order if the order items aren't in the menu", async function() {
-        await catchRevert(customerInstance.methods.makeOrder(restaurantInstance.options.address,[web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Lasagnia")]).send({from:theAccounts[6],gas:3000000}));
+        await catchRevert(customerInstance.methods.makeOrder(restaurantInstance.options.address,[0,15],2000000000000000,web3.utils.fromAscii("Fake Address")).send({from:theAccounts[6],gas:3000000,value:2000000000000500}));
     });
     it("Can not make an order if not enough ether is sent", async function() {
-        await catchRevert(customerInstance.methods.makeOrder(restaurantInstance.options.address,[web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[6],gas:3000000}));
+        await catchRevert(customerInstance.methods.makeOrder(restaurantInstance.options.address,[0,1],2000000000000000,web3.utils.fromAscii("Fake Address")).send({from:theAccounts[6],gas:3000000,value:2000000000000000}));
     });
-    // ToDo: need to do a check that the ether is returned
-    it("Can not make an order if not enough ether is sent",async function(){
-    	await catchRevert(customerInstance.methods.makeOrder(restaurantInstance.options.address,[web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")]).send({from:theAccounts[6],gas:300000000,value:300}));
-	});
 
 	it("Can make an order if enough ether is sent",async function(){
-		return customerInstance.methods.makeOrder(restaurantInstance.options.address,[	web3.utils.fromAscii("Fish"),
-																						web3.utils.fromAscii("Fish"),
-																						web3.utils.fromAscii("Fish"),
-																						web3.utils.fromAscii("Chips"),
-																						web3.utils.fromAscii("beans"),
-																						web3.utils.fromAscii("Pie")]).send({from:theAccounts[6],gas:30000000,value:30000}).then(function(){
+		return customerInstance.methods.makeOrder(restaurantInstance.options.address,[0,1],2000000000000000,web3.utils.fromAscii("Fake Address")).send({from:theAccounts[6],gas:30000000,value:2000000000000500}).then(function(){
 			return customerInstance.methods.getTotalOrders().call({from:theAccounts[6]}).then(function(totalOrders){
 				assert.equal(totalOrders,1);
 			});
@@ -274,7 +253,7 @@ describe("Contract: Order", function(){
 			assert.equal(id,0);
 			return orderInstance.methods.totalItems().call();
 		}).then(function(totalItems){
-			assert.equal(totalItems,6);
+			assert.equal(totalItems,2);
 			return orderInstance.methods.riderStatus().call();
 		}).then(function(status){
 			assert.equal(status,0);
@@ -282,7 +261,7 @@ describe("Contract: Order", function(){
 	});
 	it("has the correct balence (payed by the customer)", function(){
 		return orderInstance.methods.getBalance().call().then(function(balance){
-			assert.equal(balance,1900)
+			assert.equal(balance,2000000000000500)
 		});
 	});
 });
@@ -313,7 +292,7 @@ describe("Order Tracking",function(){
 	});
 
 	it("Rider Can not signal order picked up if they have not yet offered to deliver the order", async function(){
-		await catchRevert(riderInstance.methods.pickupCargo(orderAddress).send({from:theAccounts[9],gas:3000000}));
+		await catchRevert(riderInstance.methods.setStatus(orderAddress,2).send({from:theAccounts[9],gas:3000000}));
 	});
 
 	it("Rider Can not offer to deliver the order if they dont also send a sufficient deposit", async function(){
@@ -321,7 +300,7 @@ describe("Order Tracking",function(){
 	});
 
 	it("Rider can offer to deliver the Order when invoked from the owners address and sent with a sufficient deposit of ethereum", function(){
-		return riderInstance.methods.offerDelivery(orderAddress).send({from:theAccounts[7],gas:3000000,value:2400}).then(function(){
+		return riderInstance.methods.offerDelivery(orderAddress).send({from:theAccounts[7],gas:3000000,value:500}).then(function(){
 			return riderInstance.methods.totalOrders().call();
 		}).then(function(totalOrders){
 			assert.equal(totalOrders,1);
@@ -333,37 +312,45 @@ describe("Order Tracking",function(){
 
 
 	it("Restaurant Can not signal prepairing if invoked from an address that is not the owner of the restaurant smart contract", async function(){
-		await catchRevert(restaurantInstance.methods.setStatusPrepairing(orderAddress).send({from:theAccounts[9],gas:3000000}));
+		await catchRevert(restaurantInstance.methods.setStatus(0,1).send({from:theAccounts[9],gas:3000000}));
 	});
 
 	it("Restaurant Can not signal order picked up by rider if invoked from an address that is not the owner of the restaurant smart contract", async function(){
-		await catchRevert(restaurantInstance.methods.handOverCargo(orderAddress).send({from:theAccounts[9],gas:3000000}));
+		await catchRevert(restaurantInstance.methods.setStatus(0,3).send({from:theAccounts[9],gas:3000000}));
 	});
 	
 	it("Restaurant can signal prepairing if invoked from the owners account",function(){
-		return restaurantInstance.methods.setStatusPrepairing(orderAddress).send({from:theAccounts[2],gas:3000000}).then(function(){
+		return restaurantInstance.methods.setStatus(0,1).send({from:theAccounts[2],gas:3000000}).then(function(){
 			return orderInstance.methods.restaurantStatus().call();
 		}).then(function(restaurantStatus){
 			assert.equal(restaurantStatus,1);
 		});
 	});
-	
-	it("Restaurant can signal order picked up by rider if invoked from the owners account",function(){
-		return restaurantInstance.methods.handOverCargo(orderAddress).send({from:theAccounts[2],gas:3000000}).then(function(){
+
+	it("Restaurant can signal order ready for collection if invoked from the owners account",function(){
+		return restaurantInstance.methods.setStatus(0,2).send({from:theAccounts[2],gas:3000000}).then(function(){
 			return orderInstance.methods.restaurantStatus().call();
 		}).then(function(restaurantStatus){
 			assert.equal(restaurantStatus,2);
+		});
+	});
+	
+	it("Restaurant can signal order picked up by rider if invoked from the owners account",function(){
+		return restaurantInstance.methods.setStatus(0,3).send({from:theAccounts[2],gas:3000000}).then(function(){
+			return orderInstance.methods.restaurantStatus().call();
+		}).then(function(restaurantStatus){
+			assert.equal(restaurantStatus,3);
 		});
 	});
 
 
 
 	it("Rider Can not signal order picked up if invoked from an address that is not the owner of the rider smart contract", async function(){
-		await catchRevert(riderInstance.methods.pickupCargo(orderAddress).send({from:theAccounts[9],gas:3000000}));
+		await catchRevert(riderInstance.methods.setStatus(orderAddress,2).send({from:theAccounts[9],gas:3000000}));
 	});
 	
 	it("Rider can signal order picked up if invoked from the owners account",function(){
-		return riderInstance.methods.pickupCargo(orderAddress).send({from:theAccounts[7],gas:3000000}).then(function(){
+		return riderInstance.methods.setStatus(orderAddress,2).send({from:theAccounts[7],gas:3000000}).then(function(){
 			return orderInstance.methods.riderStatus().call();
 		}).then(function(restaurantStatus){
 			assert.equal(restaurantStatus,2);
@@ -371,11 +358,11 @@ describe("Order Tracking",function(){
 	});
 
 	it("Rider Can not signal order dropped off if invoked from an address that is not the owner of the rider smart contract", async function(){
-		await catchRevert(riderInstance.methods.dropOffCargo(orderAddress).send({from:theAccounts[9],gas:3000000}));
+		await catchRevert(riderInstance.methods.setStatus(orderAddress,3).send({from:theAccounts[9],gas:3000000}));
 	});
 	
 	it("Rider can signal order dropped off if invoked from the owners account",function(){
-		return riderInstance.methods.dropOffCargo(orderAddress).send({from:theAccounts[7],gas:3000000}).then(function(){
+		return riderInstance.methods.setStatus(orderAddress,3).send({from:theAccounts[7],gas:3000000}).then(function(){
 			return orderInstance.methods.riderStatus().call();
 		}).then(function(restaurantStatus){
 			assert.equal(restaurantStatus,3);

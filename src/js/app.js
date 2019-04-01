@@ -1,3 +1,6 @@
+// require('dotenv').config();
+// const HDWalletProvider = require('truffle-hdwallet-provider')
+
 App = {
   web3Provider: null,
   contracts: [],
@@ -11,6 +14,7 @@ App = {
 
   init: function(){
   	console.log("Initialising App")
+  	//web3.currentProvider.publicConfigStore.on('update', App.initAccount());
 	var loadedWeb3 = App.initWeb3();
 	return App.initContracts();
   },
@@ -18,6 +22,7 @@ App = {
   initWeb3: function (){
     if(typeof web3 !== 'undefined'){
       App.web3Provider = web3.currentProvider;
+      console.log(App.web3Provider);
       web3 = new Web3(web3.currentProvider);
     } else {
       App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
@@ -25,6 +30,12 @@ App = {
     }
     return;
   },
+
+	initHDWallet: function (){
+		App.web3Provider = new WHDWalletProvider(process.env.MNEMONIC,'https://ropsten.infura.io/'+process.env.INFURA_API_KEY);
+	    return;
+	},
+
 
   initContracts: function () {
 	var controllerRequest = $.ajax({
@@ -95,11 +106,12 @@ App = {
 	    App.contracts["Order"].setProvider(App.web3Provider);
 	  }
 	});
-	return App.initFactories();
+	return App.initFactories2();
 	
 },
 
-initFactories: function(){
+initAccount: function(){
+	
 	var accountsRequest = web3.eth.getCoinbase(function(err,account){
       if(err === null){       
         App.account = account;
@@ -109,6 +121,17 @@ initFactories: function(){
        	console.log("error getting account: " + account);
       }
     });
+
+    // var accountInterval = setInterval(function(){
+    // 	if(web3.eth.accounts[0] !== App.account){
+    // 		console.log("changed account: " + web3.eth.accounts[0]);
+    // 		App.account = web3.eth.accounts[0];
+    // 	}
+    // },100);
+},
+
+initFactories: function(){
+	App.initAccount();
 
 	App.contracts.Controller.deployed({from: "App.account"}).then(async function(instance){
 		console.log("controllerDeployed");
@@ -135,6 +158,34 @@ initFactories: function(){
 		});
 	});
 },
+
+initFactories2: function(){
+	App.initAccount();
+
+	controllerInstance = new App.contracts.Controller("0x0BAdf2afBf497A4D20F0988bd9a08FD468e065bc");
+
+	controllerInstance.restaurantFactoryAddress().then(function(address){
+		console.log("restaurantFactoryAddress: " + address);
+		return new App.contracts.RestaurantFactory(address);
+	}).then(function(instance){
+		App.restaurantFactoryInstance = instance;
+		return controllerInstance.customerFactoryAddress();
+	}).then(function(address){
+		console.log("CustomerFactoryAddress: " + address);
+		return new App.contracts.CustomerFactory(address);
+	}).then(function(instance){
+		App.customerFactoryInstance = instance;
+		return controllerInstance.riderFactoryAddress();
+	}).then(function(address){
+		console.log("RiderFactoryAddress: " + address);
+		return new App.contracts.RiderFactory(address);
+	}).then(function(instance){
+		App.riderFactoryInstance = instance;
+		afterAsync();
+	});
+},
+
+
 }
 
 $(function() {
@@ -142,3 +193,4 @@ $(function() {
   	App.init();
   });
 });
+

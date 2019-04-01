@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
- import "./lib.sol";
+ //import "./lib.sol";
  import "./Order.sol";
  import "./RestaurantFactory.sol";
  import "./CustomerFactory.sol";
@@ -8,7 +8,7 @@ pragma solidity ^0.5.0;
 
 contract Restaurant {
 
-    using lib for bytes32;
+    //using lib for bytes32;
 
 	uint public id;
 	string public name;
@@ -103,14 +103,14 @@ contract Restaurant {
         menuLength = itemsToKeep.length;
     }
     
-    function menuSearch(string memory query) private view returns(int index){
-        for(uint i = 0; i<menuLength;i++){
-            if(lib.compareStrings(lib.bytes32ToString(menu[i].itemName),query)){
-                return int(i);
-            }
-        }
-        return -1;
-    }
+    // function menuSearch(string memory query) private view returns(int index){
+    //     for(uint i = 0; i<menuLength;i++){
+    //         if(lib.compareStrings(lib.bytes32ToString(menu[i].itemName),query)){
+    //             return int(i);
+    //         }
+    //     }
+    //     return -1;
+    // }
 
     function getOrderPrice(uint[] memory itemIds) public view returns (uint){
         uint price = 0;
@@ -121,7 +121,7 @@ contract Restaurant {
     }
     
 
-    function makeOrder(uint[] calldata itemIds, uint deliveryFee) external payable returns (address orderAddress) {
+    function makeOrder(uint[] calldata itemIds, uint deliveryFee, bytes32 deliveryAddress) external payable returns (address orderAddress) {
         //require this comes from a customer smart contract, maybe worth moving this to the order smart contract
         require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender), "Customer doesnt exist");
 
@@ -139,7 +139,7 @@ contract Restaurant {
             }
         }
         
-		Order newOrder = (new Order).value(msg.value)(totalOrders,items,prices,deliveryFee,controllerAddress, msg.sender);
+		Order newOrder = (new Order).value(msg.value)(totalOrders,items,prices,deliveryFee, deliveryAddress,controllerAddress, msg.sender);
 		orders[totalOrders] = order(true,address(newOrder));
         totalOrders ++;
 		return orders[totalOrders - 1].orderAddress;       

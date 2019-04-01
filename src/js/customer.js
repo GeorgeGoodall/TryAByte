@@ -36,6 +36,7 @@ async function printRestaurant(restaurant){
 async function printOrder(order){
 	var id = await order.id();
 	var price = await order.getCost();
+	var orderTime = await order.orderTime();
 
 	var customerStatus = await order.customerStatus();
 	var restaurantStatus = await order.restaurantStatus();
@@ -48,7 +49,7 @@ async function printOrder(order){
 	var html = 	'<div class="itemTyle" onclick="viewOrder('+id+')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: <br>Price: '+Math.round(price*Math.pow(10,-15) * 100) / 100+'<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+orderTime+'<br>Price: '+Math.round(price*Math.pow(10,-15) * 100) / 100+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
 
 
@@ -171,7 +172,7 @@ async function populateRestaurantView(id){
 						'<div id="cartContent"></div>'+
 						'Delivery Fee: <input id="deliveryFee" style="width: 40px" value="20" onchange="updatePrice()">'+
 						'<button onclick="checkout()" style="float: right; margin-right: 10px">Checkout</button><br>'+
-						'<h3 class="text-center" id="priceTag" style="float: right; margin-right: 10px">Price: 0</h3>'+
+						'<h3 class="text-center" id="priceTag" style="float: right; margin-right: 10px">Price: 0 finney</h3>'+
 					'</div>';
 
 	$("#RestaurantView").html(html);
@@ -225,7 +226,7 @@ async function populateOrderView(id){
 						'<h2 class="text-center">Ordered Items</h2>'+
 						'<div id="OrderItems"></div>'+
 					'</div>'+
-					'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-15)*100)/100+'</h3><br>'+
+					'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-15)*100)/100+' finney</h3><br>'+
 					'<div id="statusArea">'+
 						'<h2 class="text-center">OrderStatus</h2>'+
 						'<div id="statusContent">'+
@@ -262,9 +263,13 @@ async function checkout(){
 	// todo, resolve what you doing with delivery fee
 	var deliveryFee = document.getElementById("deliveryFee").value * Math.pow(10,15);
 	var toSend = updatePrice() + deliveryFee;
-	await customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,{from: App.account, value:toSend});
-	getOrders();
-	viewOrders();
+	console.log("Cost Sending: "+toSend);
+	var address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
+	if(address != null){
+		await customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,web3.fromAscii(address),{from: App.account, value:toSend});
+		getOrders();
+		viewOrders();
+	}
 }
 
 function addToCart(id){
@@ -288,7 +293,7 @@ function updatePrice(){
 	for(var i = 0; i<cart.length; i++){
 		price += parseInt(menu[cart[i]][1]);
 	}
-	$("#priceTag").html("Price: " + (Math.round(price*Math.pow(10,-15) * 100) / 100) + " + DF: " + document.getElementById("deliveryFee").value);
+	$("#priceTag").html("Price: " + (Math.round(price*Math.pow(10,-15) * 100) / 100) + " + DF: " + document.getElementById("deliveryFee").value + "finney");
 	return price;
 }
 

@@ -1,6 +1,5 @@
 pragma solidity ^0.5.0;
 
-import './lib.sol';
 import './RestaurantFactory.sol';
 import './RiderFactory.sol';
 import './Controller.sol';
@@ -29,6 +28,7 @@ contract Order{
 	address controller;
 
 	bytes32 deliveryAddress;
+	uint public orderTime;
 	uint cost;
 	uint public deliveryFee;
     
@@ -38,13 +38,12 @@ contract Order{
 	mapping(uint=>Item) public items; // this should be encrypted
 
 	struct Item{
-		string itemName;
+		bytes32 itemName;
 		uint itemCost; // in wei (10^-18 Eth)
 	}
 
-	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices, uint _deliveryFee, address _controller, address payable _customer) public payable {
+	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices,uint _deliveryFee, bytes32 _deliveryAddress, address _controller, address payable _customer) public payable {
 	    // require sent from a restaurant contract
-
 	    require(RestaurantFactory(Controller(_controller).restaurantFactoryAddress()).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");
 	    require(itemNames.length == prices.length, "invalid matching of items to prices");
 		
@@ -52,6 +51,8 @@ contract Order{
 		id = _id;
 		restaurant = msg.sender;
 		customer = _customer; // this needs changing as is vunrability
+		deliveryAddress = _deliveryAddress;
+		orderTime = block.timestamp;
 
 		controller = _controller;
 		
@@ -60,29 +61,23 @@ contract Order{
 		// set items
 		totalItems = 0;
 		for(uint i = 0; i < itemNames.length; i++){
-		    items[totalItems] = Item(lib.bytes32ToString(itemNames[i]),prices[i]);
+		    items[totalItems] = Item(itemNames[i],prices[i]);
 		    cost += prices[i];
 		    totalItems++;
 		}
 
 		deliveryFee = _deliveryFee;
 
-		require(msg.value >= cost + deliveryFee, lib.strConcat("not enough ether sent to the order, needed: ",lib.uint2str(cost + deliveryFee)));
+		require(msg.value >= cost + deliveryFee,"not enough ether sent to the order ");
 		
 		customerStatus = uint(customerState.payed);
 		riderStatus = uint(riderState.unassigned);
 		restaurantStatus = uint(restaurantState.acceptedOrder);	
 	}
 
-	// function customerPay() public payable{
-	// 	require(msg.sender == customer, "only the customer can pay for this order");
-	// 	require(msg.value >= cost + deliveryFee, lib.strConcat("not enough ether sent to the order, needed: ",lib.uint2str(cost + deliveryFee)));
-	// 	customerStatus = uint(customerState.payed);
-	// }
-
 	function getItem(uint _id) public view returns(bytes32 itemName, uint itemCost){
 		//require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender); // removed as asking for contract address where as should be owner addresses
-		return (lib.stringToBytes32(items[_id].itemName),items[_id].itemCost);
+		return (items[_id].itemName,items[_id].itemCost);
 	}  
 
 	function getDeliveryAddress() public view returns(bytes32 _deliveryAddress){
@@ -120,13 +115,13 @@ contract Order{
 			revert("Error: unauthoriserd address accessing setOrderStatus");
 
 		// if both rider and restaurant say the food has been collected pay restaurant
-		if(!restaurantPaid && riderStatus == 2 && restaurantStatus == 3){
+		if(!restaurantPaid && riderStatus >= 2 && restaurantStatus >= 3){
 			Restaurant(restaurant).pay.value(cost)();
 			restaurantPaid = true;
 		}
 
 		// if both rider and customer state the customer has the food
-		if(!riderPaid && riderStatus == 3 && customerStatus == 2){
+		if(!riderPaid && riderStatus >= 3 && customerStatus >= 2){
 			Rider(rider).pay.value(cost+deliveryFee)();
 			riderPaid = true;
 		}

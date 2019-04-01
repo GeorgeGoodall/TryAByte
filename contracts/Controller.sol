@@ -20,7 +20,7 @@ contract Controller {
 		customerFactoryAddress = address(new CustomerFactory(owner));
 		riderFactoryAddress = address(new RiderFactory(owner));
 
-		minimumDeliveryFee = 20000000000000000; // set min delivery fee to 0.2 eth
+		minimumDeliveryFee = 2000000000000000; // set min delivery fee to 0.02 eth
 	}
 
 	function updateMinDeliveryFee(uint newFee) public{

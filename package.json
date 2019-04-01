@@ -13,7 +13,8 @@
   "author": "GoodallG@Cardiff.ac.uk",
   "license": "ISC",
   "devDependencies": {
-    "lite-server": "^2.3.0"
+    "dotenv": "^4.0.0",
+    "truffle-hdwallet-provider": "^1.0.6"
   },
   "dependencies": {
     "bootstrap": "4.1.3",

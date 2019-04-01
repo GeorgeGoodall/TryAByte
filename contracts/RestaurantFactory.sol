@@ -1,10 +1,8 @@
 pragma solidity ^0.5.0;
 
 import "./Restaurant.sol";
-import "./lib.sol";
 
 contract RestaurantFactory {
-	using lib for string;
 
 	address public owner;
 	address controller;

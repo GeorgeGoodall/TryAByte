@@ -21,6 +21,7 @@
 	- resolve issue where two contract calls happens if two pages open
 	- clicking on an order for rider takes them to your orders even if its not there order
 	- for riders if a restaurant has no orders it should say, count next to each restaurant and on the restaurant view
+	- rider view, print food items when delivery offered
 
 
 - system changes
@@ -33,14 +34,14 @@
 	- add edditing of account deetails
 	- emit events and use them to improve UI design
 
+	- storage of delivery address
+	- record order time
 
 
 - improve payment logic
 	
 
 - smart contract improvments
-	- storage of delivery address
-	- record order time
 	
 	- sort out paying of 
 - optimise backend for gas price
