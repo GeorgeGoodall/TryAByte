@@ -1,0 +1,49 @@
+=== ToDo ===
+============
+
+- improve UI
+	- set price to be in Gwei, and add in rounding
+	- clear Cart after order is made
+	- refresh page after updating order status
+	- restrict going back on orderstatus {from complete to inprogress etc}
+
+	- add unit to cost and prices
+	- refresh page in new metamask account selected
+	- have metamask set a default gas price
+	- remove buttons so only ones currently used are shown
+	- alert the rider/restaurant if they go to click the hand over before the other party has done so
+
+
+	- add contract value under order window
+	- add alerts to explain setting up of metamask
+	- add exchange conversion rates
+	- move redundant js code into some form of library and import to make neater
+	- resolve issue where two contract calls happens if two pages open
+	- clicking on an order for rider takes them to your orders even if its not there order
+	- for riders if a restaurant has no orders it should say, count next to each restaurant and on the restaurant view
+
+
+- system changes
+	- resolve returning of payments
+	- display pay for rider
+	- add in optional additional rider pay to order creation
+	- add deleting from menu
+	
+	- store a record of money spent / earn't
+	- add edditing of account deetails
+	- emit events and use them to improve UI design
+
+
+
+- improve payment logic
+	
+
+- smart contract improvments
+	- storage of delivery address
+	- record order time
+	
+	- sort out paying of 
+- optimise backend for gas price
+- data encryption
+- payment via check system
+- get contracts on testnet

@@ -16,7 +16,7 @@ contract Restaurant {
 	string public contactNumber;
 	uint public rating;
 
-	address public owner;
+	address payable public owner;
     address public controllerAddress;
 	address public restaurantFactoryAddress;
 
@@ -24,6 +24,8 @@ contract Restaurant {
     struct order{bool open; address orderAddress;}
 	uint public totalOrders;
 	mapping(uint => order) public orders; // must be a better way to store the orders
+
+    uint totalPay;
 	
 	struct Item{
 		bytes32 itemName;
@@ -33,15 +35,16 @@ contract Restaurant {
     uint public menuLength;
 	mapping(uint => Item) public menu; // should probably change this to a mapping
 
-    enum restaurantState{acceptedOrder, preparingCargo, HandedOver}
+    enum restaurantState{acceptedOrder, preparingCargo, readyForCollection, HandedOver}
 	
 
-	constructor(address _controller, address _owner, uint _id, string memory _name,string memory _address,string memory _contactNumber) public {
+	constructor(address _controller, address payable _owner, uint _id, string memory _name,string memory _address,string memory _contactNumber) public {
 		id = _id;
 		name = _name;
 		location = _address;
 		contactNumber = _contactNumber;
 		totalOrders = 0;
+        totalPay = 0;
 
         controllerAddress = _controller;
 		owner = _owner;
@@ -118,16 +121,16 @@ contract Restaurant {
     }
     
 
-    function makeOrder(uint[] calldata itemIds) external payable returns (address orderAddress) {
-        //require this comes from a customer smart contract
+    function makeOrder(uint[] calldata itemIds, uint deliveryFee) external payable returns (address orderAddress) {
+        //require this comes from a customer smart contract, maybe worth moving this to the order smart contract
         require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender), "Customer doesnt exist");
-        
 
         uint[] memory prices = new uint[](itemIds.length);
         bytes32[] memory items = new bytes32[](itemIds.length);
         for(uint i = 0; i < itemIds.length; i++)
         {
             if (itemIds[i] >= 0 && itemIds[i] < menuLength){
+                // could consider sending itemID and price to reduce gas cost
                 items[i] = menu[uint(itemIds[i])].itemName; 
                 prices[i] = menu[uint(itemIds[i])].itemCost;
             }
@@ -136,7 +139,7 @@ contract Restaurant {
             }
         }
         
-		Order newOrder = new Order(totalOrders,restaurantFactoryAddress,items,prices,controllerAddress, msg.sender);
+		Order newOrder = (new Order).value(msg.value)(totalOrders,items,prices,deliveryFee,controllerAddress, msg.sender);
 		orders[totalOrders] = order(true,address(newOrder));
         totalOrders ++;
 		return orders[totalOrders - 1].orderAddress;       
@@ -146,14 +149,17 @@ contract Restaurant {
         return (menu[itemId].itemName,menu[itemId].itemCost);
     }
 
-    // toDo, could pass in orderID instead reduce gas
-    function setStatusPrepairing(address orderAddress) public { 
+    function setStatus(uint orderID, uint status) public{
         require(msg.sender == owner);
-        Order(orderAddress).setOrderStatus(uint(restaurantState.preparingCargo));
-    }    
+        Order(orders[orderID].orderAddress).setOrderStatus(status);
+    }
 
-    function handOverCargo(address orderAddress) public {
-        require(msg.sender == owner);
-        Order(orderAddress).setOrderStatus(uint(restaurantState.HandedOver));
+    function pay() external payable {
+        totalPay += msg.value;
+        owner.transfer(msg.value);
+    } 
+
+    function() external payable {
+
     }
 }

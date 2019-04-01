@@ -13,7 +13,9 @@ contract Rider {
     string private contactNumber;
 
     uint public totalOrders;
-    mapping(uint => address) orders;
+    mapping(uint => address) orders; // maybe change this to store order states??
+
+    uint totalPay;
 
     enum riderState{unassigned, accepted, hasCargo, Delivered}
     
@@ -33,7 +35,6 @@ contract Rider {
         Order orderInstance = Order(orderAddress);
         uint cost = orderInstance.getCost();
         require(msg.value >= cost, "deposit value not high enough");
-
         if(msg.value > cost){
             owner.transfer(msg.value - cost);
         }
@@ -43,14 +44,10 @@ contract Rider {
         totalOrders++;
     }
 
-    function pickupCargo(address orderAddress) public {
+    // could modify to send restaurant id + order id to reduce gas cost, maybe??
+    function setStatus(address orderAddress,uint status) public {
         require(msg.sender == owner);
-        Order(orderAddress).setOrderStatus(uint(riderState.hasCargo));
-    }
-
-    function dropOffCargo(address orderAddress) public {
-        require(msg.sender == owner);
-        Order(orderAddress).setOrderStatus(uint(riderState.Delivered));
+        Order(orderAddress).setOrderStatus(status);
     }
 
     function getContactNumber() public view returns(string memory _contactNumber){
@@ -58,8 +55,17 @@ contract Rider {
         return contactNumber;
     }
 
-    function() external payable {
+    function getOrder(uint _id) public view returns(address orderAddress){
+        require(msg.sender == owner);
+        return orders[_id];
+    }
 
+    function pay() external payable {
+        totalPay += msg.value;
+        owner.transfer(msg.value);
+    } 
+
+    function() external payable {
     }
 
 

@@ -10,6 +10,7 @@
 			float: left; 
 			width: 50vw; 
 		}
+
 	</style>
 	<script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
@@ -22,19 +23,20 @@
 	</div>
 
 	<div id="main" style="display: none">
-		<div style="background-color: pink">
-			<h1 id="RestaurantName"class="text-center" >Restaurant Name</h1>	
-		</div>
-		<div id="OrdersButton" class="pannelButton" style="background: lightblue">
-			<p class="text-center" style="font-size: 40px">Orders</p>
+		<div id="RestaurantsButton" onclick="viewRestaurants()" class="pannelButton" style="background: lightblue">
+			<p class="text-center" style="font-size: 40px">Restaurants</p>
 		</div>
 		<div id="SettingsButton" class="pannelButton" style="background: lightgreen">
 			<p class="text-center" style="font-size: 40px">Settings</p>
+		</div>
+		<br><br><br><br>
+		<div id="Restaurants" style="display: block;">
 		</div>
 		<div id="Settings">
 		</div>
 		<div id="Orders">
 		</div>
+
 	</div>
 	
 </body>

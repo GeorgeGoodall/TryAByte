@@ -2,6 +2,7 @@ var customerInstance;
 var menu = [];
 var restaurants = [];
 var orders = [];
+var currentOrder;
 var currentRestaurant;
 var cart = [];
 
@@ -14,12 +15,10 @@ function init(){
 
 async function afterAsync(){
 	await getCustomerInstance();
-	getRestaurants();
+	await getRestaurants();
 	await getOrders();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
-
-
 }
 
 async function printRestaurant(restaurant){
@@ -49,15 +48,11 @@ async function printOrder(order){
 	var html = 	'<div class="itemTyle" onclick="viewOrder('+id+')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: <br>Price: '+price+'<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: <br>Price: '+Math.round(price*Math.pow(10,-15) * 100) / 100+'<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
 
 
 	$("#Orders").append(html);
-
-}
-
-function parseStatus(customer,restaurant,rider){
 
 }
 
@@ -89,20 +84,14 @@ async function getRestaurants(){
 
 async function getOrders(){
 	console.log("getting orders");
-	console.log(customerInstance);
-	var orderCount = await customerInstance.getTotalOrders();
-	console.log(">" + orderCount);
+	var orderCount = await customerInstance.getTotalOrders({from: App.account}); // this line can cause an internal JSON RPC error?? 
 
 	$("#Orders").html("");
 
 	for(var i = 0; i<orderCount;i++){
 		(function(counter){
-			console.log("gettings order at "+i+": ");
-			customerInstance.getOrder(counter).then(async function(address){
-				console.log(address);
+			customerInstance.getOrder(counter, {from: App.account}).then(async function(address){
 				orders[counter] = await new App.contracts.Order(address);
-				
-				console.log(orders[counter]);
 				printOrder(orders[counter]);
 			});
 		})(i);
@@ -115,6 +104,7 @@ function viewRestaurants(){
 	document.getElementById("Orders").style.display = "none";
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("RestaurantView").style.display = "none";
+	document.getElementById("OrderView").style.display = "none";
 	document.getElementById("main").style.background = "lightblue";
 }
 
@@ -123,6 +113,7 @@ function viewOrders(){
 	document.getElementById("Orders").style.display = "block";
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("RestaurantView").style.display = "none";
+	document.getElementById("OrderView").style.display = "none";
 	document.getElementById("main").style.background = "lightgreen";
 }
 
@@ -131,6 +122,7 @@ function viewSettings(){
 	document.getElementById("Orders").style.display = "none"
 	document.getElementById("Settings").style.display = "block";
 	document.getElementById("RestaurantView").style.display = "none";
+	document.getElementById("OrderView").style.display = "none";
 	document.getElementById("main").style.background = "pink";
 }
 
@@ -144,6 +136,20 @@ async function viewRestaurant(id){
 	document.getElementById("Orders").style.display = "none"
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("RestaurantView").style.display = "block";
+	document.getElementById("OrderView").style.display = "none";
+}
+
+async function viewOrder(id){
+	currentOrder = id;
+	await populateOrderView(id);
+	//await updateCartView();
+
+	// ToDo: put the set window in its own function
+	document.getElementById("Restaurants").style.display = "none";
+	document.getElementById("Orders").style.display = "none"
+	document.getElementById("Settings").style.display = "none";
+	document.getElementById("RestaurantView").style.display = "none";
+	document.getElementById("OrderView").style.display = "block";
 }
 
 async function populateRestaurantView(id){
@@ -163,8 +169,9 @@ async function populateRestaurantView(id){
 					'<div id="cart">'+
 						'<h2 class="text-center">Cart</h2>'+
 						'<div id="cartContent"></div>'+
-						'<h3 class="text-center" id="priceTag" style="float: right; margin-right: 10px">Price: 0</h3><br>'+
-						'<button onclick="checkout()" style="float: right; margin-right: 10px">Checkout</button>'+
+						'Delivery Fee: <input id="deliveryFee" style="width: 40px" value="20" onchange="updatePrice()">'+
+						'<button onclick="checkout()" style="float: right; margin-right: 10px">Checkout</button><br>'+
+						'<h3 class="text-center" id="priceTag" style="float: right; margin-right: 10px">Price: 0</h3>'+
 					'</div>';
 
 	$("#RestaurantView").html(html);
@@ -178,7 +185,7 @@ async function populateRestaurantView(id){
 				console.log(item);
 				menu[counter] = item;
 				htmlMenu = 	'<div class="item" onclick="addToCart('+counter+')">'+
-								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+item[1]+'</p>'+
+								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-15)*100)/100+'</p>'+
 							'</div>';
 				$("#MenuContent").append(htmlMenu);
 			});
@@ -186,13 +193,78 @@ async function populateRestaurantView(id){
 	}
 }
 
+async function populateOrderView(id){
+	console.log("Getting order with id: " + id)
+
+	var customerState = new Map([[0, 'madeOrder'],[1, 'payed'],[2, 'hasCargo'],]);
+	var riderState = new Map([[0, 'unassigned'],[1, 'accepted'],[2, 'hasCargo'],[3, 'Delivered'],]);
+	var restaurantState = new Map([[0, 'acceptedOrder'],[1, 'preparingCargo'],[2, 'readyForCollection'],[3, 'HandedOver'],]);
+
+
+
+	order = orders[id];
+	var cost = await order.getCost();
+	var orderLength = await order.totalItems();
+	var customerStatus = await order.customerStatus();
+	var restaurantStatus = await order.restaurantStatus();
+	var riderStatus = await order.riderStatus();
+
+
+	var orderRestaurantAddress = await order.restaurant();
+	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
+	var name = await orderRestaurant.name();
+	var address = await orderRestaurant.location();
+	
+	
+	console.log("order length: " + orderLength);
+
+	var html = 		'<h3 class"text-center">Summery of your order</h3>'+
+					'<h1 id="RestaurantTitle" class="text-center">'+name+'</h1>' +
+					'<p id="RestaurantAddress" class="text-center">'+address+'</p>'+
+					'<div id="ItemsArea">'+
+						'<h2 class="text-center">Ordered Items</h2>'+
+						'<div id="OrderItems"></div>'+
+					'</div>'+
+					'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-15)*100)/100+'</h3><br>'+
+					'<div id="statusArea">'+
+						'<h2 class="text-center">OrderStatus</h2>'+
+						'<div id="statusContent">'+
+							'<h3 class="text-center">Restaurant: '+restaurantState.get(restaurantStatus.c[0])+'</h3>'+ // note .c[0] needs to be used here because an object is returned instead of a uint
+  							'<h3 class="text-center">Rider: '+riderState.get(riderStatus.c[0])+'</h3>'+
+  							'<h3 class="text-center">Customer: '+customerState.get(customerStatus.c[0])+'</h3>'+
+						'</div>'+
+						'<button id="markDelivered" onclick="markDelivered()" style="margin-left: 50%">Mark Delivered</button>'+
+					'</div>';
+
+	$("#OrderView").html(html);
+
+
+
+	var htmlMenu = "";
+	for(var i = 0; i<orderLength;i++){
+		(function(counter){
+			order.getItem(counter).then(function(item){
+				htmlMenu = 	'<div class="item" onclick="addToCart('+counter+')">'+
+								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-15)*100)/100+'</p>'+
+							'</div>';
+				$("#ItemsArea").append(htmlMenu);
+			});
+		})(i);
+	}
+}
+
+async function markDelivered(status){
+	await customerInstance.signalDelivered(orders[currentOrder].address,{from: App.account});
+	await viewOrder(currentOrder);
+}
+
 async function checkout(){
-	alert(restaurants[currentRestaurant].address + " : " +cart);
-	console.log(customerInstance);
-	var toSend = updatePrice() + 3000;
-	console.log(toSend);
-	await customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,{from: App.account, value:toSend});
+	// todo, resolve what you doing with delivery fee
+	var deliveryFee = document.getElementById("deliveryFee").value * Math.pow(10,15);
+	var toSend = updatePrice() + deliveryFee;
+	await customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,{from: App.account, value:toSend});
 	getOrders();
+	viewOrders();
 }
 
 function addToCart(id){
@@ -209,12 +281,14 @@ function removeFromCart(id){
 	updateCartView();
 }
 
+
+// todo, have price print to a number of d.p
 function updatePrice(){
 	var price = 0;
 	for(var i = 0; i<cart.length; i++){
 		price += parseInt(menu[cart[i]][1]);
 	}
-	$("#priceTag").html("Price: " + price);
+	$("#priceTag").html("Price: " + (Math.round(price*Math.pow(10,-15) * 100) / 100) + " + DF: " + document.getElementById("deliveryFee").value);
 	return price;
 }
 
@@ -224,7 +298,7 @@ function updateCartView(){
 		
 		
 		htmlMenu = 	'<div class="item" onclick="removeFromCart('+i+')">'+
-						'<p class="text-center" style="font-size: 20px">'+web3.toAscii(menu[cart[i]][0])+': '+menu[cart[i]][1]+'</p>'+
+						'<p class="text-center" style="font-size: 20px">'+web3.toAscii(menu[cart[i]][0])+': '+Math.round(menu[cart[i]][1]*Math.pow(10,-15) * 100) / 100+'</p>'+
 					'</div>';
 		$("#cartContent").append(htmlMenu);
 		

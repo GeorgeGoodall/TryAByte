@@ -12,10 +12,21 @@ contract Controller {
 	address public customerFactoryAddress;
 	address public riderFactoryAddress;
 
+	uint public minimumDeliveryFee;
+
 	constructor() public{
 		owner = msg.sender;
 		restaurantFactoryAddress = address(new RestaurantFactory(owner));
 		customerFactoryAddress = address(new CustomerFactory(owner));
 		riderFactoryAddress = address(new RiderFactory(owner));
+
+		minimumDeliveryFee = 20000000000000000; // set min delivery fee to 0.2 eth
 	}
+
+	function updateMinDeliveryFee(uint newFee) public{
+		require(msg.sender == owner,"you are not the owner");
+		minimumDeliveryFee = newFee;
+	}
+
+
 }

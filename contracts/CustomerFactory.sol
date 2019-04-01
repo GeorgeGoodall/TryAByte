@@ -21,7 +21,7 @@ contract CustomerFactory {
     // todo change name to createCustomer()
     function makeCustomer(string calldata name, string calldata contactNumber) external returns(address customer){
         require(customers2[msg.sender] == address(0x0));
-        Customer newCustomer = new Customer(customerCount, name, contactNumber, msg.sender);
+        Customer newCustomer = new Customer(customerCount, name, contactNumber, msg.sender, controller);
         customers1[address(newCustomer)] = msg.sender;
         customers2[msg.sender] = address(newCustomer);
         customers0[customerCount] = address(newCustomer);

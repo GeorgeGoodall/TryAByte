@@ -20,9 +20,9 @@ async function addUserCounts(){
 	var customerCount = await App.customerFactoryInstance.customerCount();
 	var riderCount = await App.riderFactoryInstance.riderCount();
 
-	document.getElementById("restaurantButton").append("<br>(Count: " + restaurantCount + ")");
-	document.getElementById("customerButton").append("<br>(Count: " + customerCount + ")");
-	document.getElementById("riderButton").append("<br>(Count: " + riderCount + ")");
+	document.getElementById("restaurantButton").append(" (Count: " + restaurantCount + ")");
+	document.getElementById("customerButton").append(" (Count: " + customerCount + ")");
+	document.getElementById("riderButton").append(" (Count: " + riderCount + ")");
 }
 
 
@@ -59,10 +59,11 @@ async function customerClick(){
 
 async function riderClick(){
 	// want to check if an account exists with user address
-	var mapping = await App.riderFactoryInstance.rider2(App.account);
+	var mapping = await App.riderFactoryInstance.riders2(App.account);
 	if(mapping != '0x0000000000000000000000000000000000000000')
 	{
 		// account exists load the rider view
+		document.location.href = "./RiderView.html";
 			
 	}
 	else
@@ -108,7 +109,7 @@ async function makeRiderClick(){
 
     App.riderFactoryInstance.makeRider(riderName,riderPhone,{from: App.account, gas: 4000000}).then(function(){
       console.log("rider Made");
-      // load the rider view
+      document.location.href = "./RiderView.html";
     })
   }
 
