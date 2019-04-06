@@ -32,7 +32,7 @@ contract Order{
 	uint cost;
 	uint public deliveryFee;
     
-
+	bytes32 public keyHashRider;
 
 	uint public totalItems;
 	mapping(uint=>Item) public items; // this should be encrypted
@@ -134,5 +134,19 @@ contract Order{
 	function getCost() public view returns(uint){
 		//require that this is one of the agents involved
 		return cost;
+	}
+
+	function setKeyhashForRider(bytes32 keyhash) public {
+		keyHashRider = keyhash;
+	}
+
+	function riderSubmitKey(string key) public returns (bool){
+		require(getHash(key) == keyHashRider);
+		// release payment
+		return true;
+	}
+
+	function getHash(bytes32 data) public view returns(bytes32){
+		return keccak256(abi.encodePacked(address(this),data));
 	}
 }

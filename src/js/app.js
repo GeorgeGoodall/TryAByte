@@ -1,5 +1,5 @@
-// require('dotenv').config();
-// const HDWalletProvider = require('truffle-hdwallet-provider')
+
+
 
 App = {
   web3Provider: null,
@@ -106,7 +106,7 @@ App = {
 	    App.contracts["Order"].setProvider(App.web3Provider);
 	  }
 	});
-	return App.initFactories2();
+	return App.initFactories();
 	
 },
 
@@ -137,6 +137,7 @@ initFactories: function(){
 		console.log("controllerDeployed");
 		var owner = await instance.owner();
 		controllerInstance = instance;
+		console.log(instance);
 		return controllerInstance.restaurantFactoryAddress().then(function(address){
 			console.log("restaurantFactoryAddress: " + address);
 			return new App.contracts.RestaurantFactory(address);

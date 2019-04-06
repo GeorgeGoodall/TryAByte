@@ -27,6 +27,4 @@ contract Controller {
 		require(msg.sender == owner,"you are not the owner");
 		minimumDeliveryFee = newFee;
 	}
-
-
 }

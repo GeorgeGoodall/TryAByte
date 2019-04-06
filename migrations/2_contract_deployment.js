@@ -6,7 +6,7 @@ var RiderFactory = artifacts.require("./RiderFactory.sol");
 var Rider = artifacts.require("./Rider.sol");
 var CustomerFactory = artifacts.require("./CustomerFactory.sol");
 var Customer = artifacts.require("./Customer.sol");
-var lib = artifacts.require("./lib.sol");
+var test = artifacts.require("./Test.sol");
 
 module.exports = function(deployer) {
 	//deployer.deploy(lib);
@@ -17,9 +17,9 @@ module.exports = function(deployer) {
 	
 
 	// deployer.deploy(RestaurantFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
-	// deployer.deploy(RiderFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
-	// deployer.deploy(CustomerFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
-  	deployer.deploy(Controller).then(function(instance){
+	//deployer.deploy(RiderFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
+	//deployer.deploy(CustomerFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
+  	deployer.deploy(Controller);
+	deployer.deploy(test);
 
-  	});
 };
