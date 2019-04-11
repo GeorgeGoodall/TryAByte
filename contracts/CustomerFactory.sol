@@ -11,10 +11,10 @@ contract CustomerFactory {
     mapping(address => address) private customers1; // customerContractAddress to customersOwnAddress
     mapping(address => address) public customers2; // customersOwnAddress to customerContractAddress
     
-    constructor(address _owner) public
+    constructor(address _controller) public
     {
-        controller = msg.sender;
-        owner = _owner;
+        controller = _controller;
+        owner = msg.sender;
         customerCount = 0;
     }
     

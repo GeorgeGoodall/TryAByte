@@ -9,7 +9,7 @@ contract Customer {
     
     address public owner;
     address customerFactory; // might not need this
-    address controller;
+    address public controller;
 
     uint public id;
     string name;
@@ -34,7 +34,7 @@ contract Customer {
     
     // this function will call the restaurant make order
     // todo change to reference restaurantID from restFact to reduce cost??
-    function makeOrder(address payable restaurant, uint[] calldata items, uint deliveryFee, bytes32 delivreyAddress) external payable returns (address orderAddress){
+    function makeOrder(address payable restaurant, uint[] calldata items, uint deliveryFee, bytes32 delivreyAddress,bytes32 riderKeyHash) external payable returns (address orderAddress){
         require(msg.sender == owner, "you dont own the customer smart contract");
         //require(RestaurantFactory(restaurantFactoryAddress).restaurantExists(msg.sender));
         uint price = Restaurant(restaurant).getOrderPrice(items);
@@ -42,7 +42,7 @@ contract Customer {
         require(deliveryFee >= minimumDeliveryFee, "deliveryFee must be greater than the minimum");
         require(msg.value >= price + deliveryFee,"sent ether is not enough to cover the order cost and delivery fee");
         
-        address orderAddr = Restaurant(restaurant).makeOrder.value(price + deliveryFee)(items, deliveryFee, delivreyAddress);
+        address orderAddr = Restaurant(restaurant).makeOrder.value(price + deliveryFee)(items, deliveryFee, delivreyAddress, riderKeyHash);
         msg.sender.transfer(msg.value - (price + deliveryFee)); // return excess payment
         orders[totalOrders] = orderAddr;
         

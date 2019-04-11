@@ -22,6 +22,8 @@
 	- clicking on an order for rider takes them to your orders even if its not there order
 	- for riders if a restaurant has no orders it should say, count next to each restaurant and on the restaurant view
 	- rider view, print food items when delivery offered
+	- manage local storage to remove unneeded keys
+	- test menu delete, seems buggy when deleting large number of items
 
 
 - system changes

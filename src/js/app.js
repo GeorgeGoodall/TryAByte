@@ -1,6 +1,3 @@
-
-
-
 App = {
   web3Provider: null,
   contracts: [],
@@ -23,8 +20,10 @@ App = {
     if(typeof web3 !== 'undefined'){
       App.web3Provider = web3.currentProvider;
       console.log(App.web3Provider);
+      console.log("Found Web3 Provider");
       web3 = new Web3(web3.currentProvider);
     } else {
+      console.log("No Web3 Provider Found, attemting to connect to localhost. please install metamask");
       App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
       web3 = new Web3(App.web3Provider);
     }
@@ -37,7 +36,7 @@ App = {
 	},
 
 
-  initContracts: function () {
+  initContracts: async function () {
 	var controllerRequest = $.ajax({
 	  url: 'Controller.json',
 	  async: false,
@@ -46,7 +45,7 @@ App = {
 	    App.contracts["Controller"].setProvider(App.web3Provider);
 	  }
 	});
-	var RestaurantFactory = $.ajax({
+	var RestaurantFactoryRequest = $.ajax({
 	  url: 'RestaurantFactory.json',
 	  async: false,
 	  success: function(RestaurantFactory){
@@ -54,7 +53,7 @@ App = {
 	    App.contracts["RestaurantFactory"].setProvider(App.web3Provider);
 	  }
 	});
-	var CustomerFactory = $.ajax({
+	var CustomerFactoryRequest = $.ajax({
 	  url: 'CustomerFactory.json',
 	  async: false,
 	  success: function(CustomerFactory){
@@ -62,7 +61,7 @@ App = {
 	    App.contracts["CustomerFactory"].setProvider(App.web3Provider);
 	  }
 	});
-	var RiderFactory = $.ajax({
+	var RiderFactoryRequest = $.ajax({
 	  url: 'RiderFactory.json',
 	  async: false,
 	  success: function(RiderFactory){
@@ -70,7 +69,7 @@ App = {
 	    App.contracts["RiderFactory"].setProvider(App.web3Provider);
 	  }
 	});
-	var Restaurant = $.ajax({
+	var RestaurantRequest = $.ajax({
 	  url: 'Restaurant.json',
 	  async: false,
 	  success: function(Restaurant){
@@ -79,7 +78,7 @@ App = {
 	    App.contracts["Restaurant"].setProvider(App.web3Provider);
 	  }
 	});
-	var Customer = $.ajax({
+	var CustomerRequest = $.ajax({
 	  url: 'Customer.json',
 	  async: false,
 	  success: function(Customer){
@@ -88,7 +87,7 @@ App = {
 	    App.contracts["Customer"].setProvider(App.web3Provider);
 	  }
 	});
-	var Rider = $.ajax({
+	var RiderRequest = $.ajax({
 	  url: 'Rider.json',
 	  async: false,
 	  success: function(Rider){
@@ -97,7 +96,7 @@ App = {
 	    App.contracts["Rider"].setProvider(App.web3Provider);
 	  }
 	});
-	var Order = $.ajax({
+	var OrderRequest = $.ajax({
 	  url: 'Order.json',
 	  async: false,
 	  success: function(Order){
@@ -106,8 +105,12 @@ App = {
 	    App.contracts["Order"].setProvider(App.web3Provider);
 	  }
 	});
-	return App.initFactories();
+	//return App.initFactories(); modified after controller migration changed
+
 	
+	await App.initFactories2();
+	return afterAsync();
+
 },
 
 initAccount: function(){
@@ -130,34 +133,62 @@ initAccount: function(){
     // },100);
 },
 
-initFactories: function(){
+// // changed from when only controller was deployed (controller would deploy other contracts)
+// initFactoriesOld: function(){
+// 	App.initAccount();
+
+// 	App.contracts.Controller.deployed({from: "App.account"}).then(async function(instance){
+// 		console.log("controllerDeployed");
+// 		var owner = await instance.owner();
+// 		App.controllerInstance = instance;
+// 		console.log(">"+instance);
+// 		return controllerInstance.restaurantFactoryAddress().then(function(address){
+// 			console.log("restaurantFactoryAddress: " + address);
+// 			return new App.contracts.RestaurantFactory(address);
+// 		}).then(function(instance){
+// 			App.restaurantFactoryInstance = instance;
+// 			return controllerInstance.customerFactoryAddress();
+// 		}).then(function(address){
+// 			console.log("CustomerFactoryAddress: " + address);
+// 			return new App.contracts.CustomerFactory(address);
+// 		}).then(function(instance){
+// 			App.customerFactoryInstance = instance;
+// 			return controllerInstance.riderFactoryAddress();
+// 		}).then(function(address){
+// 			console.log("RiderFactoryAddress: " + address);
+// 			return new App.contracts.RiderFactory(address);
+// 		}).then(function(instance){
+// 			App.riderFactoryInstance = instance;
+// 			afterAsync();
+// 		});
+// 	});
+// },
+
+initFactories: async function(){
 	App.initAccount();
 
-	App.contracts.Controller.deployed({from: "App.account"}).then(async function(instance){
-		console.log("controllerDeployed");
+	await App.contracts.Controller.deployed().then(async function(instance){
+		console.log("controller Deployed at " + instance.address);
 		var owner = await instance.owner();
-		controllerInstance = instance;
+		App.controllerInstance = instance;
 		console.log(instance);
-		return controllerInstance.restaurantFactoryAddress().then(function(address){
-			console.log("restaurantFactoryAddress: " + address);
-			return new App.contracts.RestaurantFactory(address);
-		}).then(function(instance){
-			App.restaurantFactoryInstance = instance;
-			return controllerInstance.customerFactoryAddress();
-		}).then(function(address){
-			console.log("CustomerFactoryAddress: " + address);
-			return new App.contracts.CustomerFactory(address);
-		}).then(function(instance){
-			App.customerFactoryInstance = instance;
-			return controllerInstance.riderFactoryAddress();
-		}).then(function(address){
-			console.log("RiderFactoryAddress: " + address);
-			return new App.contracts.RiderFactory(address);
-		}).then(function(instance){
-			App.riderFactoryInstance = instance;
-			afterAsync();
-		});
+		return;
 	});
+	await App.contracts.RestaurantFactory.deployed().then(function(instance){
+			App.restaurantFactoryInstance = instance;
+			console.log("restaurantFactory Deployed at " + instance.address);
+			return;
+	});
+	await App.contracts.CustomerFactory.deployed().then(function(instance){
+		App.customerFactoryInstance = instance;
+		console.log("customerFactory Deployed at " + instance.address);
+		return;
+	});
+	await App.contracts.RiderFactory.deployed().then(function(instance){
+		App.riderFactoryInstance = instance;
+		console.log("riderFactory Deployed at " + instance.address);
+		return;
+	})
 },
 
 initFactories2: function(){

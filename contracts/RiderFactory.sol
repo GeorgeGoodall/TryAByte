@@ -11,10 +11,10 @@ contract RiderFactory {
     mapping(address => address) public riders1; // contract address to owner addresses, // todo check if need this
     mapping(address => address) public riders2; // owner addresses to contract addresses
     
-    constructor(address _owner) public
+    constructor(address _controller) public
     {
-        controller = msg.sender;
-        owner = _owner;
+        controller = _controller;
+        owner = msg.sender;
         riderCount = 0;
     }
     

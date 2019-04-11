@@ -45,20 +45,21 @@ async function getRestaurants(){
 
 async function getOrders(){
 	console.log("getting orders");
-	console.log(riderInstance);
 	var orderCount = await riderInstance.totalOrders({from: App.account}); // this line can cause an internal JSON RPC error?? 
 
+	console.log("Total Orders: " + orderCount);
 	$("#Orders").html("");
 
 	for(var i = 0; i<orderCount;i++){
 		(function(counter){
 			riderInstance.getOrder(counter, {from: App.account}).then(async function(address){
-				orders[counter] = await new App.contracts.Order(address);
-				printOrder(orders[counter]);
+				var tempOrder = await new App.contracts.Order(address);
+				var orderID = await tempOrder.id();
+				orders[orderID] = tempOrder;
+				printOrder(orders[orderID]);
 			});
 		})(i);
 	}
-
 }
 
 // ToDo: this function is in multiple places
@@ -185,6 +186,7 @@ async function viewOrder(id){
 	// ToDo: put the set window in its own function
 	document.getElementById("RestaurantView").style.display = "none"
 	document.getElementById("Settings").style.display = "none";
+	document.getElementById("Orders").style.display = "none";
 	document.getElementById("Order").style.display = "block";
 	document.getElementById("main").style.background = "lightblue";
 }
@@ -212,8 +214,12 @@ async function populateOrderView(id){
 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
 	var name = await orderRestaurant.name();
 	var address = await orderRestaurant.location();
+
+	var orderID = await order.id();
 	
-	
+	var keySet = await order.keyRiderSet();
+	var riderPayed = await order.riderPaid();
+
 	console.log("order length: " + orderLength);
 
 	var html = 	'<h3 class"text-center">Summery of the order</h3>'+
@@ -230,12 +236,40 @@ async function populateOrderView(id){
 						'<h3 class="text-center">Rider: '+riderState.get(riderStatus.c[0])+'</h3>'+
 						'<h3 class="text-center">Customer: '+customerState.get(customerStatus.c[0])+'</h3>'+
 					'</div>'+
-					'<button id="markPreparing" onclick="updateStatus(1)" style="margin-left: 50%">Offer delivery</button>'+
-					'<button id="markComplete" onclick="updateStatus(2)" style="margin-left: 50%">mark Collected</button>'+
-					'<button id="markHandover" onclick="updateStatus(3)" style="margin-left: 50%">hand Over</button>'+
+					'<div id="buttonArea" style="margin-left: 45%">'+
+					'</div>'+
+					'<div id="qrcode" style="margin-left: 45%; margin-top:10px"></div>'+		
+					'<h4 class="text-center" id="keyText"></h4>'
 				'</div>';
 
 	$("#Order").html(html);
+
+	if(await order.keyRestaurantSet() == true && restaurantStatus.c[0] < 3){
+		var paymentKey = localStorage.getItem("keyForRestaurant"+orderID);
+		console.log("key: " + paymentKey);
+		if(paymentKey != null){
+			new QRCode(document.getElementById("qrcode"), paymentKey);
+			$("#keyText").html("Payment Key: " + paymentKey);
+		}else{
+			console.log("ERROR: key for restaurant set but none found in local storage, please make a new one");
+		}
+	}
+
+	//change displayed buttons based on current rider status
+	if(riderStatus.c[0] == "0"){
+		$("#buttonArea").html('<button id="offerDelivery" onclick="offerDelivery()" style="">Offer delivery</button><br>');
+	}else if(keySet && parseInt(riderStatus.c[0]) > 1){
+		var key = localStorage.getItem("keyRider"+orderID);
+		if(key == null){
+			// add key to localstorage incase of error so payment can be released later
+			$("#buttonArea").append('<input type="text" id="keyInput">'+
+									'<button id="" onclick="riderAddKey()" style="">Check Key</button><br>');
+		}
+		else{
+			alert("key Found");
+		}
+	}
+
 
 	// if rider has accepted this delivery, print out food items
 	if(rider == App.account){
@@ -250,6 +284,44 @@ async function populateOrderView(id){
 				});
 			})(i);
 		}
+	}
+}
+
+async function offerDelivery(){
+	var cost = await order.getCost();
+	var random = makeid(12);
+	var hash = await App.controllerInstance.getHash(random);
+	riderInstance.offerDelivery(orders[currentOrder].address,hash,{value:cost})
+	var orderID = await orders[currentOrder].id()
+	localStorage.setItem('keyForRestaurant'+orderID,random);
+	afterOfferDelivery();
+}
+
+// this is to be called when an event is broadcast stating that the rider has the order
+async function afterOfferDelivery(){
+	getOrders();
+}
+
+function makeid(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+async function riderAddKey(){
+	var key = document.getElementById("keyInput").value;
+	var hash = await order.getHash(key);
+	var actualHash = await order.keyHashRider();
+	if(actualHash == hash){
+		// submit key for payment
+		alert("Correct Key");
+		order.riderSubmitKey(key);
+	}else{
+		alert("Incorrect Key");
 	}
 }
 

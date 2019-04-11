@@ -30,7 +30,7 @@ contract Rider {
     }
     
     // this function should be payable
-    function offerDelivery(address orderAddress) public payable{
+    function offerDelivery(address orderAddress,bytes32 keyHash) public payable{
         require(msg.sender == owner);
         Order orderInstance = Order(orderAddress);
         uint cost = orderInstance.getCost();
@@ -39,7 +39,7 @@ contract Rider {
             owner.transfer(msg.value - cost);
         }
 
-        orderInstance.riderOfferDelivery.value(cost)();
+        orderInstance.riderOfferDelivery.value(cost)(keyHash);
         orders[totalOrders] = orderAddress;
         totalOrders++;
     }

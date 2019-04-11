@@ -209,7 +209,7 @@ async function populateOrderView(id){
 	var customerStatus = await order.customerStatus();
 	var restaurantStatus = await order.restaurantStatus();
 	var riderStatus = await order.riderStatus();
-
+	var orderID = await order.id();
 
 	var orderRestaurantAddress = await order.restaurant();
 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
@@ -234,11 +234,22 @@ async function populateOrderView(id){
   							'<h3 class="text-center">Rider: '+riderState.get(riderStatus.c[0])+'</h3>'+
   							'<h3 class="text-center">Customer: '+customerState.get(customerStatus.c[0])+'</h3>'+
 						'</div>'+
-						'<button id="markDelivered" onclick="markDelivered()" style="margin-left: 50%">Mark Delivered</button>'+
+						'<div id="qrcode" style="margin-left: 45%; margin-top:10px"></div>'+		
+						'<h4 class="text-center" id="keyText"></h4>'
 					'</div>';
 
 	$("#OrderView").html(html);
 
+	if(await order.keyRiderSet() == true){
+		var paymentKey = localStorage.getItem("customerKey"+orderID);
+		console.log("key: " + paymentKey);
+		if(paymentKey != null){
+			new QRCode(document.getElementById("qrcode"), paymentKey);
+			$("#keyText").html("Payment Key: " + paymentKey);
+		}else{
+			console.log("ERROR: key for rider set but none found in local storage, please make a new one");
+		}
+	}
 
 
 	var htmlMenu = "";
@@ -254,22 +265,26 @@ async function populateOrderView(id){
 	}
 }
 
-async function markDelivered(status){
-	await customerInstance.signalDelivered(orders[currentOrder].address,{from: App.account});
-	await viewOrder(currentOrder);
-}
-
 async function checkout(){
 	// todo, resolve what you doing with delivery fee
 	var deliveryFee = document.getElementById("deliveryFee").value * Math.pow(10,15);
 	var toSend = updatePrice() + deliveryFee;
-	console.log("Cost Sending: "+toSend);
 	var address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
 	if(address != null){
-		await customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,web3.fromAscii(address),{from: App.account, value:toSend});
-		getOrders();
-		viewOrders();
+		var totalOrders = await customerInstance.getTotalOrders();
+		var totalOrders = parseInt(totalOrders);
+		var random = makeid(12);
+		var hash = await App.controllerInstance.getHash(random);
+		// this could take a while, so need to program events to detect order creation.
+		await customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,web3.fromAscii(address),hash,{from: App.account, value:toSend});
+		localStorage.setItem('customerKey'+(totalOrders),random);
+		afterOrderMake();
 	}
+}
+
+// to be called after an order make event has been created.
+async function afterOrderMake(paymentKey){
+	getOrders();
 }
 
 function addToCart(id){
@@ -306,10 +321,18 @@ function updateCartView(){
 						'<p class="text-center" style="font-size: 20px">'+web3.toAscii(menu[cart[i]][0])+': '+Math.round(menu[cart[i]][1]*Math.pow(10,-15) * 100) / 100+'</p>'+
 					'</div>';
 		$("#cartContent").append(htmlMenu);
-		
-		
 	}	
 	updatePrice();
+}
+
+function makeid(length) {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
 }
 
 

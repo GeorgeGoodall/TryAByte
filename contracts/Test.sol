@@ -4,6 +4,6 @@ contract Test{
 
 
 	function getHash(bytes32 data) public view returns(bytes32){
-		return keccak256(abi.encodePacked(data));
+		return keccak256(abi.encodePacked(address(this),data));
 	}
 }

@@ -13,6 +13,8 @@ function afterAsync(){
 	addUserCounts();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
+
+	
 }
 
 async function addUserCounts(){

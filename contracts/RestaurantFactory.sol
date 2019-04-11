@@ -15,9 +15,9 @@ contract RestaurantFactory {
 
 	event LOG_NEWRestaurantContract(address indexed theNewRestaurant, address indexed theRestaurantCreater);
 
-	constructor(address _owner) public {
-		owner = _owner;
-		controller = msg.sender;
+	constructor(address _controller) public {
+		owner = msg.sender;
+		controller = _controller;
 		restaurantCount = 0;
 	}
 

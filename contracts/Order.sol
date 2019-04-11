@@ -18,8 +18,8 @@ contract Order{
 
 	uint public id;
 	
-	bool restaurantPaid = false;
-	bool riderPaid = false;
+	bool public restaurantPaid = false;
+	bool public riderPaid = false;
 
 	address payable public restaurant;
 	address payable public rider; 	  // this should be encrypted
@@ -33,6 +33,10 @@ contract Order{
 	uint public deliveryFee;
     
 	bytes32 public keyHashRider;
+	bool public keyRiderSet = false;
+
+	bytes32 public keyHashRestaurant;
+	bool public keyRestaurantSet = false;
 
 	uint public totalItems;
 	mapping(uint=>Item) public items; // this should be encrypted
@@ -42,7 +46,7 @@ contract Order{
 		uint itemCost; // in wei (10^-18 Eth)
 	}
 
-	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices,uint _deliveryFee, bytes32 _deliveryAddress, address _controller, address payable _customer) public payable {
+	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices,uint _deliveryFee, bytes32 _deliveryAddress, address _controller, address payable _customer, bytes32 keyHash) public payable {
 	    // require sent from a restaurant contract
 	    require(RestaurantFactory(Controller(_controller).restaurantFactoryAddress()).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");
 	    require(itemNames.length == prices.length, "invalid matching of items to prices");
@@ -73,6 +77,9 @@ contract Order{
 		customerStatus = uint(customerState.payed);
 		riderStatus = uint(riderState.unassigned);
 		restaurantStatus = uint(restaurantState.acceptedOrder);	
+
+		keyHashRider = keyHash;
+		keyRiderSet = true;
 	}
 
 	function getItem(uint _id) public view returns(bytes32 itemName, uint itemCost){
@@ -85,46 +92,35 @@ contract Order{
 		return deliveryAddress;
 	}
 
-	function riderOfferDelivery() public payable{
-		require(RiderFactory(Controller(controller).riderFactoryAddress()).riderExists(msg.sender));
-		require(msg.value >= cost);
+	function riderOfferDelivery(bytes32 keyHash) public payable{
+		require(RiderFactory(Controller(controller).riderFactoryAddress()).riderExists(msg.sender), "must be called via a rider smart contract");
+		require(msg.value >= cost, "the deposit sent is not enough");
 		
 		riderStatus = uint(riderState.accepted);
 		rider = msg.sender;
+
+		keyHashRestaurant = keyHash;
+		keyRestaurantSet = true;
 	}
 
 	function setOrderStatus(uint status) public payable{
-		require(msg.sender == rider || msg.sender == restaurant || msg.sender == customer, "You dont have permission to see this order, did you get the order address wrong?");
+		require(msg.sender == restaurant, "You dont have permission to see this order, did you get the order address wrong?");
+		require(status > restaurantStatus, "status cannot be backtracked");
+		require(status <= 3 && status > 0, "given Status not valid");
+		restaurantStatus = status;
 
-		if(msg.sender == rider){
-			require(status > riderStatus, "status cannot be backtracked");
-			require(status <= 3 && status > 0, "given Status not valid");
-			riderStatus = status;
-		}
-		else if(msg.sender == restaurant){
-			require(status > restaurantStatus, "status cannot be backtracked");
-			require(status <= 3 && status > 0, "given Status not valid");
-			restaurantStatus = status;
-		}
-		else if(msg.sender == customer){
-			require(status > customerStatus, "status cannot be backtracked");
-			require(status <= 2 && status > 0, "given Status not valid");
-			customerStatus = status;
-		}
-		else
-			revert("Error: unauthoriserd address accessing setOrderStatus");
+	}
 
-		// if both rider and restaurant say the food has been collected pay restaurant
-		if(!restaurantPaid && riderStatus >= 2 && restaurantStatus >= 3){
-			Restaurant(restaurant).pay.value(cost)();
-			restaurantPaid = true;
-		}
+	function payRider() private{
+		Rider(rider).pay.value(cost+deliveryFee)();
+		riderPaid = true;
+		riderStatus = 3;
+	}
 
-		// if both rider and customer state the customer has the food
-		if(!riderPaid && riderStatus >= 3 && customerStatus >= 2){
-			Rider(rider).pay.value(cost+deliveryFee)();
-			riderPaid = true;
-		}
+	function payRestaurant() private{
+		Restaurant(restaurant).pay.value(cost)();
+		restaurantPaid = true;
+		restaurantStatus = 4;
 	}
 
 	function getBalance() public view returns(uint){
@@ -136,17 +132,25 @@ contract Order{
 		return cost;
 	}
 
-	function setKeyhashForRider(bytes32 keyhash) public {
-		keyHashRider = keyhash;
+	function restaurantSubmitKey(bytes32 key) public returns (bool){
+		require(keyRestaurantSet == true, "No key has been set");
+		require(getHash(key) == keyHashRestaurant, "Incorrect Key");
+		payRestaurant();
+		restaurantStatus = uint(restaurantState.HandedOver);
+		riderStatus = uint(riderState.hasCargo);
+		return true;
 	}
 
-	function riderSubmitKey(string key) public returns (bool){
-		require(getHash(key) == keyHashRider);
-		// release payment
+	function riderSubmitKey(bytes32 key) public returns (bool){
+		require(keyRiderSet == true, "No key has been set");
+		require(getHash(key) == keyHashRider, "Incorrect Key");
+		payRider();
+		riderStatus = uint(riderState.Delivered);
+		customerStatus = uint(customerState.hasCargo);
 		return true;
 	}
 
 	function getHash(bytes32 data) public view returns(bytes32){
-		return keccak256(abi.encodePacked(address(this),data));
+		return keccak256(abi.encodePacked(data));
 	}
 }

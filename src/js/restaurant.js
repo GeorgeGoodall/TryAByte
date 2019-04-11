@@ -140,13 +140,15 @@ async function populateOrderView(id){
 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
 	var name = await orderRestaurant.name();
 	var address = await orderRestaurant.location();
+
+	var keySet = await order.keyRestaurantSet();
 	
 	
 	console.log("order length: " + orderLength);
 
 	var html = 		'<h3 class"text-center">Summery of the order</h3>'+
 					'<h1 id="OrderID" class="text-center">Order ID: '+id+'</h1>' +
-					'<h1 id="OrderTime" class="text-center">Order time: '+orderTime+'</h1>' +
+					'<h2 id="OrderTime" class="text-center">Order time: '+orderTime+'</h2>' +
 					'<div id="ItemsArea">'+
 						'<h2 class="text-center">Ordered Items</h2>'+
 						'<div id="OrderItems"></div>'+
@@ -159,25 +161,53 @@ async function populateOrderView(id){
   							'<h3 class="text-center">Rider: '+riderState.get(riderStatus.c[0])+'</h3>'+
   							'<h3 class="text-center">Customer: '+customerState.get(customerStatus.c[0])+'</h3>'+
 						'</div>'+
-						'<button id="markPreparing" onclick="updateStatus(1)" style="margin-left: 50%">mark preparing</button>'+
-						'<button id="markComplete" onclick="updateStatus(2)" style="margin-left: 50%">mark Complete</button>'+
-						'<button id="markHandover" onclick="updateStatus(3)" style="margin-left: 50%">hand over cargo</button>'+
+						'<div id="buttonArea" style="margin-left: 45%">'+
+						'</div>'+
 					'</div>';
 
 	$("#Order").html(html);
 
+	if(restaurantStatus.c[0] == 0){
+		$("#buttonArea").html('<button id="acceptOrder" onclick="updateStatus(1)">Accept Order</button>');
+	}else if(restaurantStatus.c[0] == 1){
+		$("#buttonArea").html('<button id="readyForCollection" onclick="updateStatus(2)">notify ready for collection</button>');
+	}
 
+	//change displayed buttons based on current rider status
+	if(keySet && parseInt(restaurantStatus.c[0]) > 1){
+		var key = localStorage.getItem("keyRestaurant"+id);
+		if(key == null){
+			// add key to localstorage incase of error so payment can be released later
+			$("#buttonArea").append('<input type="text" id="keyInput">'+
+									'<button id="" onclick="checkKey()" style="">Submit Key</button><br>');
+		}
+	}
 
 	var htmlMenu = "";
 	for(var i = 0; i<orderLength;i++){
 		(function(counter){
 			order.getItem(counter).then(function(item){
-				htmlMenu = 	'<div class="item" onclick="addToCart('+counter+')">'+
+				htmlMenu = 	'<div class="item">'+
 								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-15)*100)/100+'</p>'+
 							'</div>';
 				$("#ItemsArea").append(htmlMenu);
 			});
 		})(i);
+	}
+}
+
+async function checkKey(){
+	var key = document.getElementById("keyInput").value;
+	var hash = await order.getHash(key);
+	var actualHash = await order.keyHashRestaurant();
+	if(actualHash == hash){
+		// submit key for payment
+		alert("Correct Key");
+		// ToDo, have status state payment processing until EVENT fired
+		await order.restaurantSubmitKey(key);
+		populateOrderView(currentOrder);
+	}else{
+		alert("Incorrect Key");
 	}
 }
 
