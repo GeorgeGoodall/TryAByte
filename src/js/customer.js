@@ -49,7 +49,7 @@ async function printOrder(order){
 	var html = 	'<div class="itemTyle" onclick="viewOrder('+id+')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: '+orderTime+'<br>Price: '+Math.round(price*Math.pow(10,-15) * 100) / 100+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+'<br>Price: '+Math.round(price*Math.pow(10,-15) * 100) / 100+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
 
 
@@ -67,6 +67,17 @@ async function getCustomerInstance(){
 		console.log("customerAddress:" + address)
 		customerInstance = new App.contracts.Customer(address);
 	}
+}
+
+function initiateEvents(){
+	var orderMadeEvent = customerInstance.orderMadeEvent();
+	orderMadeEvent.watch(function(err, result){
+		if(!err){
+			afterOrderMade(result.orderAddress);
+		}else{
+			alert(err);
+		}
+	})
 }
 
 async function getRestaurants(){
@@ -161,7 +172,8 @@ async function populateRestaurantView(id){
 	var menuLength = await restaurant.menuLength();
 	console.log("menu length: " + menuLength);
 
-	var html = 	'<h1 id="RestaurantTitle" class="text-center">'+name+'</h1>' +
+	var html = 	'<h2 id="recentOrderStatus" class="text-center"></h2>' +
+				'<h1 id="RestaurantTitle" class="text-center">'+name+'</h1>' +
 					'<p id="RestaurantAddress" class="text-center">'+address+'</p>'+
 					'<div id="MenuArea">'+
 						'<h2 class="text-center">Menu</h2>'+
@@ -210,6 +222,7 @@ async function populateOrderView(id){
 	var restaurantStatus = await order.restaurantStatus();
 	var riderStatus = await order.riderStatus();
 	var orderID = await order.id();
+	var orderTime = await order.orderTime();
 
 	var orderRestaurantAddress = await order.restaurant();
 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
@@ -219,9 +232,10 @@ async function populateOrderView(id){
 	
 	console.log("order length: " + orderLength);
 
-	var html = 		'<h3 class"text-center">Summery of your order</h3>'+
+	var html = 		'<h3 class="text-center">Summery of your order</h3>'+
 					'<h1 id="RestaurantTitle" class="text-center">'+name+'</h1>' +
 					'<p id="RestaurantAddress" class="text-center">'+address+'</p>'+
+					'<p class="text-center">Time: '+new Date(orderTime*1000).toLocaleString()+'</p>'+
 					'<div id="ItemsArea">'+
 						'<h2 class="text-center">Ordered Items</h2>'+
 						'<div id="OrderItems"></div>'+
@@ -256,7 +270,7 @@ async function populateOrderView(id){
 	for(var i = 0; i<orderLength;i++){
 		(function(counter){
 			order.getItem(counter).then(function(item){
-				htmlMenu = 	'<div class="item" onclick="addToCart('+counter+')">'+
+				htmlMenu = 	'<div class="item">'+
 								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-15)*100)/100+'</p>'+
 							'</div>';
 				$("#ItemsArea").append(htmlMenu);
@@ -278,12 +292,28 @@ async function checkout(){
 		// this could take a while, so need to program events to detect order creation.
 		await customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,web3.fromAscii(address),hash,{from: App.account, value:toSend});
 		localStorage.setItem('customerKey'+(totalOrders),random);
-		afterOrderMake();
+		afterOrderRequested();
 	}
 }
 
+async function afterOrderRequested(){
+	$("#cartContent").html("");
+	cart = [];
+	$("#recentOrderStatus").html("You're order made at " + new Date().toLocaleTimeString() + " is being processed");
+	// change to notify that an order is being made
+}
+
 // to be called after an order make event has been created.
-async function afterOrderMake(paymentKey){
+async function afterOrderMade(orderAddress){
+	var order = await new App.contracts.Order(orderAddress);
+	var restaurant = await new App.contracts.Restaurant(await order.restaurant());
+
+	var name = await restaurant.name();
+	var deliveryFee = await order.deliveryFee();
+	var price = await order.getCost();
+
+	alert("you're order costing " + price * Math.pow(10,-15) + " finney with a deliveryFee of " + deliveryFee * Math.pow(10,-15) + " finney to " + name + " has been made.");
+	$("#recentOrderStatus").html("");
 	getOrders();
 }
 
@@ -317,7 +347,7 @@ function updateCartView(){
 	for(var i = 0; i<cart.length;i++){
 		
 		
-		htmlMenu = 	'<div class="item" onclick="removeFromCart('+i+')">'+
+		htmlMenu = 	'<div class="item">'+
 						'<p class="text-center" style="font-size: 20px">'+web3.toAscii(menu[cart[i]][0])+': '+Math.round(menu[cart[i]][1]*Math.pow(10,-15) * 100) / 100+'</p>'+
 					'</div>';
 		$("#cartContent").append(htmlMenu);

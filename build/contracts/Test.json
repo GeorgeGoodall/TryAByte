@@ -22,11 +22,11 @@
       "signature": "0x3cf5040a"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/University/Dissertation/TryAByte/contracts/Test.sol\":\"Test\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/University/Dissertation/TryAByte/contracts/Test.sol\":{\"keccak256\":\"0xf54c349c93545ec10768b53b6abbf3fffce62f8d3ad1e2a1db7eef20dbb1e4f7\",\"urls\":[\"bzzr://225ca623ac0a64846ece2c75ded0a027f264dd7155fbe0f71d3ee122a362a2a8\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b50610134806100206000396000f3fe608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680633cf5040a14610046575b600080fd5b34801561005257600080fd5b5061007f6004803603602081101561006957600080fd5b8101908080359060200190929190505050610095565b6040518082815260200191505060405180910390f35b60003082604051602001808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff166c010000000000000000000000000281526014018281526020019250505060405160208183030381529060405280519060200120905091905056fea165627a7a72305820d0a19ef04ffff5ed83870aee08a2aa5e0cd2b367f6165d6f811cfc12ac977f250029",
-  "deployedBytecode": "0x608060405260043610610041576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680633cf5040a14610046575b600080fd5b34801561005257600080fd5b5061007f6004803603602081101561006957600080fd5b8101908080359060200190929190505050610095565b6040518082815260200191505060405180910390f35b60003082604051602001808373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff166c010000000000000000000000000281526014018281526020019250505060405160208183030381529060405280519060200120905091905056fea165627a7a72305820d0a19ef04ffff5ed83870aee08a2aa5e0cd2b367f6165d6f811cfc12ac977f250029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/University/Dissertation/TryAByte/contracts/Test.sol\":\"Test\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/University/Dissertation/TryAByte/contracts/Test.sol\":{\"keccak256\":\"0xf54c349c93545ec10768b53b6abbf3fffce62f8d3ad1e2a1db7eef20dbb1e4f7\",\"urls\":[\"bzzr://225ca623ac0a64846ece2c75ded0a027f264dd7155fbe0f71d3ee122a362a2a8\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060e78061001f6000396000f3fe608060405260043610603e5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416633cf5040a81146043575b600080fd5b348015604e57600080fd5b50606960048036036020811015606357600080fd5b5035607b565b60408051918252519081900360200190f35b60408051306c010000000000000000000000000260208083019190915260348083019490945282518083039094018452605490910190915281519101209056fea165627a7a7230582038f6a0274a8378c1976d2e1f4c95e280e8a4fb01a88f2fb356769e91fa21807a0029",
+  "deployedBytecode": "0x608060405260043610603e5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416633cf5040a81146043575b600080fd5b348015604e57600080fd5b50606960048036036020811015606357600080fd5b5035607b565b60408051918252519081900360200190f35b60408051306c010000000000000000000000000260208083019190915260348083019490945282518083039094018452605490910190915281519101209056fea165627a7a7230582038f6a0274a8378c1976d2e1f4c95e280e8a4fb01a88f2fb356769e91fa21807a0029",
   "sourceMap": "25:141:9:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;25:141:9;;;;;;;",
-  "deployedSourceMap": "25:141:9:-;;;;;;;;;;;;;;;;;;;;;;;;43:121;;8:9:-1;5:2;;;30:1;27;20:12;5:2;43:121:9;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;43:121:9;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;94:7;148:4;154;123:36;;;;;;;;;;;;;;;;;;;;;;;;;;;49:4:-1;39:7;30;26:21;22:32;13:7;6:49;123:36:9;;;113:47;;;;;;106:54;;43:121;;;:::o",
+  "deployedSourceMap": "25:141:9:-;;;;;;;;;;;;;;;;;;;;;;;43:121;;8:9:-1;5:2;;;30:1;27;20:12;5:2;43:121:9;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;43:121:9;;;;;;;;;;;;;;;;;;;;123:36;;;148:4;123:36;;;;;;;;;;;;;;;;;;;;26:21:-1;;;22:32;;;6:49;;123:36:9;;;;;;;113:47;;;;;;43:121::o",
   "source": "pragma solidity ^0.5.0;\n\ncontract Test{\n\n\n\tfunction getHash(bytes32 data) public view returns(bytes32){\n\t\treturn keccak256(abi.encodePacked(address(this),data));\n\t}\n}",
   "sourcePath": "/home/george/Documents/University/Dissertation/TryAByte/contracts/Test.sol",
   "ast": {
@@ -614,15 +614,15 @@
     "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
   },
   "networks": {
-    "3": {
+    "5777": {
       "events": {},
       "links": {},
-      "address": "0xE4D0FBc66E8Fe86D90bdcC3f3c0C980c73fFaa1f",
-      "transactionHash": "0x07217015c0ed413dd8677c014f0a549392324b332596b2699959d5c2be00119f"
+      "address": "0x7Fd8da78D80f0F5D1B6675E2264C2A1b855A5230",
+      "transactionHash": "0x63b6c894c5b4941fbdd5da7bc87b6ffde98dcdbe01ce7506962465a4b08f1fad"
     }
   },
   "schemaVersion": "3.0.6",
-  "updatedAt": "2019-04-11T00:42:54.945Z",
+  "updatedAt": "2019-04-13T12:25:58.036Z",
   "devdoc": {
     "methods": {}
   },

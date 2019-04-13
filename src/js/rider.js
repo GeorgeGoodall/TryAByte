@@ -53,10 +53,10 @@ async function getOrders(){
 	for(var i = 0; i<orderCount;i++){
 		(function(counter){
 			riderInstance.getOrder(counter, {from: App.account}).then(async function(address){
+				// change this as order ID isn't unique accross restaurants
 				var tempOrder = await new App.contracts.Order(address);
-				var orderID = await tempOrder.id();
-				orders[orderID] = tempOrder;
-				printOrder(orders[orderID]);
+				orders[counter] = tempOrder;
+				printOrder(counter);
 			});
 		})(i);
 	}
@@ -64,20 +64,45 @@ async function getOrders(){
 
 // ToDo: this function is in multiple places
 async function printRestaurant(restaurant){
+	// toDo: have open orders displayed here
+
 	var name = await restaurant.name();
 	var address = await restaurant.location();
 	var id = await restaurant.id();
+	var totalOrders = await restaurant.totalOrders();
+
+	console.log(">"+totalOrders);
+
+	var openOrderCount = 0;
 
 	var html = '<div id=Restaurant1 class="itemTyle" onclick="viewRestaurant('+id+')">'+
 					'<p style="font-size: 30px" class="text-center"><b>'+name+'</b></p>'+
 					'<p class="text-center">'+address+'</p>'+
+					'<p class="text-center" id="openOrderCount'+id+'">Availible Orders: '+openOrderCount+'</p>'+
 				'</div>';
 	$("#Restaurants").append(html);
+
+
+
+	for(var i = 0; i<totalOrders;i++){
+		(function(counter){
+			restaurant.orders(counter).then(async function(item){
+				if(item[0] == true && await new App.contracts.Order(item[1]).rider() == "0x0000000000000000000000000000000000000000"){
+					console.log(openOrderCount);
+					openOrderCount++;
+					$("#openOrderCount" + id).html('Availible Orders: '+openOrderCount);
+				}
+			});
+		})(i);
+	}
 }
 
-async function printOrder(order){
-	var id = await order.id();
+// needs changing as two orders can have the same ID if from different restaurants
+async function printOrder(orderIndex){
+	var order = orders[orderIndex];
+	//var id = await order.id();
 	var price = await order.getCost();
+	var orderTime = await order.orderTime();
 
 	var customerStatus = await order.customerStatus();
 	var restaurantStatus = await order.restaurantStatus();
@@ -87,10 +112,10 @@ async function printOrder(order){
 	var restaurant = await new App.contracts.Restaurant(address);
 	var restaurantName = await restaurant.name();
 
-	var html = 	'<div class="itemTyle" onclick="viewOrder('+id+')">'+
+	var html = 	'<div class="itemTyle" onclick="viewOrder('+orderIndex+')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: <br>Price: '+price+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+'<br>Price: '+price*Math.pow(10,-15)+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
 
 
@@ -164,12 +189,15 @@ async function populateRestaurantView(id){
 			restaurant.orders(counter).then(async function(item){
 				orders[counter] = await new App.contracts.Order(item[1]);
 				if(item[0] == true && await orders[counter].rider() == "0x0000000000000000000000000000000000000000"){
+					var orderTime = await orders[counter].orderTime();
+					var pay = await orders[counter].deliveryFee();
+					var depositRequired = await orders[counter].getCost();
+
 					htmlMenu = 	'<div class="itemTyle" onclick="viewOrder('+counter+')">'+
 									'<p class="text-center" style="font-size: 20px">OrderID: ' + counter + '</p>'+
-									'<p class="text-center" style="font-size: 14px">Delivery Location: (needs adding in)</p>'+
-									'<p class="text-center" style="font-size: 14px">Delivery Time: (needs adding in)</p>'+
-									'<p class="text-center" style="font-size: 14px">Pay: (needs adding in)</p>'+
-									'<p class="text-center" style="font-size: 14px">Deposit: (needs adding in)</p>'+
+									'<p class="text-center" style="font-size: 14px">Order Time: '+new Date(orderTime*1000).toLocaleString()+'</p>'+
+									'<p class="text-center" style="font-size: 14px">Pay: '+pay*Math.pow(10,-15)+' finney</p>'+
+									'<p class="text-center" style="font-size: 14px">Deposit Required: '+depositRequired*Math.pow(10,-15)+' finney</p>'+
 								'</div>';
 					$("#OrdersArea").append(htmlMenu);
 				}
@@ -178,9 +206,9 @@ async function populateRestaurantView(id){
 	}
 }
 
-async function viewOrder(id){
-	currentOrder = id;
-	await populateOrderView(id);
+async function viewOrder(orderIndex){
+	currentOrder = orderIndex;
+	await populateOrderView(orderIndex);
 	//await updateCartView();
 
 	// ToDo: put the set window in its own function
@@ -188,11 +216,10 @@ async function viewOrder(id){
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("Orders").style.display = "none";
 	document.getElementById("Order").style.display = "block";
-	document.getElementById("main").style.background = "lightblue";
 }
 
-async function populateOrderView(id){
-	console.log("Getting order with id: " + id)
+async function populateOrderView(orderIndex){
+	console.log("Getting order with index: " + orderIndex)
 
 	var customerState = new Map([[0, 'madeOrder'],[1, 'payed'],[2, 'hasCargo'],]);
 	var riderState = new Map([[0, 'unassigned'],[1, 'accepted'],[2, 'hasCargo'],[3, 'Delivered'],]);
@@ -200,7 +227,7 @@ async function populateOrderView(id){
 
 
 
-	order = orders[id];
+	order = orders[orderIndex];
 	var cost = await order.getCost();
 	currentOrderCost = cost;
 	var orderLength = await order.totalItems();
@@ -208,7 +235,7 @@ async function populateOrderView(id){
 	var restaurantStatus = await order.restaurantStatus();
 	var riderStatus = await order.riderStatus();
 	var rider = await order.rider();
-
+	var orderTime = await order.orderTime();
 
 	var orderRestaurantAddress = await order.restaurant();
 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
@@ -222,13 +249,15 @@ async function populateOrderView(id){
 
 	console.log("order length: " + orderLength);
 
-	var html = 	'<h3 class"text-center">Summery of the order</h3>'+
-				'<h1 id="OrderID" class="text-center">Order ID: '+id+'</h1>' +
+	var html = 	'<h3 class="text-center">Summery of the order</h3>'+
+				'<h3 class="text-center">'+name+'</h3>'+
+				'<h1 id="OrderID" class="text-center">Order ID: '+orderIndex+'</h1>' +
 				'<div id="ItemsArea">'+	
 				'</div>'+
-				'<p class="text-center" id="payment" style="margin-bottom: 20px;">Pay: (ToDo)</p>'+
-				'<p class="text-center" id="depositRequired" style="margin-bottom: 20px;">Deposit Required: '+Math.round(cost*Math.pow(10,-15)*100)/100+'</p>'+
-				'<p class="text-center" id="payment" style="margin-bottom: 20px;">Delivery Location: (ToDo)</p>'+
+				'<p class="text-center" style="font-size: 14px">Order Time: '+new Date(orderTime*1000).toLocaleString()+'</p>'+
+				'<p class="text-center" id="payment">Pay: '+cost*Math.pow(10,-15)+' finney</p>'+
+				'<p class="text-center" id="depositRequired">Deposit Required: '+Math.round(cost*Math.pow(10,-15)*100)/100+'</p>'+
+				//'<p class="text-center" id="payment" style="margin-bottom: 20px;">Delivery Location: (ToDo)</p>'+
 				'<div id="statusArea">'+
 					'<h2 class="text-center">OrderStatus</h2>'+
 					'<div id="statusContent">'+
@@ -291,7 +320,7 @@ async function offerDelivery(){
 	var cost = await order.getCost();
 	var random = makeid(12);
 	var hash = await App.controllerInstance.getHash(random);
-	riderInstance.offerDelivery(orders[currentOrder].address,hash,{value:cost})
+	await riderInstance.offerDelivery(orders[currentOrder].address,hash,{value:cost})
 	var orderID = await orders[currentOrder].id()
 	localStorage.setItem('keyForRestaurant'+orderID,random);
 	afterOfferDelivery();

@@ -12,8 +12,8 @@
 	- have metamask set a default gas price
 	- remove buttons so only ones currently used are shown
 	- alert the rider/restaurant if they go to click the hand over before the other party has done so
-
-
+	- clear cart after menu click
+	- bug where clicking first order shows second order
 	- add contract value under order window
 	- add alerts to explain setting up of metamask
 	- add exchange conversion rates
@@ -24,7 +24,7 @@
 	- rider view, print food items when delivery offered
 	- manage local storage to remove unneeded keys
 	- test menu delete, seems buggy when deleting large number of items
-
+	- bug where delivery address wont take ","s
 
 - system changes
 	- resolve returning of payments

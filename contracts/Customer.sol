@@ -19,6 +19,7 @@ contract Customer {
 
     enum customerState{madeOrder, payed, hasCargo}    
     
+    event OrderMadeEvent();
     
     constructor(uint _id, string memory _name, string memory _contactNumber, address _owner, address controllerAddress) public
     {
@@ -34,7 +35,7 @@ contract Customer {
     
     // this function will call the restaurant make order
     // todo change to reference restaurantID from restFact to reduce cost??
-    function makeOrder(address payable restaurant, uint[] calldata items, uint deliveryFee, bytes32 delivreyAddress,bytes32 riderKeyHash) external payable returns (address orderAddress){
+    function makeOrder(address payable restaurant, uint[] calldata items, uint deliveryFee, bytes calldata delivreyAddress,bytes32 riderKeyHash) external payable returns (address orderAddress){
         require(msg.sender == owner, "you dont own the customer smart contract");
         //require(RestaurantFactory(restaurantFactoryAddress).restaurantExists(msg.sender));
         uint price = Restaurant(restaurant).getOrderPrice(items);
@@ -47,6 +48,9 @@ contract Customer {
         orders[totalOrders] = orderAddr;
         
         totalOrders++;
+
+        emit OrderMadeEvent();
+
         return orders[totalOrders - 1];
     }
 
@@ -70,6 +74,7 @@ contract Customer {
         return totalOrders;
     }    
     
+
     
     
 }

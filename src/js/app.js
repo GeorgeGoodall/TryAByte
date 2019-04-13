@@ -11,8 +11,9 @@ App = {
 
   init: function(){
   	console.log("Initialising App")
-  	//web3.currentProvider.publicConfigStore.on('update', App.initAccount());
+  	web3.currentProvider.publicConfigStore.on('update', App.initAccount);
 	var loadedWeb3 = App.initWeb3();
+
 	return App.initContracts();
   },
 
@@ -108,7 +109,7 @@ App = {
 	//return App.initFactories(); modified after controller migration changed
 
 	
-	await App.initFactories2();
+	await App.initFactories();
 	return afterAsync();
 
 },

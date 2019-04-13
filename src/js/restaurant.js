@@ -67,7 +67,7 @@ async function printOrder(order){
 	var html = 	'<div class="itemTyle" onclick="viewOrder('+id+')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: '+orderTime+' <br>Price: '+Math.round(price*Math.pow(10,-15)*100)/100+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+' <br>Price: '+Math.round(price*Math.pow(10,-15)*100)/100+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
 
 
@@ -146,9 +146,9 @@ async function populateOrderView(id){
 	
 	console.log("order length: " + orderLength);
 
-	var html = 		'<h3 class"text-center">Summery of the order</h3>'+
+	var html = 		'<h3 class="text-center">Summery of the order</h3>'+
 					'<h1 id="OrderID" class="text-center">Order ID: '+id+'</h1>' +
-					'<h2 id="OrderTime" class="text-center">Order time: '+orderTime+'</h2>' +
+					'<h2 id="OrderTime" class="text-center">Order time: '+new Date(orderTime*1000).toLocaleString()+'</h2>' +
 					'<div id="ItemsArea">'+
 						'<h2 class="text-center">Ordered Items</h2>'+
 						'<div id="OrderItems"></div>'+

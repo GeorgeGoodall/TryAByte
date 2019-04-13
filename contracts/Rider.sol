@@ -18,6 +18,8 @@ contract Rider {
     uint totalPay;
 
     enum riderState{unassigned, accepted, hasCargo, Delivered}
+
+    event deliveryOfferedEvent(address orderAddress);
     
     constructor(uint _id, string memory _name, string memory _contactNumber, address payable _owner, address _controller) public
     {
@@ -41,6 +43,9 @@ contract Rider {
 
         orderInstance.riderOfferDelivery.value(cost)(keyHash);
         orders[totalOrders] = orderAddress;
+
+        emit deliveryOfferedEvent(orderAddress);
+
         totalOrders++;
     }
 
