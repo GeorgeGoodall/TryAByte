@@ -19,7 +19,9 @@ contract Customer {
 
     enum customerState{madeOrder, payed, hasCargo}    
     
-    event OrderMadeEvent();
+    event OrderMadeEvent(
+        address orderAddress 
+    );
     
     constructor(uint _id, string memory _name, string memory _contactNumber, address _owner, address controllerAddress) public
     {
@@ -49,7 +51,7 @@ contract Customer {
         
         totalOrders++;
 
-        emit OrderMadeEvent();
+        emit OrderMadeEvent(orderAddr);
 
         return orders[totalOrders - 1];
     }

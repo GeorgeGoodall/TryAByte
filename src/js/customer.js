@@ -17,6 +17,7 @@ async function afterAsync(){
 	await getCustomerInstance();
 	await getRestaurants();
 	await getOrders();
+	await initiateEvents();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
 }
@@ -69,15 +70,16 @@ async function getCustomerInstance(){
 	}
 }
 
-function initiateEvents(){
-	var orderMadeEvent = customerInstance.orderMadeEvent();
-	orderMadeEvent.watch(function(err, result){
+async function initiateEvents(){
+	var orderMadeEvent = customerInstance.OrderMadeEvent({},{fromBlock: 'latest'});
+	
+	orderMadeEvent.watch(function(err,result){
 		if(!err){
-			afterOrderMade(result.orderAddress);
+			afterOrderMade(result.args.orderAddress);
 		}else{
-			alert(err);
+			console.log(err);
 		}
-	})
+	});
 }
 
 async function getRestaurants(){
@@ -109,6 +111,13 @@ async function getOrders(){
 		})(i);
 	}
 
+}
+
+async function addOrder(address){
+	console.log("adding order at: " + address);
+	var newOrder = await new App.contracts.Order(address);
+	orders[orders.length] = newOrder;
+	printOrder(newOrder);
 }
 
 function viewRestaurants(){
@@ -306,7 +315,8 @@ async function afterOrderRequested(){
 // to be called after an order make event has been created.
 async function afterOrderMade(orderAddress){
 	var order = await new App.contracts.Order(orderAddress);
-	var restaurant = await new App.contracts.Restaurant(await order.restaurant());
+	var restaurantAddress = await order.restaurant();
+	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
 
 	var name = await restaurant.name();
 	var deliveryFee = await order.deliveryFee();
@@ -314,7 +324,8 @@ async function afterOrderMade(orderAddress){
 
 	alert("you're order costing " + price * Math.pow(10,-15) + " finney with a deliveryFee of " + deliveryFee * Math.pow(10,-15) + " finney to " + name + " has been made.");
 	$("#recentOrderStatus").html("");
-	getOrders();
+	//getOrders();
+	addOrder(orderAddress);
 }
 
 function addToCart(id){

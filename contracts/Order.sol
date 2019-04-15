@@ -46,6 +46,7 @@ contract Order{
 		uint itemCost; // in wei (10^-18 Eth)
 	}
 
+
 	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices,uint _deliveryFee, bytes memory _deliveryAddress, address _controller, address payable _customer, bytes32 keyHash) public payable {
 	    // require sent from a restaurant contract
 	    require(RestaurantFactory(Controller(_controller).restaurantFactoryAddress()).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");

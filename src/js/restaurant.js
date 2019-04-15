@@ -24,8 +24,9 @@ function init(){
 async function afterAsync(){
 	await getRestaurantInstance();
 	await populateData();
-	await updateMenu();
-	await getOrders();
+	//await updateMenu(); // before we used events
+	//await getOrders();
+	await initiateEvents();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
 	viewOrders();
@@ -34,12 +35,10 @@ async function afterAsync(){
 
 async function populateData(){
 	var name = await restaurantInstance.name();
-	console.log(name);
 	$("#RestaurantName").html(name);
 }
 
 async function getRestaurantInstance(){
-	console.log(App.account);
 	var restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
 	if(restaurantAddress == '0x0000000000000000000000000000000000000000'){
 		alert("no restaurantSmartContract assosiated with your address")
@@ -77,19 +76,54 @@ async function printOrder(order){
 
 async function getOrders(){
 	console.log("getting orders");
+	orders = [];
 	var orderCount = await restaurantInstance.totalOrders({from: App.account}); // this line can cause an internal JSON RPC error?? 
 
 	$("#Orders").html("");
+	console.log("Total Orders: " + orderCount);
+
 
 	for(var i = 0; i<orderCount;i++){
 		(function(counter){
 			restaurantInstance.orders(counter, {from: App.account}).then(async function(order){
-				orders[counter] = await new App.contracts.Order(order[1]);
-				printOrder(orders[counter]);
+				var orderTemp = await new App.contracts.Order(order[1]);
+				if(typeof orders[counter] == "undefined" || orders[counter].address != orderTemp.address){
+					orders[counter] = orderTemp;
+					printOrder(orders[counter]);
+				}
 			});
 		})(i);
 	}
+}
 
+async function addOrder(address){
+	console.log("adding order at: " + address);
+	var newOrder = await new App.contracts.Order(address);
+	orders[orders.length] = newOrder;
+	printOrder(newOrder);
+}
+
+function initiateEvents() {
+	// event for when new order is made
+	var orderMadeEvent = restaurantInstance.OrderMadeEvent({},{fromBlock: 0});
+	
+	orderMadeEvent.watch(function(err,result){
+		if(!err){
+			addOrder(result.args.orderAddress);
+		}else{
+			console.log(err);
+		}
+	});
+
+	var menuUpdated = restaurantInstance.MenuUpdated({},{fromBlock: 0});
+	
+	menuUpdated.watch(function(err,result){
+		if(!err){
+			updateMenu();
+		}else{
+			console.log(err);
+		}
+	});
 }
 
 function viewOrders(){
@@ -267,14 +301,14 @@ async function commitMenuStaging(){
 	itemNames = [];
 	itemPrices = [];
 
-	for(var i = 0; i< menuStaging.length; i++){
+	for(var i = 0; i < menuStaging.length; i++){
 		// convert names to bytes32
 		itemNames[i] = web3.fromAscii(menuStaging[i][0]);
 		// change value from finney (10^-3 eth) to wei (10^-18 eth)
 		itemPrices[i] = menuStaging[i][1] * Math.pow(10,15);
 	}
 	await restaurantInstance.menuAddItems(itemNames,itemPrices);
-	updateMenu();
+	$("#MenuTitle").html("Current Menu (waiting on update)");
 }
 
 async function deleteFromMenu(){
@@ -286,21 +320,29 @@ async function deleteFromMenu(){
 		}
 	}
 	await restaurantInstance.menuRemoveItems(toDelete);
-	updateMenu();
+	$("#MenuTitle").html("Current Menu (waiting on update)");
 }
 
+menuUpdating = false;
 async function updateMenu(){
-	$("#menuList").html("");
-	var menuLength = await restaurantInstance.menuLength();
-	for(var i = 0; i<menuLength;i++){
-		(function(counter){
-			restaurantInstance.menu(counter).then(async function(item){
-				menu[i] = [web3.toAscii(item[0]),item[1]];
-				$("#menuList").append('<div><label class="text-center" style="margin-left: 30%;font-size: 30px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-15) * 100)/100+'</label><input type="checkbox" id="itemDelete'+counter+'" name="deleteCheckbox" style="">delete</div>')
-			});
-		})(i);
+	if(!menuUpdating){
+		menuUpdating = true;
+		console.log("updateing menu");
+		$("#MenuTitle").html("Current Menu");
+		$("#menuList").html("");
+		var menuLength = await restaurantInstance.menuLength();
+		for(var i = 0; i<menuLength;i++){
+			(function(counter){
+				restaurantInstance.menu(counter).then(async function(item){
+					menu[i] = [web3.toAscii(item[0]),item[1]];
+					$("#menuList").append('<div><label class="text-center" style="margin-left: 30%;font-size: 30px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-15) * 100)/100+'</label><input type="checkbox" id="itemDelete'+counter+'" name="deleteCheckbox" style="">delete</div>')
+				});
+			})(i);
+		}
+		menuUpdating = false;
 	}
 }
+
 
 
 

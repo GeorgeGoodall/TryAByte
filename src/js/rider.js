@@ -13,6 +13,7 @@ async function afterAsync(){
 	await getRiderInstance();
 	await getRestaurants();
 	await getOrders();
+	await initEvents();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
 	viewRestaurants();
@@ -43,23 +44,43 @@ async function getRestaurants(){
 	}
 }
 
+var getOrdersLock = false;
 async function getOrders(){
-	console.log("getting orders");
-	var orderCount = await riderInstance.totalOrders({from: App.account}); // this line can cause an internal JSON RPC error?? 
-
-	console.log("Total Orders: " + orderCount);
-	$("#Orders").html("");
-
-	for(var i = 0; i<orderCount;i++){
-		(function(counter){
-			riderInstance.getOrder(counter, {from: App.account}).then(async function(address){
-				// change this as order ID isn't unique accross restaurants
-				var tempOrder = await new App.contracts.Order(address);
-				orders[counter] = tempOrder;
-				printOrder(counter);
-			});
-		})(i);
+	if(!getOrdersLock){
+		getOrdersLock = true;
+		orders = [];
+		var orderCount = await riderInstance.totalOrders({from: App.account}); // this line can cause an internal JSON RPC error?? 
+		console.log("Total Orders: " + orderCount);
+		$("#Orders").html("");
+		for(var i = 0; i<orderCount;i++){
+			(async function(counter){
+				await riderInstance.getOrder(counter, {from: App.account}).then(async function(address){
+					// change this as order ID isn't unique accross restaurants
+					var tempOrder = await new App.contracts.Order(address);
+					orders[counter] = tempOrder;
+					await printOrder(counter);
+				});
+				if(counter == orderCount - 1)
+				{
+					getOrdersLock = false;
+				}
+			})(i);
+		}	
+		
 	}
+}
+
+async function initEvents(){
+	// event for when you have a delivery job
+	var deliveryOfferedEvent = riderInstance.deliveryOfferedEvent({},{fromBlock: 'latest'});
+	
+	deliveryOfferedEvent.watch(function(err,result){
+		if(!err){
+			deliveryAccepted(result.args.orderAddress);
+		}else{
+			console.log(err);
+		}
+	});
 }
 
 // ToDo: this function is in multiple places
@@ -70,8 +91,6 @@ async function printRestaurant(restaurant){
 	var address = await restaurant.location();
 	var id = await restaurant.id();
 	var totalOrders = await restaurant.totalOrders();
-
-	console.log(">"+totalOrders);
 
 	var openOrderCount = 0;
 
@@ -88,7 +107,6 @@ async function printRestaurant(restaurant){
 		(function(counter){
 			restaurant.orders(counter).then(async function(item){
 				if(item[0] == true && await new App.contracts.Order(item[1]).rider() == "0x0000000000000000000000000000000000000000"){
-					console.log(openOrderCount);
 					openOrderCount++;
 					$("#openOrderCount" + id).html('Availible Orders: '+openOrderCount);
 				}
@@ -99,6 +117,7 @@ async function printRestaurant(restaurant){
 
 // needs changing as two orders can have the same ID if from different restaurants
 async function printOrder(orderIndex){
+	
 	var order = orders[orderIndex];
 	//var id = await order.id();
 	var price = await order.getCost();
@@ -117,8 +136,6 @@ async function printOrder(orderIndex){
 					//'<h3 style="float: right">Status: Delivered</h3>'+
 					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+'<br>Price: '+price*Math.pow(10,-15)+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
-
-
 	$("#Orders").append(html);
 
 }
@@ -323,13 +340,22 @@ async function offerDelivery(){
 	await riderInstance.offerDelivery(orders[currentOrder].address,hash,{value:cost})
 	var orderID = await orders[currentOrder].id()
 	localStorage.setItem('keyForRestaurant'+orderID,random);
-	afterOfferDelivery();
 }
 
-// this is to be called when an event is broadcast stating that the rider has the order
-async function afterOfferDelivery(){
+async function deliveryAccepted(orderAddress){
+	var order = await new App.contracts.Order(orderAddress);
+	var restaurantAddress = await order.restaurant();
+	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
+
+	var name = await restaurant.name();
+	var deliveryFee = await order.deliveryFee();
+	var price = await order.getCost();
+
+	alert("you're deposit of " + price * Math.pow(10,-15) + " finney for the order made to " + name + " with a payment for delivery of " + deliveryFee * Math.pow(10,-15) + " finney has been made.");
+	$("#recentOrderStatus").html("");
 	getOrders();
 }
+
 
 function makeid(length) {
   var text = "";

@@ -37,7 +37,8 @@ contract Restaurant {
 
     enum restaurantState{acceptedOrder, preparingCargo, readyForCollection, HandedOver}
 	
-    event orderMadeEvent();
+    event OrderMadeEvent(address orderAddress);
+    event MenuUpdated();
 
 	constructor(address _controller, address payable _owner, uint _id, string memory _name,string memory _address,string memory _contactNumber) public {
 		id = _id;
@@ -73,6 +74,7 @@ contract Restaurant {
             menu[menuLength] = Item(itemNames[i],prices[i]);
             menuLength++;
         }
+        emit MenuUpdated();
     }
 
     
@@ -102,6 +104,7 @@ contract Restaurant {
             menu[i] = menu[itemsToKeep[i]];
         }
         menuLength = itemsToKeep.length;
+        emit MenuUpdated();
     }
     
     // function menuSearch(string memory query) private view returns(int index){
@@ -144,7 +147,7 @@ contract Restaurant {
 		orders[totalOrders] = order(true,address(newOrder));
         totalOrders ++;
 
-        emit orderMadeEvent();
+        emit OrderMadeEvent(orders[totalOrders - 1].orderAddress);
 
 		return orders[totalOrders - 1].orderAddress;       
     }

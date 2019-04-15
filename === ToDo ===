@@ -7,6 +7,7 @@
 	- refresh page after updating order status
 	- restrict going back on orderstatus {from complete to inprogress etc}
 
+	- have relivent orders appear at top
 	- add unit to cost and prices
 	- refresh page in new metamask account selected
 	- have metamask set a default gas price

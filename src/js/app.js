@@ -195,7 +195,7 @@ initFactories: async function(){
 initFactories2: function(){
 	App.initAccount();
 
-	controllerInstance = new App.contracts.Controller("0x0BAdf2afBf497A4D20F0988bd9a08FD468e065bc");
+	controllerInstance = new App.contracts.Controller("0x325Ed1f8b990b49c3BcA381a9519267eC46831fa");
 
 	controllerInstance.restaurantFactoryAddress().then(function(address){
 		console.log("restaurantFactoryAddress: " + address);
