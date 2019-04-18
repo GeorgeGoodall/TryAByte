@@ -62,6 +62,6 @@ module.exports = function(deployer) {
   			console.log("Factory addresses added to Controller smart contract");
   		});
   	});
-	deployer.deploy(test);
+	//deployer.deploy(test);
 
 };

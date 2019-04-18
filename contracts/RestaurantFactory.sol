@@ -13,8 +13,8 @@ contract RestaurantFactory {
 	mapping(address => address) public restaurants2; 	// owner address to contract address
 	uint public restaurantCount;
 
-	event LOG_NEWRestaurantContract(address indexed theNewRestaurant, address indexed theRestaurantCreater);
-
+	event RestaurantMade(address indexed restaurantAddress, address indexed createrAddress);
+	
 	constructor(address _controller) public {
 		owner = msg.sender;
 		controller = _controller;
@@ -35,6 +35,9 @@ contract RestaurantFactory {
 		restaurantCount ++;
 		restaurants1[address(theNewRestaurant)] = msg.sender;
 		restaurants2[msg.sender] = address(theNewRestaurant);
+
+		emit RestaurantMade(address(theNewRestaurant),msg.sender);
+
 		return address(theNewRestaurant);
 
 	}

@@ -57,12 +57,6 @@ contract Restaurant {
     function getMenuLength() external view returns(uint length){
         return menuLength;
     }
-
-    // todo redo this 
-    // function clearMenu() external {
-    //     require(msg.sender == owner);
-    //     delete menu;
-    // }
     
 
     function menuAddItems(bytes32[] calldata itemNames, uint[] calldata prices) external {
@@ -106,15 +100,6 @@ contract Restaurant {
         menuLength = itemsToKeep.length;
         emit MenuUpdated();
     }
-    
-    // function menuSearch(string memory query) private view returns(int index){
-    //     for(uint i = 0; i<menuLength;i++){
-    //         if(lib.compareStrings(lib.bytes32ToString(menu[i].itemName),query)){
-    //             return int(i);
-    //         }
-    //     }
-    //     return -1;
-    // }
 
     function getOrderPrice(uint[] memory itemIds) public view returns (uint){
         uint price = 0;
@@ -156,9 +141,9 @@ contract Restaurant {
         return (menu[itemId].itemName,menu[itemId].itemCost);
     }
 
-    function setStatus(uint orderID, uint status) public{
+    function setStatus(uint orderAddress, uint status) public{
         require(msg.sender == owner);
-        Order(orders[orderID].orderAddress).setOrderStatus(status);
+        Order(orderAddress).setOrderStatus(status);
     }
 
     function pay() external payable {

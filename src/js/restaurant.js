@@ -1,7 +1,7 @@
 var restaurantInstance;
 var menuStaging = [];
 var menu = [];
-var orders = [];
+var orders = new Set();
 var currentOrder;
 
 function init(){
@@ -50,7 +50,8 @@ async function getRestaurantInstance(){
 	}
 }
 
-async function printOrder(order){
+async function printOrder(address){
+	var order = await new App.contracts.Order(address);
 	var id = await order.id();
 	var price = await order.getCost();
 	var orderTime = await order.orderTime();
@@ -59,14 +60,14 @@ async function printOrder(order){
 	var restaurantStatus = await order.restaurantStatus();
 	var riderStatus = await order.riderStatus();
 
-	var address = await order.restaurant();
-	var restaurant = await new App.contracts.Restaurant(address);
+	var restaurantAddress = await order.restaurant();
+	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
 	var restaurantName = await restaurant.name();
 
-	var html = 	'<div class="itemTyle" onclick="viewOrder('+id+')">'+
+	var html = 	'<div class="itemTyle" onclick="viewOrder(\''+address+'\')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+' <br>Price: '+Math.round(price*Math.pow(10,-15)*100)/100+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+' <br>Price: '+Math.round(price*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(price*App.conversion.currentPrice* Math.pow(10,-18)*100)/100+')<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
 
 
@@ -97,14 +98,17 @@ async function getOrders(){
 }
 
 async function addOrder(address){
-	console.log("adding order at: " + address);
-	var newOrder = await new App.contracts.Order(address);
-	orders[orders.length] = newOrder;
-	printOrder(newOrder);
+	if(!orders.has(address)){
+		console.log("adding order at: " + address);
+		var newOrder = await new App.contracts.Order(address);
+		orders.add(address);
+		printOrder(address);
+	}
+
 }
 
 function initiateEvents() {
-	// event for when new order is made
+	// ToDo: only display last x blocks
 	var orderMadeEvent = restaurantInstance.OrderMadeEvent({},{fromBlock: 0});
 	
 	orderMadeEvent.watch(function(err,result){
@@ -140,9 +144,9 @@ function viewSettings(){
 	document.getElementById("main").style.background = "lightgreen";
 }
 
-async function viewOrder(id){
-	currentOrder = id;
-	await populateOrderView(id);
+async function viewOrder(address){
+	currentOrder = address;
+	await populateOrderView(address);
 	//await updateCartView();
 
 	// ToDo: put the set window in its own function
@@ -152,8 +156,8 @@ async function viewOrder(id){
 	document.getElementById("main").style.background = "lightblue";
 }
 
-async function populateOrderView(id){
-	console.log("Getting order with id: " + id)
+async function populateOrderView(address){
+	console.log("Getting order with address: " + address)
 
 	var customerState = new Map([[0, 'madeOrder'],[1, 'payed'],[2, 'hasCargo'],]);
 	var riderState = new Map([[0, 'unassigned'],[1, 'accepted'],[2, 'hasCargo'],[3, 'Delivered'],]);
@@ -161,7 +165,7 @@ async function populateOrderView(id){
 
 
 
-	order = orders[id];
+	var order = await new App.contracts.Order(address);
 	var cost = await order.getCost();
 	var orderLength = await order.totalItems();
 	var orderTime = await order.orderTime();
@@ -173,7 +177,7 @@ async function populateOrderView(id){
 	var orderRestaurantAddress = await order.restaurant();
 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
 	var name = await orderRestaurant.name();
-	var address = await orderRestaurant.location();
+	var restaurantAddress = await orderRestaurant.location();
 
 	var keySet = await order.keyRestaurantSet();
 	
@@ -181,13 +185,13 @@ async function populateOrderView(id){
 	console.log("order length: " + orderLength);
 
 	var html = 		'<h3 class="text-center">Summery of the order</h3>'+
-					'<h1 id="OrderID" class="text-center">Order ID: '+id+'</h1>' +
+					'<h1 id="OrderID" class="text-center">Order address: '+address+'</h1>' +
 					'<h2 id="OrderTime" class="text-center">Order time: '+new Date(orderTime*1000).toLocaleString()+'</h2>' +
 					'<div id="ItemsArea">'+
 						'<h2 class="text-center">Ordered Items</h2>'+
 						'<div id="OrderItems"></div>'+
 					'</div>'+
-					'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-15)*100)/100+' finney</h3><br>'+
+					'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(cost*Math.pow(10,-18)*100*App.conversion.currentPrice)/100+')</h3><br>'+
 					'<div id="statusArea">'+
 						'<h2 class="text-center">OrderStatus</h2>'+
 						'<div id="statusContent">'+
@@ -209,7 +213,7 @@ async function populateOrderView(id){
 
 	//change displayed buttons based on current rider status
 	if(keySet && parseInt(restaurantStatus.c[0]) > 1){
-		var key = localStorage.getItem("keyRestaurant"+id);
+		var key = localStorage.getItem("keyRestaurant"+address);
 		if(key == null){
 			// add key to localstorage incase of error so payment can be released later
 			$("#buttonArea").append('<input type="text" id="keyInput">'+
@@ -221,8 +225,9 @@ async function populateOrderView(id){
 	for(var i = 0; i<orderLength;i++){
 		(function(counter){
 			order.getItem(counter).then(function(item){
+				var price = Math.round(item[1]*Math.pow(10,-18)*10000)/10000;
 				htmlMenu = 	'<div class="item">'+
-								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-15)*100)/100+'</p>'+
+								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+price+'(£'+Math.round(price*App.conversion.currentPrice*100)/100+')</p>'+
 							'</div>';
 				$("#ItemsArea").append(htmlMenu);
 			});
@@ -307,8 +312,10 @@ async function commitMenuStaging(){
 		// change value from finney (10^-3 eth) to wei (10^-18 eth)
 		itemPrices[i] = menuStaging[i][1] * Math.pow(10,15);
 	}
-	await restaurantInstance.menuAddItems(itemNames,itemPrices);
+	restaurantInstance.menuAddItems(itemNames,itemPrices);
+	// todo: clear staging at this point
 	$("#MenuTitle").html("Current Menu (waiting on update)");
+	$('#menuStaging').html("");
 }
 
 async function deleteFromMenu(){
@@ -319,7 +326,7 @@ async function deleteFromMenu(){
 			toDelete.push(i);
 		}
 	}
-	await restaurantInstance.menuRemoveItems(toDelete);
+	restaurantInstance.menuRemoveItems(toDelete);
 	$("#MenuTitle").html("Current Menu (waiting on update)");
 }
 

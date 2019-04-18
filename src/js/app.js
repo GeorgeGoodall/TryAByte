@@ -9,11 +9,15 @@ App = {
   customerFactoryInstance: null,
   riderFactoryInstance: null,
 
+  conversion: 130,
+
+
+
   init: function(){
   	console.log("Initialising App")
   	web3.currentProvider.publicConfigStore.on('update', App.initAccount);
 	var loadedWeb3 = App.initWeb3();
-
+	App.getEthPrice();
 	return App.initContracts();
   },
 
@@ -38,16 +42,20 @@ App = {
 
 
   initContracts: async function () {
+  	console.log("Init Contracts");
 	var controllerRequest = $.ajax({
-	  url: 'Controller.json',
+	  url: '/Contracts/Controller.json',
 	  async: false,
 	  success: function(controller){
 	    App.contracts["Controller"] = TruffleContract(controller);
 	    App.contracts["Controller"].setProvider(App.web3Provider);
+	  },
+	  error: function(xhr,status,error){
+	  	console.log("Error Finding controller: " + error);
 	  }
 	});
 	var RestaurantFactoryRequest = $.ajax({
-	  url: 'RestaurantFactory.json',
+	  url: '/Contracts/RestaurantFactory.json',
 	  async: false,
 	  success: function(RestaurantFactory){
 	    App.contracts["RestaurantFactory"] = TruffleContract(RestaurantFactory);
@@ -55,7 +63,7 @@ App = {
 	  }
 	});
 	var CustomerFactoryRequest = $.ajax({
-	  url: 'CustomerFactory.json',
+	  url: '/Contracts/CustomerFactory.json',
 	  async: false,
 	  success: function(CustomerFactory){
 	    App.contracts["CustomerFactory"] = TruffleContract(CustomerFactory);
@@ -63,7 +71,7 @@ App = {
 	  }
 	});
 	var RiderFactoryRequest = $.ajax({
-	  url: 'RiderFactory.json',
+	  url: '/Contracts/RiderFactory.json',
 	  async: false,
 	  success: function(RiderFactory){
 	    App.contracts["RiderFactory"] = TruffleContract(RiderFactory);
@@ -71,7 +79,7 @@ App = {
 	  }
 	});
 	var RestaurantRequest = $.ajax({
-	  url: 'Restaurant.json',
+	  url: '/Contracts/Restaurant.json',
 	  async: false,
 	  success: function(Restaurant){
 	    console.log("success loading restaurant JSON")
@@ -80,7 +88,7 @@ App = {
 	  }
 	});
 	var CustomerRequest = $.ajax({
-	  url: 'Customer.json',
+	  url: '/Contracts/Customer.json',
 	  async: false,
 	  success: function(Customer){
 	    console.log("success loading Customer JSON")
@@ -89,7 +97,7 @@ App = {
 	  }
 	});
 	var RiderRequest = $.ajax({
-	  url: 'Rider.json',
+	  url: '/Contracts/Rider.json',
 	  async: false,
 	  success: function(Rider){
 	    console.log("success loading Rider JSON")
@@ -98,7 +106,7 @@ App = {
 	  }
 	});
 	var OrderRequest = $.ajax({
-	  url: 'Order.json',
+	  url: '/Contracts/Order.json',
 	  async: false,
 	  success: function(Order){
 	    console.log("success loading Order JSON")
@@ -195,7 +203,7 @@ initFactories: async function(){
 initFactories2: function(){
 	App.initAccount();
 
-	controllerInstance = new App.contracts.Controller("0x325Ed1f8b990b49c3BcA381a9519267eC46831fa");
+	controllerInstance = new App.contracts.Controller("0x0aD29Ab2534Cb1c44DCAe2fa462B586a4A31A764");
 
 	controllerInstance.restaurantFactoryAddress().then(function(address){
 		console.log("restaurantFactoryAddress: " + address);
@@ -217,6 +225,32 @@ initFactories2: function(){
 		afterAsync();
 	});
 },
+
+getEthPrice: function(){
+	var your_calculated_array = []; // Set your calculated array here
+    $.ajax({ 
+      type: 'GET', 
+      url: '/EthPrice',  
+      dataType: 'json',
+      success: function (data) { 
+      	if(data != 'NA'){
+      		App.conversion = data;
+      	}else{
+
+      	}
+      }
+    });
+},
+
+// 	rp(requestOptions).then(function(err,response){
+// 		if(!err){
+// 			console.log("Response: " + response);
+// 		}
+// 		else{
+// 			console.log("Error: " + err);
+// 		}
+// 	})
+// },
 
 
 }

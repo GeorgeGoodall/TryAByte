@@ -11,6 +11,8 @@ contract CustomerFactory {
     mapping(address => address) private customers1; // customerContractAddress to customersOwnAddress
     mapping(address => address) public customers2; // customersOwnAddress to customerContractAddress
     
+    event CustomerMade(address indexed customerAddress, address indexed createrAddress);
+
     constructor(address _controller) public
     {
         controller = _controller;
@@ -26,6 +28,9 @@ contract CustomerFactory {
         customers2[msg.sender] = address(newCustomer);
         customers0[customerCount] = address(newCustomer);
         customerCount++;
+
+        emit CustomerMade(address(newCustomer),msg.sender);
+
         return address(newCustomer);
     }
     

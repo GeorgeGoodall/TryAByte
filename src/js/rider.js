@@ -134,7 +134,7 @@ async function printOrder(orderIndex){
 	var html = 	'<div class="itemTyle" onclick="viewOrder('+orderIndex+')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+'<br>Price: '+price*Math.pow(10,-15)+' finney<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+'<br>Price: '+Math.round(price*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(price*Math.pow(10,-18)*App.conversion.currentPrice*100)/100+')<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
 	$("#Orders").append(html);
 
@@ -213,8 +213,8 @@ async function populateRestaurantView(id){
 					htmlMenu = 	'<div class="itemTyle" onclick="viewOrder('+counter+')">'+
 									'<p class="text-center" style="font-size: 20px">OrderID: ' + counter + '</p>'+
 									'<p class="text-center" style="font-size: 14px">Order Time: '+new Date(orderTime*1000).toLocaleString()+'</p>'+
-									'<p class="text-center" style="font-size: 14px">Pay: '+pay*Math.pow(10,-15)+' finney</p>'+
-									'<p class="text-center" style="font-size: 14px">Deposit Required: '+depositRequired*Math.pow(10,-15)+' finney</p>'+
+									'<p class="text-center" style="font-size: 14px">Pay: '+Math.round(pay*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(pay*Math.pow(10,-18)*App.conversion.currentPrice*100)/100+')</p>'+
+									'<p class="text-center" style="font-size: 14px">Deposit Required: '+Math.round(depositRequired*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(depositRequired*Math.pow(10,-18)*App.conversion.currentPrice*100)/100+')</p>'+
 								'</div>';
 					$("#OrdersArea").append(htmlMenu);
 				}
@@ -272,7 +272,7 @@ async function populateOrderView(orderIndex){
 				'<div id="ItemsArea">'+	
 				'</div>'+
 				'<p class="text-center" style="font-size: 14px">Order Time: '+new Date(orderTime*1000).toLocaleString()+'</p>'+
-				'<p class="text-center" id="payment">Pay: '+cost*Math.pow(10,-15)+' finney</p>'+
+				'<p class="text-center" id="payment">Pay: '+Math.round(cost*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(cost*Math.pow(10,-18)*App.conversion.currentPrice*100)/100+')</p>'+
 				'<p class="text-center" id="depositRequired">Deposit Required: '+Math.round(cost*Math.pow(10,-15)*100)/100+'</p>'+
 				//'<p class="text-center" id="payment" style="margin-bottom: 20px;">Delivery Location: (ToDo)</p>'+
 				'<div id="statusArea">'+
@@ -351,9 +351,12 @@ async function deliveryAccepted(orderAddress){
 	var deliveryFee = await order.deliveryFee();
 	var price = await order.getCost();
 
-	alert("you're deposit of " + price * Math.pow(10,-15) + " finney for the order made to " + name + " with a payment for delivery of " + deliveryFee * Math.pow(10,-15) + " finney has been made.");
+	alert("you're deposit of " + Math.round(price * Math.pow(10,-18)*10000)/10000 + " Eth (£"+Math.round(price * Math.pow(10,-18)*App.conversion.currentPrice*100)/100+") for the order made to " + name + " with a payment for delivery of " + Math.round(deliveryFee * Math.pow(10,-18) * 10000) / 10000 + " Eth (£"+Math.round(deliveryFee * App.conversion.currentPrice * Math.pow(10,-18) * 100) / 100+") has been made.");
 	$("#recentOrderStatus").html("");
-	getOrders();
+	await getOrders();
+	viewOrders();
+	// if in orders view and viewing the order you just offered delivery for, switch to your orders
+
 }
 
 

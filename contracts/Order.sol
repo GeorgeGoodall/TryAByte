@@ -41,6 +41,8 @@ contract Order{
 	uint public totalItems;
 	mapping(uint=>Item) public items; // this should be encrypted
 
+	event statusUpdated();
+
 	struct Item{
 		bytes32 itemName;
 		uint itemCost; // in wei (10^-18 Eth)
@@ -102,6 +104,8 @@ contract Order{
 
 		keyHashRestaurant = keyHash;
 		keyRestaurantSet = true;
+		
+		emit statusUpdated();
 	}
 
 	function setOrderStatus(uint status) public payable{
@@ -109,19 +113,21 @@ contract Order{
 		require(status > restaurantStatus, "status cannot be backtracked");
 		require(status <= 3 && status > 0, "given Status not valid");
 		restaurantStatus = status;
-
+		emit statusUpdated();
 	}
 
 	function payRider() private{
 		Rider(rider).pay.value(cost+deliveryFee)();
 		riderPaid = true;
 		riderStatus = 3;
+		emit statusUpdated();
 	}
 
 	function payRestaurant() private{
 		Restaurant(restaurant).pay.value(cost)();
 		restaurantPaid = true;
 		restaurantStatus = 4;
+		emit statusUpdated();
 	}
 
 	function getBalance() public view returns(uint){
@@ -139,6 +145,7 @@ contract Order{
 		payRestaurant();
 		restaurantStatus = uint(restaurantState.HandedOver);
 		riderStatus = uint(riderState.hasCargo);
+		emit statusUpdated();
 		return true;
 	}
 
@@ -148,6 +155,7 @@ contract Order{
 		payRider();
 		riderStatus = uint(riderState.Delivered);
 		customerStatus = uint(customerState.hasCargo);
+		emit statusUpdated();
 		return true;
 	}
 

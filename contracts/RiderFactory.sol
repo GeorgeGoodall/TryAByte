@@ -10,7 +10,9 @@ contract RiderFactory {
     mapping(uint => address) public riders0; // ids to contract address
     mapping(address => address) public riders1; // contract address to owner addresses, // todo check if need this
     mapping(address => address) public riders2; // owner addresses to contract addresses
-    
+   
+    event RiderMade(address indexed riderAddress, address indexed createrAddress);
+
     constructor(address _controller) public
     {
         controller = _controller;
@@ -25,6 +27,9 @@ contract RiderFactory {
         riders2[msg.sender] = address(newRider);
         riders0[riderCount] = address(newRider);
         riderCount++;
+
+        emit RiderMade(address(newRider),msg.sender);
+
         return address(newRider);
     }
 

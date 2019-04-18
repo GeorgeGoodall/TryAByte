@@ -75,6 +75,8 @@ async function riderClick(){
 	}
 }
 
+
+//ToDo: change so the page shows a message and redirects after account is created using an event
 async function makeRestaurantClick(){
     console.log("makeRestaurantClick");
 
