@@ -57,7 +57,10 @@
 			<div id="MenuEdit" style="width: 50vw; background-color: lightgreen; float: right">
 				<div id="menuListToChange" style="width: 40%; float:left">
 					<h2 class="text-center">Menu Staging</h2>
-					<input type="text" id="MenuChange" onEnter="stageMenuItem" placeholder="ItemName : ItemPrice" style="margin-left: 30%; margin-right: 30%; width: 40%" >
+					<div>
+						<input type="text" id="MenuChange" onkeyup="updatePricePounds()" placeholder="ItemName : ItemPrice" style="margin-left: 30%;width: 40%" >
+						<div id="pricePounds" style="display: inline;">(£0)</div>
+					</div>
 					<button id="clearButton" onclick="clearStaging()" style="margin-right: 30%" >clear</button>
 					<br>
 					<br>
@@ -80,7 +83,8 @@
 			</div>
 		</div>
 		<div id="Orders">
-			
+			<div id="CurrentOrders" style="width: 50%; float: left; background-color: inherit;"><h2 id="currentOrdersTitle" class="text-center"></h2></div>
+			<div id="CompleteOrders" style="width: 50%; float: left; background-color: inherit"><h2 id="completeOrdersTitle" class="text-center"></h2></div>'
 		</div>
 		<div id="Order">
 			

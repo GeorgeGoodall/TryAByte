@@ -1,3 +1,5 @@
+var controllerAddress = "0xF9531f71247903B6e108CfF44858Af561EaAe101";
+
 App = {
   web3Provider: null,
   contracts: [],
@@ -203,7 +205,7 @@ initFactories: async function(){
 initFactories2: function(){
 	App.initAccount();
 
-	controllerInstance = new App.contracts.Controller("0x0aD29Ab2534Cb1c44DCAe2fa462B586a4A31A764");
+	controllerInstance = new App.contracts.Controller(controllerAddress);
 
 	controllerInstance.restaurantFactoryAddress().then(function(address){
 		console.log("restaurantFactoryAddress: " + address);

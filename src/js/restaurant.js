@@ -4,6 +4,9 @@ var menu = [];
 var orders = new Set();
 var currentOrder;
 
+var completeOrdersCount = 0;
+var currentOrdersCount = 0;
+
 function init(){
 	// code copied from https://www.w3schools.com/howto/howto_js_trigger_button_enter.asp
 	// Get the input field
@@ -64,14 +67,25 @@ async function printOrder(address){
 	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
 	var restaurantName = await restaurant.name();
 
+
 	var html = 	'<div class="itemTyle" onclick="viewOrder(\''+address+'\')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
 					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+' <br>Price: '+Math.round(price*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(price*App.conversion.currentPrice* Math.pow(10,-18)*100)/100+')<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
 				'</div>';
 
+	// if order complete
+	if(restaurantStatus >= 2){
+		$("#CompleteOrders").append(html);
+		completeOrdersCount++;
+		$("#completeOrdersTitle").html("Complete Orders (Count: "+completeOrdersCount+")");
+	}else{
+		$("#CurrentOrders").append(html);
+		currentOrdersCount++;
+		$("#currentOrdersTitle").html("Current Orders (Count: "+currentOrdersCount+")");
+	}
 
-	$("#Orders").append(html);
+	
 
 }
 
@@ -80,7 +94,8 @@ async function getOrders(){
 	orders = [];
 	var orderCount = await restaurantInstance.totalOrders({from: App.account}); // this line can cause an internal JSON RPC error?? 
 
-	$("#Orders").html("");
+	$("#Orders").html(	'<div id="CurrentOrders" style="width: 50%; float: left; background-colour: inherit"><h2 id="currentOrdersTitle"></h2></div>'+
+						'<div id="CompleteOrders" style="width: 50%; float: left; background-colour: inherit"><h2 id="completeOrdersTitle"></h2></div>');
 	console.log("Total Orders: " + orderCount);
 
 
@@ -140,7 +155,7 @@ function viewOrders(){
 function viewSettings(){
 	document.getElementById("Settings").style.display = "block";
 	document.getElementById("Orders").style.display = "none"
-		document.getElementById("Order").style.display = "none";
+	document.getElementById("Order").style.display = "none";
 	document.getElementById("main").style.background = "lightgreen";
 }
 
@@ -257,12 +272,27 @@ async function updateStatus(status){
 
 function stageMenuItem(item){
 
+	console.log(item);
+
 	if(item[0].length > 32){
 		alert("itemName can't be longer than 32 bits");
 	}
 	else{
 		$("#menuStaging").append('<p class="text-center" id="'+item[0]+'" style="font-size: 30px">'+item[0]+': '+item[1]+'</p>');		
 		menuStaging.push([item[0].trim(),item[1].trim()]);
+	}
+}
+
+function updatePricePounds(){
+	var item = document.getElementById("MenuChange").value;
+	var re = /.+\s*[:\s*\d+]?/;
+
+	var item = item.split(":");
+	item[0] = item[0].trim();
+	item[1] = item[1].trim();
+
+	if(item.length == 2 && !isNaN(item[1]) && item[0].length > 0 && !item[0].includes("#")){
+		$('#pricePounds').html("(£"+Math.round(parseFloat(item[1]) * App.conversion.currentPrice*100)/100+")")
 	}
 }
 
@@ -309,8 +339,8 @@ async function commitMenuStaging(){
 	for(var i = 0; i < menuStaging.length; i++){
 		// convert names to bytes32
 		itemNames[i] = web3.fromAscii(menuStaging[i][0]);
-		// change value from finney (10^-3 eth) to wei (10^-18 eth)
-		itemPrices[i] = menuStaging[i][1] * Math.pow(10,15);
+		// change value from eth to wei (10^18 eth)
+		itemPrices[i] = menuStaging[i][1] * Math.pow(10,18);
 	}
 	restaurantInstance.menuAddItems(itemNames,itemPrices);
 	// todo: clear staging at this point
@@ -342,7 +372,7 @@ async function updateMenu(){
 			(function(counter){
 				restaurantInstance.menu(counter).then(async function(item){
 					menu[i] = [web3.toAscii(item[0]),item[1]];
-					$("#menuList").append('<div><label class="text-center" style="margin-left: 30%;font-size: 30px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-15) * 100)/100+'</label><input type="checkbox" id="itemDelete'+counter+'" name="deleteCheckbox" style="">delete</div>')
+					$("#menuList").append('<div><label class="text-center" style="margin-left: 30%;font-size: 30px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-18) * 100)/100+'</label><input type="checkbox" id="itemDelete'+counter+'" name="deleteCheckbox" style="">delete</div>')
 				});
 			})(i);
 		}

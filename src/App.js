@@ -1,6 +1,8 @@
 var express = require('express');
 var http = require("html");
 
+var mongo = require("mongodb");
+
 
 
 // get eth price
@@ -43,7 +45,7 @@ app.use('/Contracts',express.static(__dirname+'/Contracts'));
 
 
 
-app.get(['/',"/login"], function(req,res){
+app.get(['/',"/login","/login.html"], function(req,res){
 	res.sendFile(__dirname+'/login.html');
 });
 
@@ -62,7 +64,12 @@ app.get(["/RiderView.html"], function(req,res){
 app.get(["/EthPrice"], function(req,res){
 	console.log(currentPrice);
 	res.json({'currentPrice':currentPrice});
-})
+});
+
+// app.get(["/db"], function(req,res){
+// 	console.log(currentPrice);
+// 	res.json({'currentPrice':currentPrice});
+// });
 
 
 app.listen(8080);

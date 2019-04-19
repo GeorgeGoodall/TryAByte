@@ -203,7 +203,7 @@ async function populateRestaurantView(id){
 
 	$("#RestaurantView").html(html);
 
-
+	console.log(menu);
 
 	var htmlMenu = "";
 	for(var i = 0; i<menuLength;i++){
@@ -211,7 +211,7 @@ async function populateRestaurantView(id){
 			restaurant.menu(counter).then(function(item){
 				menu[counter] = item;
 				htmlMenu = 	'<div class="item" onclick="addToCart('+counter+')">'+
-								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+item[1]*Math.pow(10,-18)+' (£'+ Math.round(item[1]*Math.pow(10,-18) * App.conversion.currentPrice * 100) / 100+')</p>'+
+								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+Math.round(item[1]*Math.pow(10,-18)*10000)/10000+' (£'+ Math.round(item[1]*Math.pow(10,-18) * App.conversion.currentPrice * 100) / 100+')</p>'+
 							'</div>';
 				$("#MenuContent").append(htmlMenu);
 			});
@@ -286,7 +286,7 @@ async function populateOrderView(id){
 			order.getItem(counter).then(function(item){
 				var priceEth = item[1]*Math.pow(10,-18);
 				htmlMenu = 	'<div class="item">'+
-								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+": " + priceEth + ' (£'+ Math.round(priceEth * App.conversion.currentPrice * 100) / 100+')</p>'+
+								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+": " + Math.round(priceEth*10000)/10000 + ' (£'+ Math.round(priceEth * App.conversion.currentPrice * 100) / 100+')</p>'+
 							'</div>';
 				$("#ItemsArea").append(htmlMenu);
 			});
@@ -296,15 +296,16 @@ async function populateOrderView(id){
 
 async function checkout(){
 	// todo, resolve what you doing with delivery fee
+	var toSend = updatePrice();
 	var deliveryFee = document.getElementById("deliveryFee").value * Math.pow(10,18);
-	var toSend = updatePrice() + deliveryFee;
+	console.log("toSend: " + toSend + " + " + deliveryFee);
+	var toSend = toSend + deliveryFee;
 	var address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
 	if(address != null){
 		var totalOrders = await customerInstance.getTotalOrders();
 		var totalOrders = parseInt(totalOrders);
 		var random = makeid(12);
 		var hash = await App.controllerInstance.getHash(random);
-		// this could take a while, so need to program events to detect order creation.
 		customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,web3.fromAscii(address),hash,{from: App.account, value:toSend});
 		localStorage.setItem('customerKey'+(totalOrders),random);
 		afterOrderRequested();
@@ -328,7 +329,7 @@ async function afterOrderMade(orderAddress){
 	var deliveryFee = await order.deliveryFee();
 	var price = await order.getCost();
 
-	alert("you're order costing " + price * Math.pow(10,-18) + " Ethereum (£"+ Math.round(price * Math.pow(10,-18) * App.conversion.currentPrice * 100) / 100+") with a deliveryFee of " + deliveryFee * Math.pow(10,-18) + " Ethereum (£"+ Math.round(deliveryFee* Math.pow(10,-18)* App.conversion.currentPrice * 100) / 100+") to " + name + " has been made.");
+	alert("you're order costing approximatly " + Math.round(price * Math.pow(10,-18)*10000)/10000 + " Ethereum (£"+ Math.round(price * Math.pow(10,-18) * App.conversion.currentPrice * 100) / 100+") with a deliveryFee of " + deliveryFee * Math.pow(10,-18) + " Ethereum (£"+ Math.round(deliveryFee* Math.pow(10,-18)* App.conversion.currentPrice * 100) / 100+") to " + name + " has been made.");
 	$("#recentOrderStatus").html("");
 	//getOrders();
 	addOrder(orderAddress);
@@ -354,20 +355,22 @@ function updatePrice(){
 	var price = 0;
 	for(var i = 0; i<cart.length; i++){
 		price += parseInt(menu[cart[i]][1]);
+		console.log();
 	}
 	var priceEth = price*Math.pow(10,-18);
 	var deliveryFee = document.getElementById("deliveryFee").value;
 	var total =  parseFloat(priceEth) + parseFloat(deliveryFee);
 
-	var html = 	'<div class="text-center" id="priceTag" style="float: right; margin-right: 10px">Price: ' + priceEth + ' (£'+ Math.round(priceEth * App.conversion.currentPrice * 100) / 100+')</div>'+
+	var html = 	'<div class="text-center" id="priceTag" style="float: right; margin-right: 10px">Price: ' + Math.round(priceEth*10000)/10000 + ' (£'+ Math.round(priceEth * App.conversion.currentPrice * 100) / 100+')</div>'+
 				'<br>'+
-				'<div class="text-center" id="priceTag" style="float: right; margin-right: 10px">Delivery Fee: '+deliveryFee+' (£'+ Math.round(deliveryFee * App.conversion.currentPrice * 100) / 100+')</div>'+
+				'<div class="text-center" id="priceTag" style="float: right; margin-right: 10px">Delivery Fee: '+Math.round(deliveryFee*10000)/10000+' (£'+ Math.round(deliveryFee * App.conversion.currentPrice * 100) / 100+')</div>'+
 				'<br>'+
-				'<div class="text-center" id="priceTag" style="float: right; margin-right: 10px">Total: '+total+' (£'+ Math.round(total * App.conversion.currentPrice * 100) / 100+')</div>';
+				'<div class="text-center" id="priceTag" style="float: right; margin-right: 10px">Total: '+Math.round(total*10000)/10000+' (£'+ Math.round(total * App.conversion.currentPrice * 100) / 100+')</div>';
 
 
 	$("#priceTag").html(html);
-	return price;
+	console.log(total);
+	return priceEth * Math.pow(10,18);
 }
 
 function updateCartView(){
@@ -376,7 +379,7 @@ function updateCartView(){
 		
 		
 		htmlMenu = 	'<div class="item" onclick="removeFromCart('+i+')">'+
-						'<p class="text-center" style="font-size: 20px">'+web3.toAscii(menu[cart[i]][0])+': '+Math.round(menu[cart[i]][1]*Math.pow(10,-15) * 100) / 100+'</p>'+
+						'<p class="text-center" style="font-size: 20px">'+web3.toAscii(menu[cart[i]][0])+': '+Math.round(menu[cart[i]][1]*Math.pow(10,-18) * 100) / 100+'</p>'+
 					'</div>';
 		$("#cartContent").append(htmlMenu);
 	}	

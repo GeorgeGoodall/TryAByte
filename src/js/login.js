@@ -1,6 +1,7 @@
 function initLogin(){
 	console.log("initLogin");
 	hideAccountCreations();
+
 }
 
 function hideAccountCreations(){
@@ -11,10 +12,40 @@ function hideAccountCreations(){
 
 function afterAsync(){
 	addUserCounts();
+	initiateEvents();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
 
-	
+}
+
+async function initiateEvents(){
+
+	var restaurantMade = App.restaurantFactoryInstance.RestaurantMade({},{fromBlock: 'latest'});	
+	restaurantMade.watch(function(err,result){
+		if(!err){
+			document.location.href = "./RestaurantHome.html";
+		}else{
+			console.log(err);
+		}
+	});
+
+	var riderMade = App.riderFactoryInstance.RiderMade({},{fromBlock: 'latest'});	
+	riderMade.watch(function(err,result){
+		if(!err){
+			document.location.href = "./RiderView.html";
+		}else{
+			console.log(err);
+		}
+	});
+
+	var customerMade = App.customerFactoryInstance.CustomerMade({},{fromBlock: 'latest'});	
+	customerMade.watch(function(err,result){
+		if(!err){
+			document.location.href = "./CustomerView.html";
+		}else{
+			console.log(err);
+		}
+	});
 }
 
 async function addUserCounts(){
@@ -88,9 +119,7 @@ async function makeRestaurantClick(){
 
     App.restaurantFactoryInstance.createRestaurant(restaurantName,restaurantAddress,restaurantPhone,{from: App.account, gas: 4000000}).then(function(){
       console.log("restaurant Made");
-      // load the restaurant view
-      document.location.href = "./RestaurantHome.html";
-    })
+    });
   }
 
 async function makeCustomerClick(){
@@ -101,8 +130,7 @@ async function makeCustomerClick(){
 
     App.customerFactoryInstance.makeCustomer(customerName,customerPhone,{from: App.account, gas: 4000000}).then(function(){
       console.log("customer Made");
-      document.location.href = "./CustomerView.html";
-    })
+    });
   }
 
 async function makeRiderClick(){
@@ -113,8 +141,7 @@ async function makeRiderClick(){
 
     App.riderFactoryInstance.makeRider(riderName,riderPhone,{from: App.account, gas: 4000000}).then(function(){
       console.log("rider Made");
-      document.location.href = "./RiderView.html";
-    })
+    });
   }
 
 $(function() {

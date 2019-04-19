@@ -1,31 +1,50 @@
 === ToDo ===
 ============
-
 - improve UI
-	- set price to be in Gwei, and add in rounding
-	- clear Cart after order is made
-	- refresh page after updating order status
-	- restrict going back on orderstatus {from complete to inprogress etc}
+	- clicking on customer order shows incorrect order
+	- two orders appearing in restaurant view when an order is made
+	- bug where delivery address wont take ","s
+	- for riders if a restaurant has no orders it should say, count next to each restaurant and on the restaurant view
+	- clear cart after menu click
+	- alert the rider/restaurant if they go to click the hand over before the other party has done so
+	- bug where clicking first order shows second order
+	- add unit to cost and prices
+	- improve look of order total amount
+	- upon account creation says no account accosiiated
+	- add exchange conversion rates
+	- order confirmation for customer showing eth not to 2dp
+	- customer restaurant menu view not rounding eth price
+
+=====================================================================================================
 
 	- have relivent orders appear at top
-	- add unit to cost and prices
-	- refresh page in new metamask account selected
-	- have metamask set a default gas price
+	- have all libraries imported from online imported from local
 	- remove buttons so only ones currently used are shown
-	- alert the rider/restaurant if they go to click the hand over before the other party has done so
-	- clear cart after menu click
-	- bug where clicking first order shows second order
-	- add contract value under order window
+	- after marking orders update order view
+	- clicking on an order for rider takes them to your orders even if its not there order
+	- customer cart view showing eth in finney and no pounds
+
+	- add notification for restaurant order made
+	- add notification that the order made is being processed
+	- after order is offered for delivery need to move order to your orders and refresh order under in restaurant
 	- add alerts to explain setting up of metamask
-	- add exchange conversion rates
+	
+	- add short by to revert statment for not enough eth sent
+	- resolve slow loading time on order view
+	- refresh page in new metamask account selected
+	- change all local order storage to address indexed
+	- have metamask set a default gas price
+	- add contract value under order window
+	- remove testing page
+	- menu formatting errors on food delete if name too long
+	- add making user loading screen to the login page
+
+	- menu commit clears instantly after commit, consider making it clear at another time
 	- move redundant js code into some form of library and import to make neater
 	- resolve issue where two contract calls happens if two pages open
-	- clicking on an order for rider takes them to your orders even if its not there order
-	- for riders if a restaurant has no orders it should say, count next to each restaurant and on the restaurant view
 	- rider view, print food items when delivery offered
 	- manage local storage to remove unneeded keys
 	- test menu delete, seems buggy when deleting large number of items
-	- bug where delivery address wont take ","s
 
 - system changes
 	- resolve returning of payments
