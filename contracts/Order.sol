@@ -27,7 +27,6 @@ contract Order{
 
 	address controller;
 
-	bytes deliveryAddress;
 	uint public orderTime;
 	uint cost;
 	uint public deliveryFee;
@@ -49,7 +48,7 @@ contract Order{
 	}
 
 
-	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices,uint _deliveryFee, bytes memory _deliveryAddress, address _controller, address payable _customer, bytes32 keyHash) public payable {
+	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices, uint _deliveryFee, address _controller, address payable _customer, bytes32 keyHash) public payable {
 	    // require sent from a restaurant contract
 	    require(RestaurantFactory(Controller(_controller).restaurantFactoryAddress()).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");
 	    require(itemNames.length == prices.length, "invalid matching of items to prices");
@@ -58,7 +57,6 @@ contract Order{
 		id = _id;
 		restaurant = msg.sender;
 		customer = _customer; // this needs changing as is vunrability
-		deliveryAddress = _deliveryAddress;
 		orderTime = block.timestamp;
 
 		controller = _controller;
@@ -90,10 +88,6 @@ contract Order{
 		return (items[_id].itemName,items[_id].itemCost);
 	}  
 
-	function getDeliveryAddress() public view returns(bytes memory _deliveryAddress){
-		require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender);
-		return deliveryAddress;
-	}
 
 	function riderOfferDelivery(bytes32 keyHash) public payable{
 		require(RiderFactory(Controller(controller).riderFactoryAddress()).riderExists(msg.sender), "must be called via a rider smart contract");

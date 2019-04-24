@@ -1,4 +1,5 @@
-var controllerAddress = "0xF9531f71247903B6e108CfF44858Af561EaAe101";
+var controllerAddress = "0xD3528B260364497a29f6b344D24b866E4B58C2f5"; // addresses stored in mongodb
+//"0xF9531f71247903B6e108CfF44858Af561EaAe101"; // addresses stored in order contract
 
 App = {
   web3Provider: null,
@@ -119,7 +120,7 @@ App = {
 	//return App.initFactories(); modified after controller migration changed
 
 	
-	await App.initFactories();
+	await App.initFactories2();
 	return afterAsync();
 
 },
@@ -202,29 +203,28 @@ initFactories: async function(){
 	})
 },
 
-initFactories2: function(){
+initFactories2: async function(){
 	App.initAccount();
 
-	controllerInstance = new App.contracts.Controller(controllerAddress);
+	App.controllerInstance = await new App.contracts.Controller(controllerAddress);
 
-	controllerInstance.restaurantFactoryAddress().then(function(address){
+	await App.controllerInstance.restaurantFactoryAddress().then(function(address){
 		console.log("restaurantFactoryAddress: " + address);
 		return new App.contracts.RestaurantFactory(address);
 	}).then(function(instance){
 		App.restaurantFactoryInstance = instance;
-		return controllerInstance.customerFactoryAddress();
+		return App.controllerInstance.customerFactoryAddress();
 	}).then(function(address){
 		console.log("CustomerFactoryAddress: " + address);
 		return new App.contracts.CustomerFactory(address);
 	}).then(function(instance){
 		App.customerFactoryInstance = instance;
-		return controllerInstance.riderFactoryAddress();
+		return App.controllerInstance.riderFactoryAddress();
 	}).then(function(address){
 		console.log("RiderFactoryAddress: " + address);
 		return new App.contracts.RiderFactory(address);
 	}).then(function(instance){
 		App.riderFactoryInstance = instance;
-		afterAsync();
 	});
 },
 

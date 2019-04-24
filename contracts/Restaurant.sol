@@ -110,7 +110,7 @@ contract Restaurant {
     }
     
 
-    function makeOrder(uint[] calldata itemIds, uint deliveryFee, bytes calldata deliveryAddress, bytes32 riderKeyHash) external payable returns (address orderAddress) {
+    function makeOrder(uint[] calldata itemIds, uint deliveryFee, bytes32 riderKeyHash) external payable returns (address orderAddress) {
         //require this comes from a customer smart contract, maybe worth moving this to the order smart contract
         require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender), "Customer doesnt exist");
 
@@ -128,7 +128,7 @@ contract Restaurant {
             }
         }
         
-		Order newOrder = (new Order).value(msg.value)(totalOrders,items,prices,deliveryFee, deliveryAddress,controllerAddress, msg.sender, riderKeyHash);
+		Order newOrder = (new Order).value(msg.value)(totalOrders,items,prices,deliveryFee, controllerAddress, msg.sender, riderKeyHash);
 		orders[totalOrders] = order(true,address(newOrder));
         totalOrders ++;
 
