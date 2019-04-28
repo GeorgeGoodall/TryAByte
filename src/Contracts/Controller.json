@@ -142,9 +142,9 @@
       "signature": "0x3cf5040a"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"minimumDeliveryFee\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"customerFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"restaurantFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newFee\",\"type\":\"uint256\"}],\"name\":\"updateMinDeliveryFee\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_restaurantFactoryAddress\",\"type\":\"address\"},{\"name\":\"_customerFactoryAddress\",\"type\":\"address\"},{\"name\":\"_riderFactoryAddress\",\"type\":\"address\"}],\"name\":\"setFactoryAddresses\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"riderFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/TryAByte/contracts/Controller.sol\":\"Controller\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/TryAByte/contracts/Controller.sol\":{\"keccak256\":\"0x7eef360380985a245adfcf99b3cb6eef0233529393be7338d2f6be7d554a2d72\",\"urls\":[\"bzzr://9ccdfbbbf5da11210d03d961d710cea665a0b37a015e24f46ed5b27eb22cbe5c\"]},\"/home/george/Documents/TryAByte/contracts/Customer.sol\":{\"keccak256\":\"0xda6ef98c714f9e23f66c8943301aa82838cdc692f38e8700a2082638e05508e4\",\"urls\":[\"bzzr://3cdf2a83d278f5e0b2ef6ce7a29d48dae0975a06630b38af812cf3aeea8bac8b\"]},\"/home/george/Documents/TryAByte/contracts/CustomerFactory.sol\":{\"keccak256\":\"0x88be943b787bba8d75912ce2008a5baf5230c63b0da6abfac629f0b5c99fdb36\",\"urls\":[\"bzzr://5925ebd005e0697b62472cb6c021ee667652729885d78893ac779f635db9a191\"]},\"/home/george/Documents/TryAByte/contracts/Order.sol\":{\"keccak256\":\"0xdb1b4c662b18274d76879be7fbb38c8d3963aca2f8a97f0e55fcf32ec51b0b77\",\"urls\":[\"bzzr://37e6a8a53e083b57485940d08f90ffae743551aac76f326f25e99566e158ffe7\"]},\"/home/george/Documents/TryAByte/contracts/Restaurant.sol\":{\"keccak256\":\"0x924ef5ccbca27de3cf8ac722707ea6f78aa48939e3fa6ab1218265830829368e\",\"urls\":[\"bzzr://b0c9da165767a862d45ef8dcf874b9bcf13286b9e001bb18f68c70f417be3ba1\"]},\"/home/george/Documents/TryAByte/contracts/RestaurantFactory.sol\":{\"keccak256\":\"0x376bd6b3992dafae805c84227987443a92a088c05abb7444318561cc3ecc9a9e\",\"urls\":[\"bzzr://14d87b18484f3226c7218e95e6d03eb3ce4ebf9bd43d0ec1ca4e1a893369088c\"]},\"/home/george/Documents/TryAByte/contracts/Rider.sol\":{\"keccak256\":\"0x45ec4a7ae9b513d049970b3d0e87c5074c68a8632f6be261a5673c1121ab00f5\",\"urls\":[\"bzzr://ebb25f28418f5300100fb8df1d2f1640af66e6492db532982d65175fdc78ee57\"]},\"/home/george/Documents/TryAByte/contracts/RiderFactory.sol\":{\"keccak256\":\"0x30f6f9ebaebd0d3ec8d528ae9abcfcd31eeabacd70157379a00fea5da2d3cbbf\",\"urls\":[\"bzzr://334fd3d4b8662a2ce0d9cbe71cc7f0f10045c8039f52283170e0eb7ee5ecfef7\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b5060008054600160a060020a0319163317905566071afd498d00006004556103378061003d6000396000f3fe60806040526004361061008d5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416633cf5040a81146100925780635ed097f3146100ce5780636455e5ac146100e357806368db65a4146101145780638da5cb5b14610129578063a5b8f59d1461013e578063ba89c9161461016a578063c9286d57146101af575b600080fd5b34801561009e57600080fd5b506100bc600480360360208110156100b557600080fd5b50356101c4565b60408051918252519081900360200190f35b3480156100da57600080fd5b506100bc6101e8565b3480156100ef57600080fd5b506100f86101ee565b60408051600160a060020a039092168252519081900360200190f35b34801561012057600080fd5b506100f86101fd565b34801561013557600080fd5b506100f861020c565b34801561014a57600080fd5b506101686004803603602081101561016157600080fd5b503561021b565b005b34801561017657600080fd5b506101686004803603606081101561018d57600080fd5b50600160a060020a038135811691602081013582169160409091013516610299565b3480156101bb57600080fd5b506100f86102fc565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b600254600160a060020a031681565b600154600160a060020a031681565b600054600160a060020a031681565b600054600160a060020a0316331461029457604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601560248201527f796f7520617265206e6f7420746865206f776e65720000000000000000000000604482015290519081900360640190fd5b600455565b600054600160a060020a031633146102b057600080fd5b60018054600160a060020a0394851673ffffffffffffffffffffffffffffffffffffffff1991821617909155600280549385169382169390931790925560038054919093169116179055565b600354600160a060020a03168156fea165627a7a7230582051782de5bf99a20139e587af5d85f2b8fa1be35f8f755d65d42bfd2ba777ecd60029",
-  "deployedBytecode": "0x60806040526004361061008d5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416633cf5040a81146100925780635ed097f3146100ce5780636455e5ac146100e357806368db65a4146101145780638da5cb5b14610129578063a5b8f59d1461013e578063ba89c9161461016a578063c9286d57146101af575b600080fd5b34801561009e57600080fd5b506100bc600480360360208110156100b557600080fd5b50356101c4565b60408051918252519081900360200190f35b3480156100da57600080fd5b506100bc6101e8565b3480156100ef57600080fd5b506100f86101ee565b60408051600160a060020a039092168252519081900360200190f35b34801561012057600080fd5b506100f86101fd565b34801561013557600080fd5b506100f861020c565b34801561014a57600080fd5b506101686004803603602081101561016157600080fd5b503561021b565b005b34801561017657600080fd5b506101686004803603606081101561018d57600080fd5b50600160a060020a038135811691602081013582169160409091013516610299565b3480156101bb57600080fd5b506100f86102fc565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b600254600160a060020a031681565b600154600160a060020a031681565b600054600160a060020a031681565b600054600160a060020a0316331461029457604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601560248201527f796f7520617265206e6f7420746865206f776e65720000000000000000000000604482015290519081900360640190fd5b600455565b600054600160a060020a031633146102b057600080fd5b60018054600160a060020a0394851673ffffffffffffffffffffffffffffffffffffffff1991821617909155600280549385169382169390931790925560038054919093169116179055565b600354600160a060020a03168156fea165627a7a7230582051782de5bf99a20139e587af5d85f2b8fa1be35f8f755d65d42bfd2ba777ecd60029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"minimumDeliveryFee\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"customerFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"restaurantFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newFee\",\"type\":\"uint256\"}],\"name\":\"updateMinDeliveryFee\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_restaurantFactoryAddress\",\"type\":\"address\"},{\"name\":\"_customerFactoryAddress\",\"type\":\"address\"},{\"name\":\"_riderFactoryAddress\",\"type\":\"address\"}],\"name\":\"setFactoryAddresses\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"riderFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/TryAByte/contracts/Controller.sol\":\"Controller\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/TryAByte/contracts/Controller.sol\":{\"keccak256\":\"0x7eef360380985a245adfcf99b3cb6eef0233529393be7338d2f6be7d554a2d72\",\"urls\":[\"bzzr://9ccdfbbbf5da11210d03d961d710cea665a0b37a015e24f46ed5b27eb22cbe5c\"]},\"/home/george/Documents/TryAByte/contracts/Customer.sol\":{\"keccak256\":\"0x9276828178d6c35b571db4a9e2513a418ea7cd76ed9efeacf551b1b89559de2b\",\"urls\":[\"bzzr://68c4f7a8d31778a2e510de575565b191825a8c8243c53fd95e2700792fde0180\"]},\"/home/george/Documents/TryAByte/contracts/CustomerFactory.sol\":{\"keccak256\":\"0x88be943b787bba8d75912ce2008a5baf5230c63b0da6abfac629f0b5c99fdb36\",\"urls\":[\"bzzr://5925ebd005e0697b62472cb6c021ee667652729885d78893ac779f635db9a191\"]},\"/home/george/Documents/TryAByte/contracts/Order.sol\":{\"keccak256\":\"0x80cab7ce8c2e346372fedf03ebf615d2e38b4acac4dae79452d1a5124bb5368c\",\"urls\":[\"bzzr://7835ad0d895232fb2840df875170ea376de6899605ea1eb79c2dc40746df70ac\"]},\"/home/george/Documents/TryAByte/contracts/Restaurant.sol\":{\"keccak256\":\"0x4a09d012e08061f44b12b2732093116adb7a44f61b88a18c86fdd2e2f4243861\",\"urls\":[\"bzzr://6896c33d844d86c87a5648b447323c5c6d1eac5bfad35154cf31095cc31442bf\"]},\"/home/george/Documents/TryAByte/contracts/RestaurantFactory.sol\":{\"keccak256\":\"0x376bd6b3992dafae805c84227987443a92a088c05abb7444318561cc3ecc9a9e\",\"urls\":[\"bzzr://14d87b18484f3226c7218e95e6d03eb3ce4ebf9bd43d0ec1ca4e1a893369088c\"]},\"/home/george/Documents/TryAByte/contracts/Rider.sol\":{\"keccak256\":\"0x45ec4a7ae9b513d049970b3d0e87c5074c68a8632f6be261a5673c1121ab00f5\",\"urls\":[\"bzzr://ebb25f28418f5300100fb8df1d2f1640af66e6492db532982d65175fdc78ee57\"]},\"/home/george/Documents/TryAByte/contracts/RiderFactory.sol\":{\"keccak256\":\"0x30f6f9ebaebd0d3ec8d528ae9abcfcd31eeabacd70157379a00fea5da2d3cbbf\",\"urls\":[\"bzzr://334fd3d4b8662a2ce0d9cbe71cc7f0f10045c8039f52283170e0eb7ee5ecfef7\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060008054600160a060020a0319163317905566071afd498d00006004556103378061003d6000396000f3fe60806040526004361061008d5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416633cf5040a81146100925780635ed097f3146100ce5780636455e5ac146100e357806368db65a4146101145780638da5cb5b14610129578063a5b8f59d1461013e578063ba89c9161461016a578063c9286d57146101af575b600080fd5b34801561009e57600080fd5b506100bc600480360360208110156100b557600080fd5b50356101c4565b60408051918252519081900360200190f35b3480156100da57600080fd5b506100bc6101e8565b3480156100ef57600080fd5b506100f86101ee565b60408051600160a060020a039092168252519081900360200190f35b34801561012057600080fd5b506100f86101fd565b34801561013557600080fd5b506100f861020c565b34801561014a57600080fd5b506101686004803603602081101561016157600080fd5b503561021b565b005b34801561017657600080fd5b506101686004803603606081101561018d57600080fd5b50600160a060020a038135811691602081013582169160409091013516610299565b3480156101bb57600080fd5b506100f86102fc565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b600254600160a060020a031681565b600154600160a060020a031681565b600054600160a060020a031681565b600054600160a060020a0316331461029457604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601560248201527f796f7520617265206e6f7420746865206f776e65720000000000000000000000604482015290519081900360640190fd5b600455565b600054600160a060020a031633146102b057600080fd5b60018054600160a060020a0394851673ffffffffffffffffffffffffffffffffffffffff1991821617909155600280549385169382169390931790925560038054919093169116179055565b600354600160a060020a03168156fea165627a7a7230582057e14f32f49cf4f5b25473deb929af08d5dec0aa3e9987c4f2e45701223d44f40029",
+  "deployedBytecode": "0x60806040526004361061008d5763ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416633cf5040a81146100925780635ed097f3146100ce5780636455e5ac146100e357806368db65a4146101145780638da5cb5b14610129578063a5b8f59d1461013e578063ba89c9161461016a578063c9286d57146101af575b600080fd5b34801561009e57600080fd5b506100bc600480360360208110156100b557600080fd5b50356101c4565b60408051918252519081900360200190f35b3480156100da57600080fd5b506100bc6101e8565b3480156100ef57600080fd5b506100f86101ee565b60408051600160a060020a039092168252519081900360200190f35b34801561012057600080fd5b506100f86101fd565b34801561013557600080fd5b506100f861020c565b34801561014a57600080fd5b506101686004803603602081101561016157600080fd5b503561021b565b005b34801561017657600080fd5b506101686004803603606081101561018d57600080fd5b50600160a060020a038135811691602081013582169160409091013516610299565b3480156101bb57600080fd5b506100f86102fc565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b600254600160a060020a031681565b600154600160a060020a031681565b600054600160a060020a031681565b600054600160a060020a0316331461029457604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601560248201527f796f7520617265206e6f7420746865206f776e65720000000000000000000000604482015290519081900360640190fd5b600455565b600054600160a060020a031633146102b057600080fd5b60018054600160a060020a0394851673ffffffffffffffffffffffffffffffffffffffff1991821617909155600280549385169382169390931790925560038054919093169116179055565b600354600160a060020a03168156fea165627a7a7230582057e14f32f49cf4f5b25473deb929af08d5dec0aa3e9987c4f2e45701223d44f40029",
   "sourceMap": "122:908:0:-;;;326:123;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;350:5:0;:18;;-1:-1:-1;;;;;;350:18:0;358:10;350:18;;;393:16;372:18;:37;122:908;;;;;;",
   "deployedSourceMap": "122:908:0:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;921:107;;8:9:-1;5:2;;;30:1;27;20:12;5:2;921:107:0;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;921:107:0;;;;;;;;;;;;;;;;;;;291:30;;8:9:-1;5:2;;;30:1;27;20:12;5:2;291:30:0;;;;213:37;;8:9:-1;5:2;;;30:1;27;20:12;5:2;213:37:0;;;;;;;;-1:-1:-1;;;;;213:37:0;;;;;;;;;;;;;;171:39;;8:9:-1;5:2;;;30:1;27;20:12;5:2;171:39:0;;;;146:20;;8:9:-1;5:2;;;30:1;27;20:12;5:2;146:20:0;;;;778:140;;8:9:-1;5:2;;;30:1;27;20:12;5:2;778:140:0;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;778:140:0;;;;;452:323;;8:9:-1;5:2;;;30:1;27;20:12;5:2;452:323:0;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;;;;;;452:323:0;;;;;;;;;;;;;;;;;;;;253:34;;8:9:-1;5:2;;;30:1;27;20:12;5:2;253:34:0;;;;921:107;1001:22;;;;;;;;;;;;;26:21:-1;;;22:32;;6:49;;1001:22:0;;;;;;991:33;;;;;;921:107::o;291:30::-;;;;:::o;213:37::-;;;-1:-1:-1;;;;;213:37:0;;:::o;171:39::-;;;-1:-1:-1;;;;;171:39:0;;:::o;146:20::-;;;-1:-1:-1;;;;;146:20:0;;:::o;778:140::-;853:5;;-1:-1:-1;;;;;853:5:0;839:10;:19;831:52;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;887:18;:27;778:140::o;452:323::-;611:5;;-1:-1:-1;;;;;611:5:0;597:10;:19;589:28;;;;;;621:24;:52;;-1:-1:-1;;;;;621:52:0;;;-1:-1:-1;;621:52:0;;;;;;;677:22;:48;;;;;;;;;;;;;;;729:19;:42;;;;;;;;;;;452:323::o;253:34::-;;;-1:-1:-1;;;;;253:34:0;;:::o",
   "source": "pragma solidity ^0.5.0;\n\nimport \"./RestaurantFactory.sol\";\nimport \"./CustomerFactory.sol\";\nimport \"./RiderFactory.sol\";\n\n\ncontract Controller {\n\n\taddress public owner;\n\t\n\taddress public restaurantFactoryAddress;\n\taddress public customerFactoryAddress;\n\taddress public riderFactoryAddress;\n\n\tuint public minimumDeliveryFee;\n\n\n\tconstructor() public{\n\t\towner = msg.sender;\n\t\tminimumDeliveryFee = 2000000000000000; // set min delivery fee to 0.02 eth\n\t}\n\n\tfunction setFactoryAddresses(address _restaurantFactoryAddress, address _customerFactoryAddress, address _riderFactoryAddress) public{\n\t\trequire(msg.sender == owner);\n\t\trestaurantFactoryAddress = _restaurantFactoryAddress;\n\t\tcustomerFactoryAddress = _customerFactoryAddress;\n\t\triderFactoryAddress = _riderFactoryAddress;\n\t}\n\n\tfunction updateMinDeliveryFee(uint newFee) public{\n\t\trequire(msg.sender == owner,\"you are not the owner\");\n\t\tminimumDeliveryFee = newFee;\n\t}\n\n\tfunction getHash(bytes32 data) public pure returns(bytes32){\n\t\treturn keccak256(abi.encodePacked(data));\n\t}\n}",
@@ -176,7 +176,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 91,
-        "sourceUnit": 1798,
+        "sourceUnit": 1779,
         "src": "25:33:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -187,7 +187,7 @@
         "id": 3,
         "nodeType": "ImportDirective",
         "scope": 91,
-        "sourceUnit": 482,
+        "sourceUnit": 479,
         "src": "59:31:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -198,7 +198,7 @@
         "id": 4,
         "nodeType": "ImportDirective",
         "scope": 91,
-        "sourceUnit": 2150,
+        "sourceUnit": 2131,
         "src": "91:28:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -387,7 +387,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2197,
+                        "referencedDeclaration": 2178,
                         "src": "358:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -525,7 +525,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2197,
+                            "referencedDeclaration": 2178,
                             "src": "597:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -579,10 +579,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2200,
-                        2201
+                        2181,
+                        2182
                       ],
-                      "referencedDeclaration": 2200,
+                      "referencedDeclaration": 2181,
                       "src": "589:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -883,7 +883,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2197,
+                            "referencedDeclaration": 2178,
                             "src": "839:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -959,10 +959,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2200,
-                        2201
+                        2181,
+                        2182
                       ],
-                      "referencedDeclaration": 2201,
+                      "referencedDeclaration": 2182,
                       "src": "831:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -1127,7 +1127,7 @@
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2184,
+                            "referencedDeclaration": 2165,
                             "src": "1001:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
@@ -1174,7 +1174,7 @@
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2191,
+                      "referencedDeclaration": 2172,
                       "src": "991:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -1315,7 +1315,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 91,
-        "sourceUnit": 1798,
+        "sourceUnit": 1779,
         "src": "25:33:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1326,7 +1326,7 @@
         "id": 3,
         "nodeType": "ImportDirective",
         "scope": 91,
-        "sourceUnit": 482,
+        "sourceUnit": 479,
         "src": "59:31:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1337,7 +1337,7 @@
         "id": 4,
         "nodeType": "ImportDirective",
         "scope": 91,
-        "sourceUnit": 2150,
+        "sourceUnit": 2131,
         "src": "91:28:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1526,7 +1526,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2197,
+                        "referencedDeclaration": 2178,
                         "src": "358:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -1664,7 +1664,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2197,
+                            "referencedDeclaration": 2178,
                             "src": "597:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -1718,10 +1718,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2200,
-                        2201
+                        2181,
+                        2182
                       ],
-                      "referencedDeclaration": 2200,
+                      "referencedDeclaration": 2181,
                       "src": "589:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -2022,7 +2022,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2197,
+                            "referencedDeclaration": 2178,
                             "src": "839:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -2098,10 +2098,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2200,
-                        2201
+                        2181,
+                        2182
                       ],
-                      "referencedDeclaration": 2201,
+                      "referencedDeclaration": 2182,
                       "src": "831:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -2266,7 +2266,7 @@
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2184,
+                            "referencedDeclaration": 2165,
                             "src": "1001:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
@@ -2313,7 +2313,7 @@
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2191,
+                      "referencedDeclaration": 2172,
                       "src": "991:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -2435,18 +2435,12 @@
     "3": {
       "events": {},
       "links": {},
-      "address": "0x0aD29Ab2534Cb1c44DCAe2fa462B586a4A31A764",
-      "transactionHash": "0x81aeced6a0775508cd30a1cb6b4f8861d3c464c453961c959645e6cef95643a2"
-    },
-    "5777": {
-      "events": {},
-      "links": {},
-      "address": "0x7d9793F6e44d928051aed4F3a1d689574Bcf649F",
-      "transactionHash": "0xd933a7e607a3dcd46083553d3117c367d5e97768c733eb4516ae8af1914a0776"
+      "address": "0xD3528B260364497a29f6b344D24b866E4B58C2f5",
+      "transactionHash": "0x43b7e211fa4d69de531eccdd4d8898c044080673e500281e9c6c0a1965b87ae6"
     }
   },
   "schemaVersion": "3.0.6",
-  "updatedAt": "2019-04-15T15:14:33.922Z",
+  "updatedAt": "2019-04-24T17:09:25.312Z",
   "devdoc": {
     "methods": {}
   },

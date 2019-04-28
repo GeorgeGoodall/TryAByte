@@ -7,7 +7,6 @@ var currentRestaurant;
 var cart = [];
 
 
-
 function init(){
 	document.getElementById("loading").style.display = "block";
 	document.getElementById("main").style.display = "none";
@@ -300,16 +299,21 @@ async function checkout(){
 	var deliveryFee = document.getElementById("deliveryFee").value * Math.pow(10,18);
 	console.log("toSend: " + toSend + " + " + deliveryFee);
 	var toSend = toSend + deliveryFee;
-	var address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
-	if(address != null){
-		var totalOrders = await customerInstance.getTotalOrders();
-		var totalOrders = parseInt(totalOrders);
-		var random = makeid(12);
-		var hash = await App.controllerInstance.getHash(random);
-		customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,web3.fromAscii(address),hash,{from: App.account, value:toSend});
-		localStorage.setItem('customerKey'+(totalOrders),random);
-		afterOrderRequested();
-	}
+
+	var totalOrders = await customerInstance.getTotalOrders();
+	var totalOrders = parseInt(totalOrders);
+	var random = makeid(12);
+	var hash = await App.controllerInstance.getHash(random);
+	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend}).then(function(err,res){
+		console.log("test");
+		console.log(res);});
+	localStorage.setItem('customerKey'+(totalOrders),random);
+	localStorage.setItem('Address'+(totalOrders),random);
+
+
+	afterOrderRequested();
+
+	
 }
 
 async function afterOrderRequested(){
@@ -321,6 +325,59 @@ async function afterOrderRequested(){
 
 // to be called after an order make event has been created.
 async function afterOrderMade(orderAddress){
+
+	var address = null;
+	while(address !== null){
+		address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
+		
+		const msgParams = [
+		{
+		    type: 'address',      // Any valid solidity type
+		    name: 'orderAddress',     // Any string label you want
+		    value: orderAddress  // The value to sign, this should be changed
+		}];
+
+		web3.currentProvider.sendAsync({
+		    method: 'eth_signTypedData',
+		    params: [msgParams, App.account],
+		    from: from,
+	  	}, function (err, result) {
+		    if (err) return console.error(err)
+		    if (result.error) {
+		      return console.error(result.error.message)
+		    }else{
+		    	console.log("posting address to server: " + address);
+				$.ajax({ 
+			      type: 'POST', 
+			      url: '/newDbEntry',  
+			      data: {
+			      			msgParams: msgParams,
+			      			signature: result.result,
+			    			physicalAddress: address,
+			    			orderAddress: orderAddress,
+			    		},
+			      dataType: 'json',
+			      success: function (data) { 
+			      	if(data != 'NA'){
+			      		console.log("success");
+			      	}else{
+
+			      	}
+			      }
+			    });
+		    }
+	  	});
+	}
+	
+	
+
+
+	
+	
+	
+
+
+
 	var order = await new App.contracts.Order(orderAddress);
 	var restaurantAddress = await order.restaurant();
 	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
@@ -403,3 +460,59 @@ $(function() {
     init();
   });
 });
+
+//=================================================
+// this is tester code for serverside account verification
+
+
+const msgParams = [
+  {
+    type: 'string',      // Any valid solidity type
+    name: 'Message',     // Any string label you want
+    value: 'test'  // The value to sign, this should be changed
+ },
+ {   
+   type: 'uint32',
+      name: 'A number',
+      value: '1337'
+  }
+] 
+
+function signMsg(msgParams, from) {
+
+  web3.currentProvider.sendAsync({
+    method: 'eth_signTypedData',
+    params: [msgParams, from],
+    from: from,
+  }, function (err, result) {
+
+    if (err) return console.error(err)
+    if (result.error) {
+      return console.error(result.error.message)
+    }else{
+    	console.log("posting: " + result.result);
+    	$.ajax({ 
+	      type: 'POST', 
+	      url: '/db',  
+	      data: {
+        			message: result.result,
+        			signedNumberValue: msgParams[1].value,
+        		},
+	      dataType: 'json',
+	      success: function (data) { 
+	      	if(data != 'NA'){
+	      		console.log("success");
+	      	}else{
+
+	      	}
+	      }
+	    });
+    }
+
+
+  })
+}
+
+function test(){
+	signMsg(msgParams, web3.eth.defaultAccount);
+}

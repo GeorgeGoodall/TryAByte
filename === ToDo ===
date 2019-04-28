@@ -17,6 +17,8 @@
 
 =====================================================================================================
 
+	- cart not showing enough dp
+	- remove address storage from order contract
 	- have relivent orders appear at top
 	- have all libraries imported from online imported from local
 	- remove buttons so only ones currently used are shown
