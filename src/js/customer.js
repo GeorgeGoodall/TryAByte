@@ -73,15 +73,18 @@ async function getCustomerInstance(){
 }
 
 async function initiateEvents(){
+
 	var orderMadeEvent = customerInstance.OrderMadeEvent({},{fromBlock: 'latest'});
 	
 	orderMadeEvent.watch(function(err,result){
+		console.log("event found");
 		if(!err){
 			afterOrderMade(result.args.orderAddress);
 		}else{
 			console.log(err);
 		}
 	});
+	console.log("Events Initiated");
 }
 
 async function getRestaurants(){
@@ -228,6 +231,9 @@ async function populateOrderView(id){
 
 
 	order = orders[id];
+
+	console.log("Viewing Order at: "+order.address);
+
 	var cost = await order.getCost();
 	var orderLength = await order.totalItems();
 	var customerStatus = await order.customerStatus();
@@ -253,6 +259,7 @@ async function populateOrderView(id){
 					'<div id="OrderItems"></div>'+
 				'</div>'+
 				'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(cost*App.conversion.currentPrice*Math.pow(10,-18)*100)/100+')</h3><br>'+
+				'<button id="updateAddressBut" onclick="saveAddress(\''+order.address+'\')">Update Address</button>'+
 				'<div id="statusArea">'+
 					'<h2 class="text-center">OrderStatus</h2>'+
 					'<div id="statusContent">'+
@@ -304,9 +311,7 @@ async function checkout(){
 	var totalOrders = parseInt(totalOrders);
 	var random = makeid(12);
 	var hash = await App.controllerInstance.getHash(random);
-	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend}).then(function(err,res){
-		console.log("test");
-		console.log(res);});
+	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend}).then(function(err,res){console.log(res);});
 	localStorage.setItem('customerKey'+(totalOrders),random);
 	localStorage.setItem('Address'+(totalOrders),random);
 
@@ -326,58 +331,13 @@ async function afterOrderRequested(){
 // to be called after an order make event has been created.
 async function afterOrderMade(orderAddress){
 
+	console.log("OrderMade at: " + orderAddress)
+
 	var address = null;
-	while(address !== null){
-		address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
-		
-		const msgParams = [
-		{
-		    type: 'address',      // Any valid solidity type
-		    name: 'orderAddress',     // Any string label you want
-		    value: orderAddress  // The value to sign, this should be changed
-		}];
+	var hasAddress = false;
 
-		web3.currentProvider.sendAsync({
-		    method: 'eth_signTypedData',
-		    params: [msgParams, App.account],
-		    from: from,
-	  	}, function (err, result) {
-		    if (err) return console.error(err)
-		    if (result.error) {
-		      return console.error(result.error.message)
-		    }else{
-		    	console.log("posting address to server: " + address);
-				$.ajax({ 
-			      type: 'POST', 
-			      url: '/newDbEntry',  
-			      data: {
-			      			msgParams: msgParams,
-			      			signature: result.result,
-			    			physicalAddress: address,
-			    			orderAddress: orderAddress,
-			    		},
-			      dataType: 'json',
-			      success: function (data) { 
-			      	if(data != 'NA'){
-			      		console.log("success");
-			      	}else{
-
-			      	}
-			      }
-			    });
-		    }
-	  	});
-	}
+	saveAddress(orderAddress);
 	
-	
-
-
-	
-	
-	
-
-
-
 	var order = await new App.contracts.Order(orderAddress);
 	var restaurantAddress = await order.restaurant();
 	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
@@ -388,8 +348,96 @@ async function afterOrderMade(orderAddress){
 
 	alert("you're order costing approximatly " + Math.round(price * Math.pow(10,-18)*10000)/10000 + " Ethereum (£"+ Math.round(price * Math.pow(10,-18) * App.conversion.currentPrice * 100) / 100+") with a deliveryFee of " + deliveryFee * Math.pow(10,-18) + " Ethereum (£"+ Math.round(deliveryFee* Math.pow(10,-18)* App.conversion.currentPrice * 100) / 100+") to " + name + " has been made.");
 	$("#recentOrderStatus").html("");
-	//getOrders();
 	addOrder(orderAddress);
+}
+
+async function saveAddress(orderAddress){
+	address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
+		
+	if(address == null || address == ""){
+		return saveAddress(orderAddress);
+	}
+
+	const msgParams = [
+	{
+	    type: 'string',      // Any valid solidity type
+	    name: 'orderAddress',     // Any string label you want
+	    value: orderAddress  // The value to sign, this should be changed
+	}];
+
+	await web3.currentProvider.sendAsync(
+	{
+	    method: 'eth_signTypedData',
+	    params: [msgParams, App.account],
+	    from: App.account,
+  	}, 
+  	function (err, result) {
+  		console.log("test");
+	    if(err){
+	    	console.error(err);
+	    	return saveAddress(orderAddress);
+	    }
+	    if(result.error) {
+	      console.error(result.error);
+	      return saveAddress(orderAddress);
+	    }else{
+	    	console.log("posting address to server: " + address);
+			$.ajax({ 
+		      type: 'POST', 
+		      url: '/saveOrderAddress',  
+		      data: {
+		      			signature: result.result,
+		    			physicalAddress: address,
+		    			orderAddress: orderAddress,
+		    		},
+		      dataType: 'json',
+		      success: function (data) { 
+		      	if(data != 'NA'){
+		      		return address;
+		      	}else{
+		      		console.log(data);
+		      		return saveAddress(orderAddress);
+		      	}
+		      }
+		    });
+	    }
+  	});
+}
+
+async function getAddress(orderAddress){
+	const msgParams = [
+	{
+	    type: 'string',      // Any valid solidity type
+	    name: 'orderAddress',     // Any string label you want
+	    value: orderAddress  // The value to sign, this should be changed
+	}];
+
+	await web3.currentProvider.sendAsync(
+	{
+	    method: 'eth_signTypedData',
+	    params: [msgParams, App.account],
+	    from: App.account,
+  	}, 
+  	function (err, result) {
+  		console.log("requesting address from server for order: " + orderAddress);
+  		$.ajax({ 
+		      type: 'POST', 
+		      url: '/requestAddress',  
+		      data: {
+		      			signature: result.result,
+		    			orderAddress: orderAddress,
+		    		},
+		      dataType: 'json',
+		      success: function (data) { 
+		      	if(data != 'NA'){
+		      		console.log(data);
+		      		return data;
+		      	}else{
+		      		console.log(data);
+		      	}
+		      }
+		    });
+  	});
 }
 
 function addToCart(id){
@@ -470,12 +518,12 @@ const msgParams = [
     type: 'string',      // Any valid solidity type
     name: 'Message',     // Any string label you want
     value: 'test'  // The value to sign, this should be changed
- },
- {   
-   type: 'uint32',
-      name: 'A number',
-      value: '1337'
-  }
+ }//,
+ // {   
+ //   type: 'uint32',
+ //      name: 'A number',
+ //      value: '1337'
+ //  }
 ] 
 
 function signMsg(msgParams, from) {
@@ -485,7 +533,7 @@ function signMsg(msgParams, from) {
     params: [msgParams, from],
     from: from,
   }, function (err, result) {
-
+  	console.log("message Signed");
     if (err) return console.error(err)
     if (result.error) {
       return console.error(result.error.message)
@@ -516,3 +564,6 @@ function signMsg(msgParams, from) {
 function test(){
 	signMsg(msgParams, web3.eth.defaultAccount);
 }
+
+
+

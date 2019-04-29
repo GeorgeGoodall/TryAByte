@@ -22,8 +22,8 @@ contract Order{
 	bool public riderPaid = false;
 
 	address payable public restaurant;
-	address payable public rider; 	  // this should be encrypted
-	address payable customer; // this should be encrypted
+	address payable public rider; 	 
+	address payable public customer; 
 
 	address controller;
 

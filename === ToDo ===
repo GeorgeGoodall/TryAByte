@@ -66,9 +66,10 @@
 	
 
 - smart contract improvments
+	- get contracts on testnet
+	- payment via check system
 	
-	- sort out paying of 
-- optimise backend for gas price
-- data encryption
-- payment via check system
-- get contracts on testnet
+	 
+	- optimise backend for gas price
+	- data encryption
+	- make contracts inherit from an account contract to reduce redundant code, improve readability and reduce gas price 

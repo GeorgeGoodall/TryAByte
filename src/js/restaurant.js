@@ -202,6 +202,7 @@ async function populateOrderView(address){
 	var html = 		'<h3 class="text-center">Summery of the order</h3>'+
 					'<h1 id="OrderID" class="text-center">Order address: '+address+'</h1>' +
 					'<h2 id="OrderTime" class="text-center">Order time: '+new Date(orderTime*1000).toLocaleString()+'</h2>' +
+					'<h2 id="DeliveryAddress" class="text-center"></h2>' +
 					'<div id="ItemsArea">'+
 						'<h2 class="text-center">Ordered Items</h2>'+
 						'<div id="OrderItems"></div>'+
@@ -216,6 +217,7 @@ async function populateOrderView(address){
 						'</div>'+
 						'<div id="buttonArea" style="margin-left: 45%">'+
 						'</div>'+
+						'<button id="ShowDeliveryAddress" onclick="ShowDeliveryAddress(\''+address+'\')">Request Delivery Address</h2>' +
 					'</div>';
 
 	$("#Order").html(html);
@@ -380,6 +382,50 @@ async function updateMenu(){
 	}
 }
 
+async function ShowDeliveryAddress(orderAddress){
+	var address = await getAddress(orderAddress);
+	$('#DeliveryAddress').html("Delivery address: " + address);
+}
+
+async function getAddress(orderAddress, callback = 'undefined'){
+	const msgParams = [
+	{
+	    type: 'string',      // Any valid solidity type
+	    name: 'orderAddress',     // Any string label you want
+	    value: orderAddress  // The value to sign, this should be changed
+	}];
+
+	await web3.currentProvider.sendAsync(
+	{
+	    method: 'eth_signTypedData',
+	    params: [msgParams, App.account],
+	    from: App.account,
+  	}, 
+  	async function (err, result) {
+  		console.log("requesting address from server for order: " + orderAddress);
+  		$.ajax({ 
+		      type: 'POST', 
+		      url: '/requestAddress',
+		      async: true,  
+		      data: {
+		      			signature: result.result,
+		    			orderAddress: orderAddress,
+		    		},
+		      dataType: 'json',
+		      success: function (data) { 
+		      	if(data != 'NA'){
+		      		console.log("1");
+		      		return data;
+
+		      	}else{
+		      		console.log(data)
+		      	}
+		      }
+		    });
+  		console.log("2");
+  	});
+  	console.log("3");
+}
 
 
 

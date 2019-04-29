@@ -19,6 +19,9 @@ module.exports = function(deployer) {
 	// deployer.deploy(RestaurantFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
 	//deployer.deploy(RiderFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
 	//deployer.deploy(CustomerFactory,"0x7DcD6B2EBc56C69dD6ee17f7CdCa82149e13e4E3");
+  	
+
+	// for deploying everything
   	deployer.deploy(Controller).then(
   		async function(instance){
 	  		var restFactAddress;
@@ -64,6 +67,13 @@ module.exports = function(deployer) {
 	  		});
   		}
   	);
+
+
+
+
+
+
+
 	//deployer.deploy(test);
 
 };

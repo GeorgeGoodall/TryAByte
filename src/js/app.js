@@ -1,4 +1,5 @@
-var controllerAddress = "0xD3528B260364497a29f6b344D24b866E4B58C2f5"; // addresses stored in mongodb
+var controllerAddress = "0x0C65a3108b992F01FCeb6354990BB83e43d80FC7" // changed customer address to public in order
+//"0xD3528B260364497a29f6b344D24b866E4B58C2f5"; // addresses stored in mongodb
 //"0xF9531f71247903B6e108CfF44858Af561EaAe101"; // addresses stored in order contract
 
 App = {
