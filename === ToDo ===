@@ -17,6 +17,7 @@
 
 =====================================================================================================
 
+	- make better use of await to speed up processing massivly
 	- cart not showing enough dp
 	- remove address storage from order contract
 	- have relivent orders appear at top
@@ -25,6 +26,9 @@
 	- after marking orders update order view
 	- clicking on an order for rider takes them to your orders even if its not there order
 	- customer cart view showing eth in finney and no pounds
+	- order id'ing method not consistant between your orders and restaurant available orders on rider view (change to id by contract address)
+	- need notification on if the customer physical address update worked
+	- remove complete orders somewhere else
 
 	- add notification for restaurant order made
 	- add notification that the order made is being processed

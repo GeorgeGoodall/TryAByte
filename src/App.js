@@ -170,6 +170,9 @@ app.post(["/requestAddress"], async function(req,res){
 
   // check if customer, restaurant or rider sent this message
   var order = orderContract.at(req.body.orderAddress);
+  // ToDo
+  // add check here for if order was found
+  // improve await logic
   var customerContractAddressForOrder = await order.customer();
   var restaurantContractAddressForOrder = await order.restaurant();
   var riderContractAddressForOrder = await order.rider();

@@ -53,25 +53,61 @@ async function getRestaurantInstance(){
 	}
 }
 
+// old function, improved to make propper use of await
+// async function printOrder(address){
+// 	var order = await new App.contracts.Order(address);
+// 	var id = await order.id();
+// 	var price = await order.getCost();
+// 	var orderTime = await order.orderTime();
+
+// 	var customerStatus = await order.customerStatus();
+// 	var restaurantStatus = await order.restaurantStatus();
+// 	var riderStatus = await order.riderStatus();
+
+// 	var restaurantAddress = await order.restaurant();
+// 	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
+// 	var restaurantName = await restaurant.name();
+
+
+// 	var html = 	'<div class="itemTyle" onclick="viewOrder(\''+address+'\')">'+
+// 					'<p>'+restaurantName+'</p>'+
+// 					//'<h3 style="float: right">Status: Delivered</h3>'+
+// 					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+' <br>Price: '+Math.round(price*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(price*App.conversion.currentPrice* Math.pow(10,-18)*100)/100+')<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+// 				'</div>';
+
+// 	// if order complete
+// 	if(restaurantStatus >= 2){
+// 		$("#CompleteOrders").append(html);
+// 		completeOrdersCount++;
+// 		$("#completeOrdersTitle").html("Complete Orders (Count: "+completeOrdersCount+")");
+// 	}else{
+// 		$("#CurrentOrders").append(html);
+// 		currentOrdersCount++;
+// 		$("#currentOrdersTitle").html("Current Orders (Count: "+currentOrdersCount+")");
+// 	}
+// }
+
 async function printOrder(address){
 	var order = await new App.contracts.Order(address);
-	var id = await order.id();
-	var price = await order.getCost();
-	var orderTime = await order.orderTime();
+	var id = order.id();
+	var price = order.getCost();
+	var orderTime = order.orderTime();
 
-	var customerStatus = await order.customerStatus();
-	var restaurantStatus = await order.restaurantStatus();
-	var riderStatus = await order.riderStatus();
+	var customerStatus = order.customerStatus();
+	var restaurantStatus = order.restaurantStatus();
+	var riderStatus = order.riderStatus();
+	var restaurantAddress = order.restaurant();
 
-	var restaurantAddress = await order.restaurant();
-	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
+	var orderVars = await Promise.all([id,price,orderTime,customerStatus,restaurantStatus,riderStatus, restaurantAddress]);
+
+	var restaurant = await new App.contracts.Restaurant(orderVars[6]);
 	var restaurantName = await restaurant.name();
 
 
 	var html = 	'<div class="itemTyle" onclick="viewOrder(\''+address+'\')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+' <br>Price: '+Math.round(price*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(price*App.conversion.currentPrice* Math.pow(10,-18)*100)/100+')<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+new Date(orderVars[2]*1000).toLocaleString()+' <br>Price: '+Math.round(orderVars[1]*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(orderVars[1]*App.conversion.currentPrice* Math.pow(10,-18)*100)/100+')<br>customerStatus: '+orderVars[3]+'. restaurantStatus: '+orderVars[4]+'. riderStatus: '+orderVars[5]+'</p>'+
 				'</div>';
 
 	// if order complete
@@ -181,65 +217,76 @@ async function populateOrderView(address){
 
 
 	var order = await new App.contracts.Order(address);
-	var cost = await order.getCost();
-	var orderLength = await order.totalItems();
-	var orderTime = await order.orderTime();
-	var customerStatus = await order.customerStatus();
-	var restaurantStatus = await order.restaurantStatus();
-	var riderStatus = await order.riderStatus();
-
-
-	var orderRestaurantAddress = await order.restaurant();
-	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
-	var name = await orderRestaurant.name();
-	var restaurantAddress = await orderRestaurant.location();
-
+	var cost = order.getCost();
+	var orderLength = order.totalItems();
+	var orderTime = order.orderTime();
+	var customerStatus = order.customerStatus();
+	var restaurantStatus = order.restaurantStatus();
+	var riderStatus = order.riderStatus();
 	var keySet = await order.keyRestaurantSet();
+	var orderRestaurantAddress = order.restaurant();
+
+	var orderVars = await Promise.all([	cost,
+										orderLength,
+										orderTime,
+										customerStatus,
+										restaurantStatus,
+										riderStatus,
+										keySet,
+										orderRestaurantAddress]);
+
+
+	var orderRestaurant = await new App.contracts.Restaurant(orderVars[7]);
+	var name = orderRestaurant.name();
+	var restaurantAddress = orderRestaurant.location();
+
+	var restaurantVars = await Promise.all([name,restaurantAddress]);
+
 	
 	
-	console.log("order length: " + orderLength);
+	console.log("order length: " + orderVars[1]);
 
 	var html = 		'<h3 class="text-center">Summery of the order</h3>'+
 					'<h1 id="OrderID" class="text-center">Order address: '+address+'</h1>' +
-					'<h2 id="OrderTime" class="text-center">Order time: '+new Date(orderTime*1000).toLocaleString()+'</h2>' +
+					'<h2 id="OrderTime" class="text-center">Order time: '+new Date(orderVars[2]*1000).toLocaleString()+'</h2>' +
 					'<h2 id="DeliveryAddress" class="text-center"></h2>' +
 					'<div id="ItemsArea">'+
 						'<h2 class="text-center">Ordered Items</h2>'+
 						'<div id="OrderItems"></div>'+
 					'</div>'+
-					'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(cost*Math.pow(10,-18)*100*App.conversion.currentPrice)/100+')</h3><br>'+
+					'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(orderVars[0]*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(orderVars[0]*Math.pow(10,-18)*100*App.conversion.currentPrice)/100+')</h3><br>'+
 					'<div id="statusArea">'+
 						'<h2 class="text-center">OrderStatus</h2>'+
 						'<div id="statusContent">'+
-							'<h3 class="text-center">Restaurant: '+restaurantState.get(restaurantStatus.c[0])+'</h3>'+ // note .c[0] needs to be used here because an object is returned instead of a uint
-  							'<h3 class="text-center">Rider: '+riderState.get(riderStatus.c[0])+'</h3>'+
-  							'<h3 class="text-center">Customer: '+customerState.get(customerStatus.c[0])+'</h3>'+
+							'<h3 class="text-center">Restaurant: '+restaurantState.get(orderVars[4].c[0])+'</h3>'+ // note .c[0] needs to be used here because an object is returned instead of a uint
+  							'<h3 class="text-center">Rider: '+riderState.get(orderVars[5].c[0])+'</h3>'+
+  							'<h3 class="text-center">Customer: '+customerState.get(orderVars[3].c[0])+'</h3>'+
 						'</div>'+
 						'<div id="buttonArea" style="margin-left: 45%">'+
 						'</div>'+
-						'<button id="ShowDeliveryAddress" onclick="ShowDeliveryAddress(\''+address+'\')">Request Delivery Address</h2>' +
 					'</div>';
 
 	$("#Order").html(html);
 
-	if(restaurantStatus.c[0] == 0){
+	if(orderVars[4].c[0] == 0){
 		$("#buttonArea").html('<button id="acceptOrder" onclick="updateStatus(1)">Accept Order</button>');
-	}else if(restaurantStatus.c[0] == 1){
-		$("#buttonArea").html('<button id="readyForCollection" onclick="updateStatus(2)">notify ready for collection</button>');
+	}else if(orderVars[4].c[0] == 1){
+		$("#buttonArea").html(	'<button id="ShowDeliveryAddress" onclick="ShowDeliveryAddress(\''+address+'\')">Request Delivery Address</button><br>' +
+								'<button id="readyForCollection" onclick="updateStatus(2)">notify ready for collection</button>');
 	}
 
 	//change displayed buttons based on current rider status
-	if(keySet && parseInt(restaurantStatus.c[0]) > 1){
+	if(orderVars[6] && parseInt(orderVars[4].c[0]) > 1){
 		var key = localStorage.getItem("keyRestaurant"+address);
 		if(key == null){
 			// add key to localstorage incase of error so payment can be released later
 			$("#buttonArea").append('<input type="text" id="keyInput">'+
-									'<button id="" onclick="checkKey()" style="">Submit Key</button><br>');
+									'<button id="" onclick="checkKey(\''+address+'\')" style="">Submit Key</button><br>');
 		}
 	}
 
 	var htmlMenu = "";
-	for(var i = 0; i<orderLength;i++){
+	for(var i = 0; i<orderVars[1];i++){
 		(function(counter){
 			order.getItem(counter).then(function(item){
 				var price = Math.round(item[1]*Math.pow(10,-18)*10000)/10000;
@@ -252,7 +299,89 @@ async function populateOrderView(address){
 	}
 }
 
-async function checkKey(){
+// async function populateOrderView2(address){
+// 	console.log("Getting order with address: " + address)
+
+// 	var customerState = new Map([[0, 'madeOrder'],[1, 'payed'],[2, 'hasCargo'],]);
+// 	var riderState = new Map([[0, 'unassigned'],[1, 'accepted'],[2, 'hasCargo'],[3, 'Delivered'],]);
+// 	var restaurantState = new Map([[0, 'acceptedOrder'],[1, 'preparingCargo'],[2, 'readyForCollection'],[3, 'HandedOver'],]);
+
+
+
+// 	var order = await new App.contracts.Order(address);
+// 	var cost = await order.getCost();
+// 	var orderLength = await order.totalItems();
+// 	var orderTime = await order.orderTime();
+// 	var customerStatus = await order.customerStatus();
+// 	var restaurantStatus = await order.restaurantStatus();
+// 	var riderStatus = await order.riderStatus();
+
+
+// 	var orderRestaurantAddress = await order.restaurant();
+// 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
+// 	var name = await orderRestaurant.name();
+// 	var restaurantAddress = await orderRestaurant.location();
+
+// 	var keySet = await order.keyRestaurantSet();
+	
+	
+// 	console.log("order length: " + orderLength);
+
+// 	var html = 		'<h3 class="text-center">Summery of the order</h3>'+
+// 					'<h1 id="OrderID" class="text-center">Order address: '+address+'</h1>' +
+// 					'<h2 id="OrderTime" class="text-center">Order time: '+new Date(orderTime*1000).toLocaleString()+'</h2>' +
+// 					'<h2 id="DeliveryAddress" class="text-center"></h2>' +
+// 					'<div id="ItemsArea">'+
+// 						'<h2 class="text-center">Ordered Items</h2>'+
+// 						'<div id="OrderItems"></div>'+
+// 					'</div>'+
+// 					'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(cost*Math.pow(10,-18)*100*App.conversion.currentPrice)/100+')</h3><br>'+
+// 					'<div id="statusArea">'+
+// 						'<h2 class="text-center">OrderStatus</h2>'+
+// 						'<div id="statusContent">'+
+// 							'<h3 class="text-center">Restaurant: '+restaurantState.get(restaurantStatus.c[0])+'</h3>'+ // note .c[0] needs to be used here because an object is returned instead of a uint
+//   							'<h3 class="text-center">Rider: '+riderState.get(riderStatus.c[0])+'</h3>'+
+//   							'<h3 class="text-center">Customer: '+customerState.get(customerStatus.c[0])+'</h3>'+
+// 						'</div>'+
+// 						'<div id="buttonArea" style="margin-left: 45%">'+
+// 						'</div>'+
+// 						'<button id="ShowDeliveryAddress" onclick="ShowDeliveryAddress(\''+address+'\')" style="margin-left: 45%">Request Delivery Address</h2>' +
+// 					'</div>';
+
+// 	$("#Order").html(html);
+
+// 	if(restaurantStatus.c[0] == 0){
+// 		$("#buttonArea").html('<button id="acceptOrder" onclick="updateStatus(1)">Accept Order</button>');
+// 	}else if(restaurantStatus.c[0] == 1){
+// 		$("#buttonArea").html('<button id="readyForCollection" onclick="updateStatus(2)">notify ready for collection</button>');
+// 	}
+
+// 	//change displayed buttons based on current rider status
+// 	if(keySet && parseInt(restaurantStatus.c[0]) > 1){
+// 		var key = localStorage.getItem("keyRestaurant"+address);
+// 		if(key == null){
+// 			// add key to localstorage incase of error so payment can be released later
+// 			$("#buttonArea").append('<input type="text" id="keyInput">'+
+// 									'<button id="" onclick="checkKey()" style="">Submit Key</button><br>');
+// 		}
+// 	}
+
+// 	var htmlMenu = "";
+// 	for(var i = 0; i<orderLength;i++){
+// 		(function(counter){
+// 			order.getItem(counter).then(function(item){
+// 				var price = Math.round(item[1]*Math.pow(10,-18)*10000)/10000;
+// 				htmlMenu = 	'<div class="item">'+
+// 								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+': '+price+'(£'+Math.round(price*App.conversion.currentPrice*100)/100+')</p>'+
+// 							'</div>';
+// 				$("#ItemsArea").append(htmlMenu);
+// 			});
+// 		})(i);
+// 	}
+// }
+
+async function checkKey(address){
+	var order = await new App.contracts.Order(address);
 	var key = document.getElementById("keyInput").value;
 	var hash = await order.getHash(key);
 	var actualHash = await order.keyHashRestaurant();
@@ -383,8 +512,7 @@ async function updateMenu(){
 }
 
 async function ShowDeliveryAddress(orderAddress){
-	var address = await getAddress(orderAddress);
-	$('#DeliveryAddress').html("Delivery address: " + address);
+	getAddress(orderAddress,(output) => {alert("Delivery address: " + output); $('#DeliveryAddress').html("Delivery address: " + output);});
 }
 
 async function getAddress(orderAddress, callback = 'undefined'){
@@ -411,20 +539,16 @@ async function getAddress(orderAddress, callback = 'undefined'){
 		      			signature: result.result,
 		    			orderAddress: orderAddress,
 		    		},
-		      dataType: 'json',
+		      dataType: 'text',
 		      success: function (data) { 
-		      	if(data != 'NA'){
-		      		console.log("1");
-		      		return data;
-
+		      	if(data != ''){
+		      		callback(data);
 		      	}else{
-		      		console.log(data)
+
 		      	}
 		      }
-		    });
-  		console.log("2");
+		    });		
   	});
-  	console.log("3");
 }
 
 

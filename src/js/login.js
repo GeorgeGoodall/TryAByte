@@ -49,13 +49,15 @@ async function initiateEvents(){
 }
 
 async function addUserCounts(){
-	var restaurantCount = await App.restaurantFactoryInstance.restaurantCount();
-	var customerCount = await App.customerFactoryInstance.customerCount();
-	var riderCount = await App.riderFactoryInstance.riderCount();
+	var restaurantCount =  App.restaurantFactoryInstance.restaurantCount();
+	var customerCount =  App.customerFactoryInstance.customerCount();
+	var riderCount =  App.riderFactoryInstance.riderCount();
 
-	document.getElementById("restaurantButton").append(" (Count: " + restaurantCount + ")");
-	document.getElementById("customerButton").append(" (Count: " + customerCount + ")");
-	document.getElementById("riderButton").append(" (Count: " + riderCount + ")");
+	var counts = await Promise.all([restaurantCount, customerCount, riderCount]);
+
+	document.getElementById("restaurantButton").append(" (Count: " + counts[0] + ")");
+	document.getElementById("customerButton").append(" (Count: " + counts[1] + ")");
+	document.getElementById("riderButton").append(" (Count: " + counts[2] + ")");
 }
 
 

@@ -251,13 +251,14 @@ async function populateOrderView(orderIndex){
 	var customerStatus = await order.customerStatus();
 	var restaurantStatus = await order.restaurantStatus();
 	var riderStatus = await order.riderStatus();
+	console.log("riderStat: " + riderStatus);
 	var rider = await order.rider();
 	var orderTime = await order.orderTime();
 
 	var orderRestaurantAddress = await order.restaurant();
 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
 	var name = await orderRestaurant.name();
-	var address = await orderRestaurant.location();
+	var restaurantPhysicalAddress = await orderRestaurant.location();
 
 	var orderID = await order.id();
 	
@@ -274,6 +275,7 @@ async function populateOrderView(orderIndex){
 				'<p class="text-center" style="font-size: 14px">Order Time: '+new Date(orderTime*1000).toLocaleString()+'</p>'+
 				'<p class="text-center" id="payment">Pay: '+Math.round(cost*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(cost*Math.pow(10,-18)*App.conversion.currentPrice*100)/100+')</p>'+
 				'<p class="text-center" id="depositRequired">Deposit Required: '+Math.round(cost*Math.pow(10,-15)*100)/100+'</p>'+
+				'<h2 id="DeliveryAddress" class="text-center"></h2>' +
 				//'<p class="text-center" id="payment" style="margin-bottom: 20px;">Delivery Location: (ToDo)</p>'+
 				'<div id="statusArea">'+
 					'<h2 class="text-center">OrderStatus</h2>'+
@@ -314,6 +316,9 @@ async function populateOrderView(orderIndex){
 		else{
 			alert("key Found");
 		}
+	}
+	if( parseInt(riderStatus.c[0]) >= 1){
+		$("#buttonArea").append('<button id="ShowDeliveryAddress" onclick="ShowDeliveryAddress(\''+order.address+'\')">Request Delivery Address</button><br>');
 	}
 
 
@@ -393,4 +398,44 @@ async function updateStatus(status){
 		await riderInstance.setStatus(orders[currentOrder].address,status,{from: App.account});
 	}
 	await viewOrder(currentOrder);
+}
+
+async function ShowDeliveryAddress(orderAddress){
+	getAddress(orderAddress,(output) => {alert("Delivery address: " + output); $('#DeliveryAddress').html("Delivery address: " + output);});
+}
+
+async function getAddress(orderAddress, callback = 'undefined'){
+	const msgParams = [
+	{
+	    type: 'string',      // Any valid solidity type
+	    name: 'orderAddress',     // Any string label you want
+	    value: orderAddress  // The value to sign, this should be changed
+	}];
+
+	await web3.currentProvider.sendAsync(
+	{
+	    method: 'eth_signTypedData',
+	    params: [msgParams, App.account],
+	    from: App.account,
+  	}, 
+  	async function (err, result) {
+  		console.log("requesting address from server for order: " + orderAddress);
+  		$.ajax({ 
+		      type: 'POST', 
+		      url: '/requestAddress',
+		      async: true,  
+		      data: {
+		      			signature: result.result,
+		    			orderAddress: orderAddress,
+		    		},
+		      dataType: 'text',
+		      success: function (data) { 
+		      	if(data != ''){
+		      		callback(data);
+		      	}else{
+
+		      	}
+		      }
+		    });		
+  	});
 }
