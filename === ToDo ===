@@ -17,6 +17,7 @@
 
 =====================================================================================================
 
+	- make better use of await to speed up processing massivly
 	- cart not showing enough dp
 	- remove address storage from order contract
 	- have relivent orders appear at top
@@ -25,7 +26,14 @@
 	- after marking orders update order view
 	- clicking on an order for rider takes them to your orders even if its not there order
 	- customer cart view showing eth in finney and no pounds
+	- order id'ing method not consistant between your orders and restaurant available orders on rider view (change to id by contract address)
+	- need notification on if the customer physical address update worked
+	- remove complete orders somewhere else
 
+	- add button to remake key, in case of key loss
+	- improve program file layout, split into server and client
+	- remove unused node modules
+	- make account contracts inherit from an account contract
 	- add notification for restaurant order made
 	- add notification that the order made is being processed
 	- after order is offered for delivery need to move order to your orders and refresh order under in restaurant
@@ -66,9 +74,10 @@
 	
 
 - smart contract improvments
+	- get contracts on testnet
+	- payment via check system
 	
-	- sort out paying of 
-- optimise backend for gas price
-- data encryption
-- payment via check system
-- get contracts on testnet
+	 
+	- optimise backend for gas price
+	- data encryption
+	- make contracts inherit from an account contract to reduce redundant code, improve readability and reduce gas price 

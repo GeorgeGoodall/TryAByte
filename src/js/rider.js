@@ -87,28 +87,30 @@ async function initEvents(){
 async function printRestaurant(restaurant){
 	// toDo: have open orders displayed here
 
-	var name = await restaurant.name();
-	var address = await restaurant.location();
-	var id = await restaurant.id();
-	var totalOrders = await restaurant.totalOrders();
+	var name = restaurant.name();
+	var address = restaurant.location();
+	var id = restaurant.id();
+	var totalOrders = restaurant.totalOrders();
+
+	var restaurantVars = await Promise.all([name,address,id,totalOrders]);
 
 	var openOrderCount = 0;
 
-	var html = '<div id=Restaurant1 class="itemTyle" onclick="viewRestaurant('+id+')">'+
-					'<p style="font-size: 30px" class="text-center"><b>'+name+'</b></p>'+
-					'<p class="text-center">'+address+'</p>'+
+	var html = '<div id=Restaurant1 class="itemTyle" onclick="viewRestaurant('+restaurantVars[2]+')">'+
+					'<p style="font-size: 30px" class="text-center"><b>'+restaurantVars[0]+'</b></p>'+
+					'<p class="text-center">'+restaurantVars[1]+'</p>'+
 					'<p class="text-center" id="openOrderCount'+id+'">Availible Orders: '+openOrderCount+'</p>'+
 				'</div>';
 	$("#Restaurants").append(html);
 
 
 
-	for(var i = 0; i<totalOrders;i++){
+	for(var i = 0; i<restaurantVars[3];i++){
 		(function(counter){
 			restaurant.orders(counter).then(async function(item){
 				if(item[0] == true && await new App.contracts.Order(item[1]).rider() == "0x0000000000000000000000000000000000000000"){
 					openOrderCount++;
-					$("#openOrderCount" + id).html('Availible Orders: '+openOrderCount);
+					$("#openOrderCount" + restaurantVars[2]).html('Availible Orders: '+openOrderCount);
 				}
 			});
 		})(i);
@@ -120,21 +122,24 @@ async function printOrder(orderIndex){
 	
 	var order = orders[orderIndex];
 	//var id = await order.id();
-	var price = await order.getCost();
-	var orderTime = await order.orderTime();
+	var price = order.getCost();
+	var orderTime = order.orderTime();
 
-	var customerStatus = await order.customerStatus();
-	var restaurantStatus = await order.restaurantStatus();
-	var riderStatus = await order.riderStatus();
+	var customerStatus = order.customerStatus();
+	var restaurantStatus = order.restaurantStatus();
+	var riderStatus = order.riderStatus();
+	var restaurantAddress = order.restaurant();
 
-	var address = await order.restaurant();
-	var restaurant = await new App.contracts.Restaurant(address);
+	var orderVars = await Promise.all([price,orderTime,customerStatus,restaurantStatus,riderStatus, restaurantAddress]);
+
+
+	var restaurant = await new App.contracts.Restaurant(orderVars[5]);
 	var restaurantName = await restaurant.name();
 
 	var html = 	'<div class="itemTyle" onclick="viewOrder('+orderIndex+')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+'<br>Price: '+Math.round(price*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(price*Math.pow(10,-18)*App.conversion.currentPrice*100)/100+')<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+new Date(orderVars[1]*1000).toLocaleString()+'<br>Price: '+Math.round(orderVars[0]*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(orderVars[0]*Math.pow(10,-18)*App.conversion.currentPrice*100)/100+')<br>customerStatus: '+orderVars[2]+'. restaurantStatus: '+orderVars[3]+'. riderStatus: '+orderVars[4]+'</p>'+
 				'</div>';
 	$("#Orders").append(html);
 
@@ -251,13 +256,14 @@ async function populateOrderView(orderIndex){
 	var customerStatus = await order.customerStatus();
 	var restaurantStatus = await order.restaurantStatus();
 	var riderStatus = await order.riderStatus();
+	console.log("riderStat: " + riderStatus);
 	var rider = await order.rider();
 	var orderTime = await order.orderTime();
 
 	var orderRestaurantAddress = await order.restaurant();
 	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
 	var name = await orderRestaurant.name();
-	var address = await orderRestaurant.location();
+	var restaurantPhysicalAddress = await orderRestaurant.location();
 
 	var orderID = await order.id();
 	
@@ -274,6 +280,7 @@ async function populateOrderView(orderIndex){
 				'<p class="text-center" style="font-size: 14px">Order Time: '+new Date(orderTime*1000).toLocaleString()+'</p>'+
 				'<p class="text-center" id="payment">Pay: '+Math.round(cost*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(cost*Math.pow(10,-18)*App.conversion.currentPrice*100)/100+')</p>'+
 				'<p class="text-center" id="depositRequired">Deposit Required: '+Math.round(cost*Math.pow(10,-15)*100)/100+'</p>'+
+				'<h2 id="DeliveryAddress" class="text-center"></h2>' +
 				//'<p class="text-center" id="payment" style="margin-bottom: 20px;">Delivery Location: (ToDo)</p>'+
 				'<div id="statusArea">'+
 					'<h2 class="text-center">OrderStatus</h2>'+
@@ -314,6 +321,9 @@ async function populateOrderView(orderIndex){
 		else{
 			alert("key Found");
 		}
+	}
+	if( parseInt(riderStatus.c[0]) >= 1){
+		$("#buttonArea").append('<button id="ShowDeliveryAddress" onclick="ShowDeliveryAddress(\''+order.address+'\')">Request Delivery Address</button><br>');
 	}
 
 
@@ -393,4 +403,44 @@ async function updateStatus(status){
 		await riderInstance.setStatus(orders[currentOrder].address,status,{from: App.account});
 	}
 	await viewOrder(currentOrder);
+}
+
+async function ShowDeliveryAddress(orderAddress){
+	getAddress(orderAddress,(output) => {alert("Delivery address: " + output); $('#DeliveryAddress').html("Delivery address: " + output);});
+}
+
+async function getAddress(orderAddress, callback = 'undefined'){
+	const msgParams = [
+	{
+	    type: 'string',      // Any valid solidity type
+	    name: 'orderAddress',     // Any string label you want
+	    value: orderAddress  // The value to sign, this should be changed
+	}];
+
+	await web3.currentProvider.sendAsync(
+	{
+	    method: 'eth_signTypedData',
+	    params: [msgParams, App.account],
+	    from: App.account,
+  	}, 
+  	async function (err, result) {
+  		console.log("requesting address from server for order: " + orderAddress);
+  		$.ajax({ 
+		      type: 'POST', 
+		      url: '/requestAddress',
+		      async: true,  
+		      data: {
+		      			signature: result.result,
+		    			orderAddress: orderAddress,
+		    		},
+		      dataType: 'text',
+		      success: function (data) { 
+		      	if(data != ''){
+		      		callback(data);
+		      	}else{
+
+		      	}
+		      }
+		    });		
+  	});
 }

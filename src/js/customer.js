@@ -13,46 +13,53 @@ function init(){
 }
 
 async function afterAsync(){
+	getRestaurants();
 	await getCustomerInstance();
-	await getRestaurants();
-	await getOrders();
-	await initiateEvents();
+	getOrders();
+	initiateEvents();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
 }
 
 async function printRestaurant(restaurant){
-	var name = await restaurant.name();
-	var address = await restaurant.location();
-	var id = await restaurant.id();
+	var name = restaurant.name();
+	var address = restaurant.location();
+	var id = restaurant.id();
 
-	var html = '<div id=Restaurant1 class="itemTyle" onclick="viewRestaurant('+id+')">'+
-					'<p style="font-size: 30px" class="text-center"><b>'+name+'</b></p>'+
-					'<p class="text-center">'+address+'</p>'+
+	var RestaurantDeets = await Promise.all([name,address,id]);
+
+	var html = '<div id=Restaurant1 class="itemTyle" onclick="viewRestaurant('+RestaurantDeets[2]+')">'+
+					'<p style="font-size: 30px" class="text-center"><b>'+RestaurantDeets[0]+'</b></p>'+
+					'<p class="text-center">'+RestaurantDeets[1]+'</p>'+
 				'</div>';
 	$("#Restaurants").append(html);
 }
 
 async function printOrder(orderIndex){
 	var order = orders[orderIndex];
-	var id = await order.id();
-	var price = await order.getCost();
-	var deliveryFee = await order.deliveryFee();
-	var total = parseFloat(price) + parseFloat(deliveryFee);
-	var orderTime = await order.orderTime();
 
-	var customerStatus = await order.customerStatus();
-	var restaurantStatus = await order.restaurantStatus();
-	var riderStatus = await order.riderStatus();
+	var id = order.id();
+	var price = order.getCost();
+	var deliveryFee = order.deliveryFee();
+	var orderTime = order.orderTime();
 
-	var address = await order.restaurant();
-	var restaurant = await new App.contracts.Restaurant(address);
+	var customerStatus = order.customerStatus();
+	var restaurantStatus = order.restaurantStatus();
+	var riderStatus = order.riderStatus();
+
+	var address = order.restaurant();
+
+	var orderVars = await Promise.all([id,price,deliveryFee,orderTime,customerStatus,restaurantStatus,riderStatus, address]);
+
+	var restaurant = await new App.contracts.Restaurant(orderVars[7]);
 	var restaurantName = await restaurant.name();
+
+	var total = parseFloat(orderVars[1]) + parseFloat(orderVars[2]);
 
 	var html = 	'<div class="itemTyle" onclick="viewOrder('+orderIndex+')">'+
 					'<p>'+restaurantName+'</p>'+
 					//'<h3 style="float: right">Status: Delivered</h3>'+
-					'<p>Date: '+new Date(orderTime*1000).toLocaleString()+'<br>Price: '+Math.round(total*Math.pow(10,-18) * 1000) / 1000 +' (£'+ Math.round(total*Math.pow(10,-18) * App.conversion.currentPrice * 100) / 100+')<br>customerStatus: '+customerStatus+'. restaurantStatus: '+restaurantStatus+'. riderStatus: '+riderStatus+'</p>'+
+					'<p>Date: '+new Date(orderVars[3]*1000).toLocaleString()+'<br>Price: '+Math.round(total*Math.pow(10,-18) * 1000) / 1000 +' (£'+ Math.round(total*Math.pow(10,-18) * App.conversion.currentPrice * 100) / 100+')<br>customerStatus: '+orderVars[4]+'. restaurantStatus: '+orderVars[5]+'. riderStatus: '+orderVars[6]+'</p>'+
 				'</div>';
 
 
@@ -73,15 +80,18 @@ async function getCustomerInstance(){
 }
 
 async function initiateEvents(){
+
 	var orderMadeEvent = customerInstance.OrderMadeEvent({},{fromBlock: 'latest'});
 	
 	orderMadeEvent.watch(function(err,result){
+		console.log("event found");
 		if(!err){
 			afterOrderMade(result.args.orderAddress);
 		}else{
 			console.log(err);
 		}
 	});
+	console.log("Events Initiated");
 }
 
 async function getRestaurants(){
@@ -228,37 +238,51 @@ async function populateOrderView(id){
 
 
 	order = orders[id];
-	var cost = await order.getCost();
-	var orderLength = await order.totalItems();
-	var customerStatus = await order.customerStatus();
-	var restaurantStatus = await order.restaurantStatus();
-	var riderStatus = await order.riderStatus();
-	var orderID = await order.id();
-	var orderTime = await order.orderTime();
 
-	var orderRestaurantAddress = await order.restaurant();
-	var orderRestaurant = await new App.contracts.Restaurant(orderRestaurantAddress);
+	console.log("Viewing Order at: "+order.address);
+
+	var cost =  order.getCost();
+	var orderLength =  order.totalItems();
+	var orderID =  order.id();
+	var orderTime =  order.orderTime();
+	var customerStatus =  order.customerStatus();
+	var restaurantStatus =  order.restaurantStatus();
+	var riderStatus =  order.riderStatus();
+	var orderRestaurantAddress =  order.restaurant();
+
+	var orderVars = await Promise.all([
+									orderID,
+									cost,
+									orderLength,
+									orderTime,
+									customerStatus,
+									restaurantStatus,
+									riderStatus,
+									orderRestaurantAddress]);
+
+	var orderRestaurant = await new App.contracts.Restaurant(orderVars[7]);
 	var name = await orderRestaurant.name();
 	var address = await orderRestaurant.location();
 	
-	
+
 	console.log("order length: " + orderLength);
 
 	var html = 	'<h3 class="text-center">Summery of your order</h3>'+
 				'<h1 id="RestaurantTitle" class="text-center">'+name+'</h1>' +
 				'<p id="RestaurantAddress" class="text-center">'+address+'</p>'+
-				'<p class="text-center">Time: '+new Date(orderTime*1000).toLocaleString()+'</p>'+
+				'<p class="text-center">Time: '+new Date(orderVars[3]*1000).toLocaleString()+'</p>'+
 				'<div id="ItemsArea">'+
 					'<h2 class="text-center">Ordered Items</h2>'+
 					'<div id="OrderItems"></div>'+
 				'</div>'+
-				'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(cost*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(cost*App.conversion.currentPrice*Math.pow(10,-18)*100)/100+')</h3><br>'+
+				'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(orderVars[1]*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(orderVars[1]*App.conversion.currentPrice*Math.pow(10,-18)*100)/100+')</h3><br>'+
+				'<button id="updateAddressBut" onclick="saveAddress(\''+order.address+'\')" style="margin-left: 45%;"">Update Address</button>'+
 				'<div id="statusArea">'+
 					'<h2 class="text-center">OrderStatus</h2>'+
 					'<div id="statusContent">'+
-						'<h3 class="text-center">Restaurant: '+restaurantState.get(restaurantStatus.c[0])+'</h3>'+ // note .c[0] needs to be used here because an object is returned instead of a uint
-							'<h3 class="text-center">Rider: '+riderState.get(riderStatus.c[0])+'</h3>'+
-							'<h3 class="text-center">Customer: '+customerState.get(customerStatus.c[0])+'</h3>'+
+						'<h3 class="text-center">Restaurant: '+restaurantState.get(orderVars[5].c[0])+'</h3>'+ // note .c[0] needs to be used here because an object is returned instead of a uint
+							'<h3 class="text-center">Rider: '+riderState.get(orderVars[6].c[0])+'</h3>'+
+							'<h3 class="text-center">Customer: '+customerState.get(orderVars[4].c[0])+'</h3>'+
 					'</div>'+
 					'<div id="qrcode" style="margin-left: 45%; margin-top:10px"></div>'+		
 					'<h4 class="text-center" id="keyText"></h4>'
@@ -304,9 +328,7 @@ async function checkout(){
 	var totalOrders = parseInt(totalOrders);
 	var random = makeid(12);
 	var hash = await App.controllerInstance.getHash(random);
-	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend}).then(function(err,res){
-		console.log("test");
-		console.log(res);});
+	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend}).then(function(err,res){console.log(res);});
 	localStorage.setItem('customerKey'+(totalOrders),random);
 	localStorage.setItem('Address'+(totalOrders),random);
 
@@ -326,58 +348,13 @@ async function afterOrderRequested(){
 // to be called after an order make event has been created.
 async function afterOrderMade(orderAddress){
 
+	console.log("OrderMade at: " + orderAddress)
+
 	var address = null;
-	while(address !== null){
-		address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
-		
-		const msgParams = [
-		{
-		    type: 'address',      // Any valid solidity type
-		    name: 'orderAddress',     // Any string label you want
-		    value: orderAddress  // The value to sign, this should be changed
-		}];
+	var hasAddress = false;
 
-		web3.currentProvider.sendAsync({
-		    method: 'eth_signTypedData',
-		    params: [msgParams, App.account],
-		    from: from,
-	  	}, function (err, result) {
-		    if (err) return console.error(err)
-		    if (result.error) {
-		      return console.error(result.error.message)
-		    }else{
-		    	console.log("posting address to server: " + address);
-				$.ajax({ 
-			      type: 'POST', 
-			      url: '/newDbEntry',  
-			      data: {
-			      			msgParams: msgParams,
-			      			signature: result.result,
-			    			physicalAddress: address,
-			    			orderAddress: orderAddress,
-			    		},
-			      dataType: 'json',
-			      success: function (data) { 
-			      	if(data != 'NA'){
-			      		console.log("success");
-			      	}else{
-
-			      	}
-			      }
-			    });
-		    }
-	  	});
-	}
+	saveAddress(orderAddress);
 	
-	
-
-
-	
-	
-	
-
-
-
 	var order = await new App.contracts.Order(orderAddress);
 	var restaurantAddress = await order.restaurant();
 	var restaurant = await new App.contracts.Restaurant(restaurantAddress);
@@ -388,8 +365,96 @@ async function afterOrderMade(orderAddress){
 
 	alert("you're order costing approximatly " + Math.round(price * Math.pow(10,-18)*10000)/10000 + " Ethereum (£"+ Math.round(price * Math.pow(10,-18) * App.conversion.currentPrice * 100) / 100+") with a deliveryFee of " + deliveryFee * Math.pow(10,-18) + " Ethereum (£"+ Math.round(deliveryFee* Math.pow(10,-18)* App.conversion.currentPrice * 100) / 100+") to " + name + " has been made.");
 	$("#recentOrderStatus").html("");
-	//getOrders();
 	addOrder(orderAddress);
+}
+
+async function saveAddress(orderAddress){
+	address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
+		
+	if(address == null || address == ""){
+		return saveAddress(orderAddress);
+	}
+
+	const msgParams = [
+	{
+	    type: 'string',      // Any valid solidity type
+	    name: 'orderAddress',     // Any string label you want
+	    value: orderAddress  // The value to sign, this should be changed
+	}];
+
+	await web3.currentProvider.sendAsync(
+	{
+	    method: 'eth_signTypedData',
+	    params: [msgParams, App.account],
+	    from: App.account,
+  	}, 
+  	function (err, result) {
+  		console.log("test");
+	    if(err){
+	    	console.error(err);
+	    	return saveAddress(orderAddress);
+	    }
+	    if(result.error) {
+	      console.error(result.error);
+	      return saveAddress(orderAddress);
+	    }else{
+	    	console.log("posting address to server: " + address);
+			$.ajax({ 
+		      type: 'POST', 
+		      url: '/saveOrderAddress',  
+		      data: {
+		      			signature: result.result,
+		    			physicalAddress: address,
+		    			orderAddress: orderAddress,
+		    		},
+		      dataType: 'json',
+		      success: function (data) { 
+		      	if(data != 'NA'){
+		      		return address;
+		      	}else{
+		      		console.log(data);
+		      		return saveAddress(orderAddress);
+		      	}
+		      }
+		    });
+	    }
+  	});
+}
+
+async function getAddress(orderAddress){
+	const msgParams = [
+	{
+	    type: 'string',      // Any valid solidity type
+	    name: 'orderAddress',     // Any string label you want
+	    value: orderAddress  // The value to sign, this should be changed
+	}];
+
+	await web3.currentProvider.sendAsync(
+	{
+	    method: 'eth_signTypedData',
+	    params: [msgParams, App.account],
+	    from: App.account,
+  	}, 
+  	function (err, result) {
+  		console.log("requesting address from server for order: " + orderAddress);
+  		$.ajax({ 
+		      type: 'POST', 
+		      url: '/requestAddress',  
+		      data: {
+		      			signature: result.result,
+		    			orderAddress: orderAddress,
+		    		},
+		      dataType: 'json',
+		      success: function (data) { 
+		      	if(data != 'NA'){
+		      		console.log(data);
+		      		return data;
+		      	}else{
+		      		console.log(data);
+		      	}
+		      }
+		    });
+  	});
 }
 
 function addToCart(id){
@@ -470,12 +535,12 @@ const msgParams = [
     type: 'string',      // Any valid solidity type
     name: 'Message',     // Any string label you want
     value: 'test'  // The value to sign, this should be changed
- },
- {   
-   type: 'uint32',
-      name: 'A number',
-      value: '1337'
-  }
+ }//,
+ // {   
+ //   type: 'uint32',
+ //      name: 'A number',
+ //      value: '1337'
+ //  }
 ] 
 
 function signMsg(msgParams, from) {
@@ -485,7 +550,7 @@ function signMsg(msgParams, from) {
     params: [msgParams, from],
     from: from,
   }, function (err, result) {
-
+  	console.log("message Signed");
     if (err) return console.error(err)
     if (result.error) {
       return console.error(result.error.message)
@@ -516,3 +581,6 @@ function signMsg(msgParams, from) {
 function test(){
 	signMsg(msgParams, web3.eth.defaultAccount);
 }
+
+
+
