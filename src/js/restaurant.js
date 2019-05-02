@@ -151,7 +151,6 @@ async function getOrders(){
 async function addOrder(address){
 	if(!orders.has(address)){
 		console.log("adding order at: " + address);
-		var newOrder = await new App.contracts.Order(address);
 		orders.add(address);
 		printOrder(address);
 	}
@@ -217,13 +216,13 @@ async function populateOrderView(address){
 
 
 	var order = await new App.contracts.Order(address);
+	var keySet = order.keyRestaurantSet();
 	var cost = order.getCost();
 	var orderLength = order.totalItems();
 	var orderTime = order.orderTime();
 	var customerStatus = order.customerStatus();
 	var restaurantStatus = order.restaurantStatus();
 	var riderStatus = order.riderStatus();
-	var keySet = await order.keyRestaurantSet();
 	var orderRestaurantAddress = order.restaurant();
 
 	var orderVars = await Promise.all([	cost,

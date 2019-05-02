@@ -30,6 +30,10 @@
 	- need notification on if the customer physical address update worked
 	- remove complete orders somewhere else
 
+	- add button to remake key, in case of key loss
+	- improve program file layout, split into server and client
+	- remove unused node modules
+	- make account contracts inherit from an account contract
 	- add notification for restaurant order made
 	- add notification that the order made is being processed
 	- after order is offered for delivery need to move order to your orders and refresh order under in restaurant

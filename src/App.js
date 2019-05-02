@@ -1,8 +1,10 @@
 var express = require('express');
-var http = require("html");
+var https = require("https");
 var bodyParser = require('body-parser');
 var mongoose = require("mongoose");
 const sigUtil = require('eth-sig-util');
+var fs = require('fs');
+var path = require('path');
 
 // todo move http provide link to dotenv
 require('dotenv').config();
@@ -21,7 +23,6 @@ var riderFactory;
 loadContracts();
 
 async function loadContracts(){
-  var fs = require('fs');
   var orderABI = JSON.parse(fs.readFileSync('src/Contracts/Order.json', 'utf8'));
   var customerFactoryABI = JSON.parse(fs.readFileSync('src/Contracts/CustomerFactory.json', 'utf8'));
   var restaurantFactoryABI = JSON.parse(fs.readFileSync('src/Contracts/RestaurantFactory.json', 'utf8'));
@@ -100,18 +101,29 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
-
 app.locals.points = "test";
+
+var port = 3000;
 
 app.use('/js',express.static(__dirname+'/js'));
 app.use('/css',express.static(__dirname+'/css'));
 app.use('/Contracts',express.static(__dirname+'/Contracts'));
 
 
+const httpsOptions = {
+  cert: fs.readFileSync(path.join(__dirname,'ssl','server.crt')),
+  key: fs.readFileSync(path.join(__dirname,'ssl','server.key'))
+}
 
-app.listen(8080);
-console.log("listening on port 8080");
+
+https.createServer(httpsOptions, app).listen(port, function(){
+  console.log('hosting');
+})
+
+
+
+//app.listen(port);
+console.log("listening on port 3000");
 
 
 //===================================================

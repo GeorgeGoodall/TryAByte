@@ -2,6 +2,7 @@ var controllerAddress = "0x0C65a3108b992F01FCeb6354990BB83e43d80FC7" // changed 
 //"0xD3528B260364497a29f6b344D24b866E4B58C2f5"; // addresses stored in mongodb
 //"0xF9531f71247903B6e108CfF44858Af561EaAe101"; // addresses stored in order contract
 
+
 App = {
   web3Provider: null,
   contracts: [],
@@ -84,7 +85,7 @@ App = {
 	});
 	var RestaurantRequest = $.ajax({
 	  url: '/Contracts/Restaurant.json',
-	  async: false,
+	  async: true,
 	  success: function(Restaurant){
 	    console.log("success loading restaurant JSON")
 	    App.contracts["Restaurant"] = TruffleContract(Restaurant);
@@ -93,7 +94,7 @@ App = {
 	});
 	var CustomerRequest = $.ajax({
 	  url: '/Contracts/Customer.json',
-	  async: false,
+	  async: true,
 	  success: function(Customer){
 	    console.log("success loading Customer JSON")
 	    App.contracts["Customer"] = TruffleContract(Customer);
@@ -102,7 +103,7 @@ App = {
 	});
 	var RiderRequest = $.ajax({
 	  url: '/Contracts/Rider.json',
-	  async: false,
+	  async: true,
 	  success: function(Rider){
 	    console.log("success loading Rider JSON")
 	    App.contracts["Rider"] = TruffleContract(Rider);
@@ -111,7 +112,7 @@ App = {
 	});
 	var OrderRequest = $.ajax({
 	  url: '/Contracts/Order.json',
-	  async: false,
+	  async: true,
 	  success: function(Order){
 	    console.log("success loading Order JSON")
 	    App.contracts["Order"] = TruffleContract(Order);
@@ -129,12 +130,12 @@ App = {
 initAccount: function(){
 	
 	var accountsRequest = web3.eth.getCoinbase(function(err,account){
-      if(err === null){       
+      if(err === null && account != null){       
         App.account = account;
         console.log("success getting account: " + account);
       }
       else{
-       	console.log("error getting account: " + account);
+       	console.log("error getting account: " + err);
       }
     });
 
@@ -187,17 +188,17 @@ initFactories: async function(){
 		console.log(instance);
 		return;
 	});
-	await App.contracts.RestaurantFactory.deployed().then(function(instance){
+	App.contracts.RestaurantFactory.deployed().then(function(instance){
 			App.restaurantFactoryInstance = instance;
 			console.log("restaurantFactory Deployed at " + instance.address);
 			return;
 	});
-	await App.contracts.CustomerFactory.deployed().then(function(instance){
+	App.contracts.CustomerFactory.deployed().then(function(instance){
 		App.customerFactoryInstance = instance;
 		console.log("customerFactory Deployed at " + instance.address);
 		return;
 	});
-	await App.contracts.RiderFactory.deployed().then(function(instance){
+	App.contracts.RiderFactory.deployed().then(function(instance){
 		App.riderFactoryInstance = instance;
 		console.log("riderFactory Deployed at " + instance.address);
 		return;
