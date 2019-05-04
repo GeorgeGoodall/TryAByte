@@ -20,9 +20,9 @@ contract RiderFactory {
         riderCount = 0;
     }
     
-    function makeRider(string calldata name, string calldata contactNumber) external returns(address customer){
+    function makeRider() external returns(address customer){
         require(riders2[msg.sender] == address(0x0)); // the rider must not already be signed up
-        Rider newRider = new Rider(riderCount, name, contactNumber, msg.sender, controller);
+        Rider newRider = new Rider(riderCount, msg.sender, controller);
         riders1[address(newRider)] = msg.sender;
         riders2[msg.sender] = address(newRider);
         riders0[riderCount] = address(newRider);
@@ -38,5 +38,19 @@ contract RiderFactory {
             return true;
         else
             return false;
+    }
+
+    function reset() public {
+        require(msg.sender == controller);
+        for(uint i = 0; i < riderCount; i++){
+            address currentContract = riders0[i];
+            address currentOwnAddress = riders1[currentContract];
+
+            delete riders0[i];
+            delete riders1[currentContract];
+            delete riders2[currentOwnAddress];
+
+            riderCount = 0;
+        }
     }
 }

@@ -1,83 +1,58 @@
 === ToDo ===
 ============
-- improve UI
-	- clicking on customer order shows incorrect order
-	- two orders appearing in restaurant view when an order is made
-	- bug where delivery address wont take ","s
-	- for riders if a restaurant has no orders it should say, count next to each restaurant and on the restaurant view
-	- clear cart after menu click
-	- alert the rider/restaurant if they go to click the hand over before the other party has done so
-	- bug where clicking first order shows second order
-	- add unit to cost and prices
-	- improve look of order total amount
-	- upon account creation says no account accosiiated
-	- add exchange conversion rates
-	- order confirmation for customer showing eth not to 2dp
-	- customer restaurant menu view not rounding eth price
-
-=====================================================================================================
-
-	- make better use of await to speed up processing massivly
-	- cart not showing enough dp
-	- remove address storage from order contract
-	- have relivent orders appear at top
-	- have all libraries imported from online imported from local
-	- remove buttons so only ones currently used are shown
-	- after marking orders update order view
-	- clicking on an order for rider takes them to your orders even if its not there order
-	- customer cart view showing eth in finney and no pounds
-	- order id'ing method not consistant between your orders and restaurant available orders on rider view (change to id by contract address)
-	- need notification on if the customer physical address update worked
-	- remove complete orders somewhere else
-
-	- add button to remake key, in case of key loss
-	- improve program file layout, split into server and client
-	- remove unused node modules
-	- make account contracts inherit from an account contract
-	- add notification for restaurant order made
-	- add notification that the order made is being processed
-	- after order is offered for delivery need to move order to your orders and refresh order under in restaurant
-	- add alerts to explain setting up of metamask
+	Restaurant UI
+		- refresh order view if status updated
+		- remove show address from restaurant view
+		- add notification for restaurant order made
+		- menu formatting errors on food delete if name too long
+		- menu commit clears instantly after commit, consider making it clear at another time
 	
-	- add short by to revert statment for not enough eth sent
-	- resolve slow loading time on order view
-	- refresh page in new metamask account selected
-	- change all local order storage to address indexed
-	- have metamask set a default gas price
-	- add contract value under order window
-	- remove testing page
-	- menu formatting errors on food delete if name too long
-	- add making user loading screen to the login page
-
-	- menu commit clears instantly after commit, consider making it clear at another time
-	- move redundant js code into some form of library and import to make neater
-	- resolve issue where two contract calls happens if two pages open
-	- rider view, print food items when delivery offered
-	- manage local storage to remove unneeded keys
-	- test menu delete, seems buggy when deleting large number of items
-
-- system changes
-	- resolve returning of payments
-	- display pay for rider
-	- add in optional additional rider pay to order creation
-	- add deleting from menu
+	Rider UI
+		- offered order doesnt get added to your orders after you offer
+		- submitting key doesn't remove check key input and address request
+		- refresh order view if status updated
+		- rider restaurants view showing incorrect number of orders for each restaurant
+		- rider deposit paid alert needs changing to make sense
+		- rider view, print food items when delivery offered
 	
-	- store a record of money spent / earn't
-	- add edditing of account deetails
-	- emit events and use them to improve UI design
+	Customer UI
+		- refresh order view if status updated
 
-	- storage of delivery address
-	- record order time
+	General UI
+		- make better use of await to speed up processing massivly
+		- have relivent orders appear at top
+		- remove buttons so only ones currently used are shown
+		- remove complete orders somewhere else
 
-
-- improve payment logic
+	General
+		- have all libraries imported from online imported from local
+		- order id'ing method not consistant between your orders and restaurant available orders on rider view (change to id by contract address)
+		- add button to remake key, in case of key loss
+		- improve program file layout, split into server and client
+		- remove unused node modules
+		- fix git repo
+		- resolve metamask sometimes not passing address through
+		- move redundant js code into some form of library and import to make neater
+		- manage local storage to remove unneeded keys
 	
+	Testing ToDo
+		- test removeing factory references
+		- test menu delete, seems buggy when deleting large number of items
+
+	Would be nice to do
+		- add alerts to explain setting up of metamask
+		- store all user information within mongodb
+		- impove delivery address form
+		- after creating an accout, navigate to some form of waiting information page that gives tips etc
+		- Bug: failing adding to the menu doen't clear the staging, only clears the staging display
+		- resolve slow loading time on order view (preload stuff in background)
+		- have metamask set a default gas price
+		- add contract value under order window
+		- resolve issue where two contract calls happens if two pages open
+
 
 - smart contract improvments
-	- get contracts on testnet
-	- payment via check system
-	
-	 
+	- make account contracts inherit from an account contract
+	- add short by to revert statment for not enough eth sent
 	- optimise backend for gas price
-	- data encryption
-	- make contracts inherit from an account contract to reduce redundant code, improve readability and reduce gas price 
+	- store hashed user data including address to validate user information

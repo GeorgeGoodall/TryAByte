@@ -36,4 +36,12 @@ contract Controller {
 	function getHash(bytes32 data) public pure returns(bytes32){
 		return keccak256(abi.encodePacked(data));
 	}
+
+	// removes all user accounts and orders.
+	function resetApplication() public { 
+		require(msg.sender == owner);
+		RestaurantFactory(restaurantFactoryAddress).reset();
+		CustomerFactory(customerFactoryAddress).reset();
+		RiderFactory(riderFactoryAddress).reset();
+	}
 }

@@ -23,6 +23,7 @@ contract Restaurant {
 
     struct order{bool open; address orderAddress;}
 	uint public totalOrders;
+    // todo: make orders private and accessed via method for only rider and restaurant
 	mapping(uint => order) public orders; // must be a better way to store the orders
 
     uint totalPay;
@@ -33,7 +34,7 @@ contract Restaurant {
 	}
 	
     uint public menuLength;
-	mapping(uint => Item) public menu; // should probably change this to a mapping
+	mapping(uint => Item) public menu; 
 
     enum restaurantState{acceptedOrder, preparingCargo, readyForCollection, HandedOver}
 	

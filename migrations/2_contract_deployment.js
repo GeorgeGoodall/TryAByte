@@ -50,14 +50,14 @@ module.exports = function(deployer) {
 	  		var custFactAddress;
 	  		await deployer.deploy(CustomerFactory,instance.address).then(async function(custFactInstance){
 	  			custFactAddress = custFactInstance.address;
-	  			await custFactInstance.makeCustomer("Customer 1","9876543210",{gas: 4000000}).then(function(){
+	  			await custFactInstance.makeCustomer({gas: 4000000}).then(function(){
 	      			console.log("Test customer Made");
 	    		})
 	  		});
 	  		var riderFactAddress;
 	  		await deployer.deploy(RiderFactory,instance.address).then(async function(riderFactInstance){
 	  			riderFactAddress = riderFactInstance.address;
-	  			await riderFactInstance.makeRider("Rider 1","0123456789",{gas: 4000000}).then(function(){
+	  			await riderFactInstance.makeRider({gas: 4000000}).then(function(){
 	  				console.log("Test rider made");
 	  			})
 	  		});
