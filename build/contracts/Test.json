@@ -53,14 +53,14 @@
     "absolutePath": "/home/george/Documents/TryAByte/contracts/Test.sol",
     "exportedSymbols": {
       "Test": [
-        2163
+        2302
       ]
     },
-    "id": 2164,
+    "id": 2303,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2132,
+        "id": 2271,
         "literals": [
           "solidity",
           "^",
@@ -76,16 +76,16 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 2163,
+        "id": 2302,
         "linearizedBaseContracts": [
-          2163
+          2302
         ],
         "name": "Test",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 2149,
+              "id": 2288,
               "nodeType": "Block",
               "src": "102:62:9",
               "statements": [
@@ -101,14 +101,14 @@
                             "arguments": [
                               {
                                 "argumentTypes": null,
-                                "id": 2143,
+                                "id": 2282,
                                 "name": "this",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 2209,
+                                "referencedDeclaration": 2348,
                                 "src": "148:4:9",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_contract$_Test_$2163",
+                                  "typeIdentifier": "t_contract$_Test_$2302",
                                   "typeString": "contract Test"
                                 }
                               }
@@ -116,11 +116,11 @@
                             "expression": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_contract$_Test_$2163",
+                                  "typeIdentifier": "t_contract$_Test_$2302",
                                   "typeString": "contract Test"
                                 }
                               ],
-                              "id": 2142,
+                              "id": 2281,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -133,7 +133,7 @@
                               },
                               "typeName": "address"
                             },
-                            "id": 2144,
+                            "id": 2283,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -149,11 +149,11 @@
                           },
                           {
                             "argumentTypes": null,
-                            "id": 2145,
+                            "id": 2284,
                             "name": "data",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2134,
+                            "referencedDeclaration": 2273,
                             "src": "154:4:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -174,18 +174,18 @@
                           ],
                           "expression": {
                             "argumentTypes": null,
-                            "id": 2140,
+                            "id": 2279,
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2165,
+                            "referencedDeclaration": 2304,
                             "src": "123:3:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
                               "typeString": "abi"
                             }
                           },
-                          "id": 2141,
+                          "id": 2280,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -199,7 +199,7 @@
                             "typeString": "function () pure returns (bytes memory)"
                           }
                         },
-                        "id": 2146,
+                        "id": 2285,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -221,18 +221,18 @@
                           "typeString": "bytes memory"
                         }
                       ],
-                      "id": 2139,
+                      "id": 2278,
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2172,
+                      "referencedDeclaration": 2311,
                       "src": "113:9:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
                         "typeString": "function (bytes memory) pure returns (bytes32)"
                       }
                     },
-                    "id": 2147,
+                    "id": 2286,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -246,30 +246,30 @@
                       "typeString": "bytes32"
                     }
                   },
-                  "functionReturnParameters": 2138,
-                  "id": 2148,
+                  "functionReturnParameters": 2277,
+                  "id": 2287,
                   "nodeType": "Return",
                   "src": "106:54:9"
                 }
               ]
             },
             "documentation": null,
-            "id": 2150,
+            "id": 2289,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getHash",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2135,
+              "id": 2274,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2134,
+                  "id": 2273,
                   "name": "data",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2150,
+                  "scope": 2289,
                   "src": "60:12:9",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -278,7 +278,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2133,
+                    "id": 2272,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "60:7:9",
@@ -294,15 +294,15 @@
               "src": "59:14:9"
             },
             "returnParameters": {
-              "id": 2138,
+              "id": 2277,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2137,
+                  "id": 2276,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2150,
+                  "scope": 2289,
                   "src": "94:7:9",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -311,7 +311,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2136,
+                    "id": 2275,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "94:7:9",
@@ -326,7 +326,7 @@
               ],
               "src": "93:9:9"
             },
-            "scope": 2163,
+            "scope": 2302,
             "src": "43:121:9",
             "stateMutability": "view",
             "superFunction": null,
@@ -335,20 +335,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 2154,
+            "id": 2293,
             "name": "testEvent",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 2153,
+              "id": 2292,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2152,
+                  "id": 2291,
                   "indexed": false,
                   "name": "eventString",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2154,
+                  "scope": 2293,
                   "src": "183:18:9",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -357,7 +357,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2151,
+                    "id": 2290,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "183:6:9",
@@ -376,7 +376,7 @@
           },
           {
             "body": {
-              "id": 2161,
+              "id": 2300,
               "nodeType": "Block",
               "src": "234:40:9",
               "statements": [
@@ -387,7 +387,7 @@
                       {
                         "argumentTypes": null,
                         "hexValue": "7468697320697320612074657374",
-                        "id": 2158,
+                        "id": 2297,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -410,18 +410,18 @@
                           "typeString": "literal_string \"this is a test\""
                         }
                       ],
-                      "id": 2157,
+                      "id": 2296,
                       "name": "testEvent",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2154,
+                      "referencedDeclaration": 2293,
                       "src": "243:9:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (string memory)"
                       }
                     },
-                    "id": 2159,
+                    "id": 2298,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -435,39 +435,39 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 2160,
+                  "id": 2299,
                   "nodeType": "EmitStatement",
                   "src": "238:32:9"
                 }
               ]
             },
             "documentation": null,
-            "id": 2162,
+            "id": 2301,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "emitEvent",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2155,
+              "id": 2294,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "224:2:9"
             },
             "returnParameters": {
-              "id": 2156,
+              "id": 2295,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "234:0:9"
             },
-            "scope": 2163,
+            "scope": 2302,
             "src": "206:68:9",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 2164,
+        "scope": 2303,
         "src": "25:251:9"
       }
     ],
@@ -477,14 +477,14 @@
     "absolutePath": "/home/george/Documents/TryAByte/contracts/Test.sol",
     "exportedSymbols": {
       "Test": [
-        2163
+        2302
       ]
     },
-    "id": 2164,
+    "id": 2303,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 2132,
+        "id": 2271,
         "literals": [
           "solidity",
           "^",
@@ -500,16 +500,16 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 2163,
+        "id": 2302,
         "linearizedBaseContracts": [
-          2163
+          2302
         ],
         "name": "Test",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "body": {
-              "id": 2149,
+              "id": 2288,
               "nodeType": "Block",
               "src": "102:62:9",
               "statements": [
@@ -525,14 +525,14 @@
                             "arguments": [
                               {
                                 "argumentTypes": null,
-                                "id": 2143,
+                                "id": 2282,
                                 "name": "this",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 2209,
+                                "referencedDeclaration": 2348,
                                 "src": "148:4:9",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_contract$_Test_$2163",
+                                  "typeIdentifier": "t_contract$_Test_$2302",
                                   "typeString": "contract Test"
                                 }
                               }
@@ -540,11 +540,11 @@
                             "expression": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_contract$_Test_$2163",
+                                  "typeIdentifier": "t_contract$_Test_$2302",
                                   "typeString": "contract Test"
                                 }
                               ],
-                              "id": 2142,
+                              "id": 2281,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -557,7 +557,7 @@
                               },
                               "typeName": "address"
                             },
-                            "id": 2144,
+                            "id": 2283,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -573,11 +573,11 @@
                           },
                           {
                             "argumentTypes": null,
-                            "id": 2145,
+                            "id": 2284,
                             "name": "data",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2134,
+                            "referencedDeclaration": 2273,
                             "src": "154:4:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -598,18 +598,18 @@
                           ],
                           "expression": {
                             "argumentTypes": null,
-                            "id": 2140,
+                            "id": 2279,
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2165,
+                            "referencedDeclaration": 2304,
                             "src": "123:3:9",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
                               "typeString": "abi"
                             }
                           },
-                          "id": 2141,
+                          "id": 2280,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -623,7 +623,7 @@
                             "typeString": "function () pure returns (bytes memory)"
                           }
                         },
-                        "id": 2146,
+                        "id": 2285,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -645,18 +645,18 @@
                           "typeString": "bytes memory"
                         }
                       ],
-                      "id": 2139,
+                      "id": 2278,
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2172,
+                      "referencedDeclaration": 2311,
                       "src": "113:9:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
                         "typeString": "function (bytes memory) pure returns (bytes32)"
                       }
                     },
-                    "id": 2147,
+                    "id": 2286,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -670,30 +670,30 @@
                       "typeString": "bytes32"
                     }
                   },
-                  "functionReturnParameters": 2138,
-                  "id": 2148,
+                  "functionReturnParameters": 2277,
+                  "id": 2287,
                   "nodeType": "Return",
                   "src": "106:54:9"
                 }
               ]
             },
             "documentation": null,
-            "id": 2150,
+            "id": 2289,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "getHash",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2135,
+              "id": 2274,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2134,
+                  "id": 2273,
                   "name": "data",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2150,
+                  "scope": 2289,
                   "src": "60:12:9",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -702,7 +702,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2133,
+                    "id": 2272,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "60:7:9",
@@ -718,15 +718,15 @@
               "src": "59:14:9"
             },
             "returnParameters": {
-              "id": 2138,
+              "id": 2277,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2137,
+                  "id": 2276,
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2150,
+                  "scope": 2289,
                   "src": "94:7:9",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -735,7 +735,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 2136,
+                    "id": 2275,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "94:7:9",
@@ -750,7 +750,7 @@
               ],
               "src": "93:9:9"
             },
-            "scope": 2163,
+            "scope": 2302,
             "src": "43:121:9",
             "stateMutability": "view",
             "superFunction": null,
@@ -759,20 +759,20 @@
           {
             "anonymous": false,
             "documentation": null,
-            "id": 2154,
+            "id": 2293,
             "name": "testEvent",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 2153,
+              "id": 2292,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 2152,
+                  "id": 2291,
                   "indexed": false,
                   "name": "eventString",
                   "nodeType": "VariableDeclaration",
-                  "scope": 2154,
+                  "scope": 2293,
                   "src": "183:18:9",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -781,7 +781,7 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 2151,
+                    "id": 2290,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
                     "src": "183:6:9",
@@ -800,7 +800,7 @@
           },
           {
             "body": {
-              "id": 2161,
+              "id": 2300,
               "nodeType": "Block",
               "src": "234:40:9",
               "statements": [
@@ -811,7 +811,7 @@
                       {
                         "argumentTypes": null,
                         "hexValue": "7468697320697320612074657374",
-                        "id": 2158,
+                        "id": 2297,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -834,18 +834,18 @@
                           "typeString": "literal_string \"this is a test\""
                         }
                       ],
-                      "id": 2157,
+                      "id": 2296,
                       "name": "testEvent",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2154,
+                      "referencedDeclaration": 2293,
                       "src": "243:9:9",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_string_memory_ptr_$returns$__$",
                         "typeString": "function (string memory)"
                       }
                     },
-                    "id": 2159,
+                    "id": 2298,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -859,39 +859,39 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 2160,
+                  "id": 2299,
                   "nodeType": "EmitStatement",
                   "src": "238:32:9"
                 }
               ]
             },
             "documentation": null,
-            "id": 2162,
+            "id": 2301,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
             "name": "emitEvent",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 2155,
+              "id": 2294,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "224:2:9"
             },
             "returnParameters": {
-              "id": 2156,
+              "id": 2295,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "234:0:9"
             },
-            "scope": 2163,
+            "scope": 2302,
             "src": "206:68:9",
             "stateMutability": "nonpayable",
             "superFunction": null,
             "visibility": "public"
           }
         ],
-        "scope": 2164,
+        "scope": 2303,
         "src": "25:251:9"
       }
     ],
@@ -903,7 +903,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.6",
-  "updatedAt": "2019-04-29T14:34:44.191Z",
+  "updatedAt": "2019-05-02T14:46:46.452Z",
   "devdoc": {
     "methods": {}
   },

@@ -20,9 +20,9 @@ contract CustomerFactory {
         customerCount = 0;
     }
     
-    function makeCustomer(string calldata name, string calldata contactNumber) external returns(address customer){
+    function makeCustomer() external returns(address customer){
         require(customers2[msg.sender] == address(0x0), "your address already has a customer associated with it");
-        Customer newCustomer = new Customer(customerCount, name, contactNumber, msg.sender, controller);
+        Customer newCustomer = new Customer(customerCount, msg.sender, controller);
         customers1[address(newCustomer)] = msg.sender;
         customers2[msg.sender] = address(newCustomer);
         customers0[customerCount] = address(newCustomer);
@@ -39,4 +39,18 @@ contract CustomerFactory {
         else
             return false;
 	}
+
+    function reset() public {
+        require(msg.sender == controller);
+        for(uint i = 0; i < customerCount; i++){
+            address currentContract = customers0[i];
+            address currentOwnAddress = customers1[currentContract];
+
+            delete customers0[i];
+            delete customers1[currentContract];
+            delete customers2[currentOwnAddress];
+
+            customerCount = 0;
+        }
+    }
 }

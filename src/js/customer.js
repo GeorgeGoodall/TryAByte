@@ -86,7 +86,7 @@ async function initiateEvents(){
 	orderMadeEvent.watch(function(err,result){
 		console.log("event found");
 		if(!err){
-			afterOrderMade(result.args.orderAddress);
+			afterOrderMade(result.args.orderAddress,result.args.riderKeyHash);
 		}else{
 			console.log(err);
 		}
@@ -263,20 +263,22 @@ async function populateOrderView(id){
 	var orderRestaurant = await new App.contracts.Restaurant(orderVars[7]);
 	var name = await orderRestaurant.name();
 	var address = await orderRestaurant.location();
+
 	
 
-	console.log("order length: " + orderLength);
+	console.log("order length: " + orderVars[2]);
 
 	var html = 	'<h3 class="text-center">Summery of your order</h3>'+
 				'<h1 id="RestaurantTitle" class="text-center">'+name+'</h1>' +
 				'<p id="RestaurantAddress" class="text-center">'+address+'</p>'+
 				'<p class="text-center">Time: '+new Date(orderVars[3]*1000).toLocaleString()+'</p>'+
+				'<div id="deliveryAddressArea" style="margin-left:45%"><p style="display:inline">Delivery Address: </p><button onclick="printAddress(\''+order.address+'\')">request</button><button id="updateAddressBut" onclick="saveAndPrintAddress(\''+order.address+'\')">Update Address</button></div>'+
+				
 				'<div id="ItemsArea">'+
 					'<h2 class="text-center">Ordered Items</h2>'+
 					'<div id="OrderItems"></div>'+
 				'</div>'+
 				'<h3 class="text-center" id="priceTag" style="margin-bottom: 20px;">Total Price: '+Math.round(orderVars[1]*Math.pow(10,-18)*10000)/10000+' Eth (£'+Math.round(orderVars[1]*App.conversion.currentPrice*Math.pow(10,-18)*100)/100+')</h3><br>'+
-				'<button id="updateAddressBut" onclick="saveAddress(\''+order.address+'\')" style="margin-left: 45%;"">Update Address</button>'+
 				'<div id="statusArea">'+
 					'<h2 class="text-center">OrderStatus</h2>'+
 					'<div id="statusContent">'+
@@ -291,7 +293,7 @@ async function populateOrderView(id){
 	$("#OrderView").html(html);
 
 	if(await order.keyRiderSet() == true){
-		var paymentKey = localStorage.getItem("customerKey"+orderID);
+		var paymentKey = localStorage.getItem("customerKey"+order.address);
 		console.log("key: " + paymentKey);
 		if(paymentKey != null){
 			new QRCode(document.getElementById("qrcode"), paymentKey);
@@ -304,7 +306,7 @@ async function populateOrderView(id){
 
 
 	var htmlMenu = "";
-	for(var i = 0; i<orderLength;i++){
+	for(var i = 0; i<orderVars[2];i++){
 		(function(counter){
 			order.getItem(counter).then(function(item){
 				var priceEth = item[1]*Math.pow(10,-18);
@@ -328,9 +330,9 @@ async function checkout(){
 	var totalOrders = parseInt(totalOrders);
 	var random = makeid(12);
 	var hash = await App.controllerInstance.getHash(random);
-	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend}).then(function(err,res){console.log(res);});
-	localStorage.setItem('customerKey'+(totalOrders),random);
-	localStorage.setItem('Address'+(totalOrders),random);
+	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend}).then(function(err,res){});
+	localStorage.setItem('customerKeyForHash'+hash,random);
+	
 
 
 	afterOrderRequested();
@@ -346,9 +348,14 @@ async function afterOrderRequested(){
 }
 
 // to be called after an order make event has been created.
-async function afterOrderMade(orderAddress){
+async function afterOrderMade(orderAddress, riderKeyHash){
 
-	console.log("OrderMade at: " + orderAddress)
+	console.log("OrderMade at: " + orderAddress);
+
+	// change localstorage of key to index by order address instead of the keyhash
+	var key = localStorage.getItem('customerKeyForHash'+riderKeyHash);
+	localStorage.setItem('customerKey'+orderAddress,key);
+	localStorage.removeItem('customerKeyForHash'+riderKeyHash);
 
 	var address = null;
 	var hasAddress = false;
@@ -368,11 +375,18 @@ async function afterOrderMade(orderAddress){
 	addOrder(orderAddress);
 }
 
-async function saveAddress(orderAddress){
+async function saveAndPrintAddress(orderAddress){
+	console.log("updating");
+	saveAddress(orderAddress, (output) => {
+		$("#deliveryAddressArea").html('<p style="display:inline">Delivery Address: '+output+'</p><button id="updateAddressBut" onclick="saveAddress(\''+order.address+'\'">Update Address</button>');
+	});
+}
+
+async function saveAddress(orderAddress, callback = 'undefined'){
 	address = prompt("Please enter the delivery address", "13 Fake Address, CF2FAKE, Cardiff");
 		
 	if(address == null || address == ""){
-		return saveAddress(orderAddress);
+		return saveAddress(orderAddress, callback);
 	}
 
 	const msgParams = [
@@ -389,14 +403,12 @@ async function saveAddress(orderAddress){
 	    from: App.account,
   	}, 
   	function (err, result) {
-  		console.log("test");
 	    if(err){
-	    	console.error(err);
-	    	return saveAddress(orderAddress);
+	    	console.log(err.code);	    	
 	    }
 	    if(result.error) {
-	      console.error(result.error);
-	      return saveAddress(orderAddress);
+	      console.error("Error: " + result.error.code);
+	      return saveAddress(orderAddress, callback);
 	    }else{
 	    	console.log("posting address to server: " + address);
 			$.ajax({ 
@@ -407,12 +419,14 @@ async function saveAddress(orderAddress){
 		    			physicalAddress: address,
 		    			orderAddress: orderAddress,
 		    		},
-		      dataType: 'json',
+		      dataType: 'text',
 		      success: function (data) { 
 		      	if(data != 'NA'){
+		      		alert("Address updated successfully");
+		      		callback(address);
 		      		return address;
 		      	}else{
-		      		console.log(data);
+		      		console.log("address update failed");
 		      		return saveAddress(orderAddress);
 		      	}
 		      }
@@ -421,7 +435,15 @@ async function saveAddress(orderAddress){
   	});
 }
 
-async function getAddress(orderAddress){
+async function printAddress(orderAddress){
+	getAddress(orderAddress, (output) => {
+		console.log("got: " + output);
+		$("#deliveryAddressArea").html('<p style="display:inline">Delivery Address: '+output+'</p><button id="updateAddressBut" onclick="saveAddress(\''+order.address+'\'">Update Address</button>');
+	});
+	
+}
+
+async function getAddress(orderAddress, callback = 'undefined'){
 	const msgParams = [
 	{
 	    type: 'string',      // Any valid solidity type
@@ -444,10 +466,10 @@ async function getAddress(orderAddress){
 		      			signature: result.result,
 		    			orderAddress: orderAddress,
 		    		},
-		      dataType: 'json',
+		      dataType: 'text',
 		      success: function (data) { 
 		      	if(data != 'NA'){
-		      		console.log(data);
+		      		callback(data);
 		      		return data;
 		      	}else{
 		      		console.log(data);
@@ -501,7 +523,7 @@ function updateCartView(){
 		
 		
 		htmlMenu = 	'<div class="item" onclick="removeFromCart('+i+')">'+
-						'<p class="text-center" style="font-size: 20px">'+web3.toAscii(menu[cart[i]][0])+': '+Math.round(menu[cart[i]][1]*Math.pow(10,-18) * 100) / 100+'</p>'+
+						'<p class="text-center" style="font-size: 20px">'+web3.toAscii(menu[cart[i]][0])+': '+Math.round(menu[cart[i]][1]*Math.pow(10,-18) * 10000) / 10000+'</p>'+
 					'</div>';
 		$("#cartContent").append(htmlMenu);
 	}	

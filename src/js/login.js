@@ -127,10 +127,8 @@ async function makeRestaurantClick(){
 async function makeCustomerClick(){
     console.log("makeCustomerClick");
 
-    var customerName = document.getElementById('customerNameInput').value;
-    var customerPhone = document.getElementById('customerPhoneInput').value;
 
-    App.customerFactoryInstance.makeCustomer(customerName,customerPhone,{from: App.account, gas: 4000000}).then(function(){
+    App.customerFactoryInstance.makeCustomer({from: App.account, gas: 4000000}).then(function(){
       console.log("customer Made");
     });
   }
@@ -138,10 +136,8 @@ async function makeCustomerClick(){
 async function makeRiderClick(){
     console.log("makeRiderClick");
 
-    var riderName = document.getElementById('riderNameInput').value;
-    var riderPhone = document.getElementById('riderPhoneInput').value;
 
-    App.riderFactoryInstance.makeRider(riderName,riderPhone,{from: App.account, gas: 4000000}).then(function(){
+    App.riderFactoryInstance.makeRider({from: App.account, gas: 4000000}).then(function(){
       console.log("rider Made");
     });
   }

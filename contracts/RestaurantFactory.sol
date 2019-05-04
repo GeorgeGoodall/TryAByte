@@ -49,4 +49,18 @@ contract RestaurantFactory {
 	    	return false;	
 	    }
 	}
+
+    function reset() public {
+        require(msg.sender == controller);
+        for(uint i = 0; i < restaurantCount; i++){
+            address currentContract = restaurants0[i];
+            address currentOwnAddress = restaurants1[currentContract];
+
+            delete restaurants0[i];
+            delete restaurants1[currentContract];
+            delete restaurants2[currentOwnAddress];
+
+            restaurantCount = 0;
+        }
+    }
 }

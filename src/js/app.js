@@ -1,4 +1,5 @@
-var controllerAddress = "0x0C65a3108b992F01FCeb6354990BB83e43d80FC7" // changed customer address to public in order
+var controllerAddress = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b"; // updated order event to emit key hash, also added reset function
+//"0x0C65a3108b992F01FCeb6354990BB83e43d80FC7" // changed customer address to public in order
 //"0xD3528B260364497a29f6b344D24b866E4B58C2f5"; // addresses stored in mongodb
 //"0xF9531f71247903B6e108CfF44858Af561EaAe101"; // addresses stored in order contract
 
@@ -122,7 +123,7 @@ App = {
 	//return App.initFactories(); modified after controller migration changed
 
 	
-	await App.initFactories2();
+	await App.initFactories();
 	return afterAsync();
 
 },
@@ -178,7 +179,7 @@ initAccount: function(){
 // 	});
 // },
 
-initFactories: async function(){
+initFactories2: async function(){
 	App.initAccount();
 
 	await App.contracts.Controller.deployed().then(async function(instance){
@@ -188,24 +189,24 @@ initFactories: async function(){
 		console.log(instance);
 		return;
 	});
-	App.contracts.RestaurantFactory.deployed().then(function(instance){
+	await App.contracts.RestaurantFactory.deployed().then(function(instance){
 			App.restaurantFactoryInstance = instance;
 			console.log("restaurantFactory Deployed at " + instance.address);
 			return;
 	});
-	App.contracts.CustomerFactory.deployed().then(function(instance){
+	await App.contracts.CustomerFactory.deployed().then(function(instance){
 		App.customerFactoryInstance = instance;
 		console.log("customerFactory Deployed at " + instance.address);
 		return;
 	});
-	App.contracts.RiderFactory.deployed().then(function(instance){
+	await App.contracts.RiderFactory.deployed().then(function(instance){
 		App.riderFactoryInstance = instance;
 		console.log("riderFactory Deployed at " + instance.address);
 		return;
 	})
 },
 
-initFactories2: async function(){
+initFactories: async function(){
 	App.initAccount();
 
 	App.controllerInstance = await new App.contracts.Controller(controllerAddress);

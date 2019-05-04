@@ -1,7 +1,6 @@
 pragma solidity ^0.5.0;
 
 import "./Restaurant.sol";
-//import "./RestaurantFactory.sol";
 import "./Order.sol";
 import "./Controller.sol";
 
@@ -12,22 +11,19 @@ contract Customer {
     address public controller;
 
     uint public id;
-    string name;
-    string private contactNumber;
     uint totalOrders;
     mapping(uint => address) orders;
 
     enum customerState{madeOrder, payed, hasCargo}    
     
     event OrderMadeEvent(
-        address orderAddress 
+        address orderAddress,
+        bytes32 riderKeyHash
     );
     
-    constructor(uint _id, string memory _name, string memory _contactNumber, address _owner, address controllerAddress) public
+    constructor(uint _id, address _owner, address controllerAddress) public
     {
         id = _id;
-        name = _name;
-        contactNumber = _contactNumber;
         owner = _owner;
         controller = controllerAddress;
 
@@ -51,7 +47,7 @@ contract Customer {
         
         totalOrders++;
 
-        emit OrderMadeEvent(orderAddr);
+        emit OrderMadeEvent(orderAddr, riderKeyHash);
 
         return orders[totalOrders - 1];
     }
@@ -59,11 +55,6 @@ contract Customer {
     function signalDelivered(address orderAddress) public {
         require(msg.sender == owner, "sent from address that isnt the owner");
         Order(orderAddress).setOrderStatus(uint(customerState.hasCargo));
-    }
-
-    function getContactNumber() public view returns(string memory _contactNumber){
-        // require the sender of the message to be either the delivery worker or the the restaurant via the order class, the order status must be currenly active
-        return contactNumber;
     }
 
     function getOrder(uint _id) external view returns(address orderAdderss){
@@ -74,9 +65,5 @@ contract Customer {
     function getTotalOrders() external view returns(uint totalOrdersMade){
         require(msg.sender == owner);
         return totalOrders;
-    }    
-    
-
-    
-    
+    }      
 }

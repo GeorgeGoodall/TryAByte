@@ -11,10 +11,11 @@ require('dotenv').config();
 var Web3 = require('web3');
 
 var web3js = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/a5c0811537054f2d9396aeb399c2efc7"));
+//var web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 
 var orderContract;
 
-var controllerAddress = "0x0C65a3108b992F01FCeb6354990BB83e43d80FC7";
+var controllerAddress = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
 var controller;
 var customerFactory;
 var restaurantFactory;
@@ -57,7 +58,7 @@ var orderSchema = new Schema({
   customerAddress: String
 });
 
-var Order = mongoose.model('Order',orderSchema);
+var Order = mongoose.model('Orders',orderSchema);
 
 Order.countDocuments({}).exec(function(err, count){
   if(count != null){
