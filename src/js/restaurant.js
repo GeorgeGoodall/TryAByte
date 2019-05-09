@@ -361,14 +361,20 @@ async function commitMenuStaging(){
 	restaurantInstance.menuAddItems(itemNames,itemPrices).then(function(res,err){
 		if(res){
 			console.log(res);
+			$("#MenuTitle").html("Current Menu (updated success)");
+			$('#menuStaging').html("");
+			menuStaging = [];
 		}
-		if(err){
+		else if(err){
 			console.log(err);
+			$("#MenuTitle").html("Current Menu (updated fail)");
+		}else{
+			$("#MenuTitle").html("Current Menu");
 		}
 	});
 	// todo: clear staging at this point
 	$("#MenuTitle").html("Current Menu (waiting on update)");
-	$('#menuStaging').html("");
+	
 }
 
 async function deleteFromMenu(){
@@ -379,8 +385,17 @@ async function deleteFromMenu(){
 			toDelete.push(i);
 		}
 	}
-	restaurantInstance.menuRemoveItems(toDelete);
-	$("#MenuTitle").html("Current Menu (waiting on update)");
+	restaurantInstance.menuRemoveItems(toDelete).then(function(res,err){
+		if(res){
+			console.log(res);
+			$("#MenuTitle").html("Current Menu (delete success)");
+		}
+		if(err){
+			console.log(err);
+			$("#MenuTitle").html("Current Menu (delete fail)");
+		}
+	});;
+	$("#MenuTitle").html("Current Menu (waiting on delete)");
 }
 
 menuUpdating = false;

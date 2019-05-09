@@ -142,8 +142,8 @@ contract Restaurant {
         return (menu[itemId].itemName,menu[itemId].itemCost);
     }
 
-    function setStatus(uint orderAddress, uint status) public{
-        require(msg.sender == owner);
+    function setStatus(address orderAddress, uint status) public{
+        require(msg.sender == owner, "you are not the owner");
         Order(orderAddress).setOrderStatus(status);
     }
 

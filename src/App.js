@@ -104,7 +104,7 @@ app.use(bodyParser.json());
 
 app.locals.points = "test";
 
-var port = 3000;
+var port = 8080;
 
 app.use('/js',express.static(__dirname+'/js'));
 app.use('/css',express.static(__dirname+'/css'));
@@ -119,12 +119,12 @@ const httpsOptions = {
 
 https.createServer(httpsOptions, app).listen(port, function(){
   console.log('hosting');
-})
+});
 
 
 
 //app.listen(port);
-console.log("listening on port 3000");
+console.log("listening on port: " + port);
 
 
 //===================================================
@@ -147,7 +147,6 @@ app.get(["/RiderView.html"], function(req,res){
 });
 
 app.get(["/EthPrice"], function(req,res){
-  console.log(currentPrice);
   res.json({'currentPrice':currentPrice});
 });
 

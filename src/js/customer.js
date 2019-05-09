@@ -330,7 +330,16 @@ async function checkout(){
 	var totalOrders = parseInt(totalOrders);
 	var random = makeid(12);
 	var hash = await App.controllerInstance.getHash(random);
-	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend}).then(function(err,res){});
+	console.log(restaurants[currentRestaurant].address);
+	console.log(cart);
+	console.log(deliveryFee);
+	console.log(hash);
+	console.log(toSend);
+	customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend})
+		.then(function(err,res){
+			if(err)
+				console.log(err);
+		});
 	localStorage.setItem('customerKeyForHash'+hash,random);
 	
 
@@ -514,7 +523,8 @@ function updatePrice(){
 
 	$("#priceTag").html(html);
 	console.log(total);
-	return priceEth * Math.pow(10,18);
+	// + 100000 wei just to be sure price is met
+	return 100000 + priceEth * Math.pow(10,18);
 }
 
 function updateCartView(){

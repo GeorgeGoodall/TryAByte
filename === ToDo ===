@@ -1,11 +1,15 @@
 === ToDo ===
 ============
+	Urgent
+		- store address hash onchain, also request address prior to ordering.
+
 	Restaurant UI
 		- refresh order view if status updated
 		- remove show address from restaurant view
 		- add notification for restaurant order made
 		- menu formatting errors on food delete if name too long
 		- menu commit clears instantly after commit, consider making it clear at another time
+		- fix clear from menu staging
 	
 	Rider UI
 		- offered order doesnt get added to your orders after you offer

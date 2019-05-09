@@ -90,6 +90,7 @@ contract Order{
 
 
 	function riderOfferDelivery(bytes32 keyHash) public payable{
+		require(riderStatus == uint(riderState.unassigned),"this order allready has delivery organised");
 		require(RiderFactory(Controller(controller).riderFactoryAddress()).riderExists(msg.sender), "must be called via a rider smart contract");
 		require(msg.value >= cost, "the deposit sent is not enough");
 		
