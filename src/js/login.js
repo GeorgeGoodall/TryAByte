@@ -11,7 +11,7 @@ function hideAccountCreations(){
 }
 
 function afterAsync(){
-	addUserCounts();
+	//addUserCounts();
 	initiateEvents();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";

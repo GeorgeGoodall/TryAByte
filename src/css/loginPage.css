@@ -1,0 +1,26 @@
+body {
+	background-image: linear-gradient(rgba(255,0,0,0.7),rgba(255,0,0,0.2));
+}
+
+.loginButton {
+	height:400px; 
+	width:30%;
+	float: left; 
+	margin: 1.65%;
+	border-radius: 100px;
+	color: black;
+	background-color: rgba(255,255,255,0.5);
+	background-blend-mode: screen;
+	text-align: bottom;
+	border-style: solid;
+}
+
+.loginButton:hover {
+	background-color: rgba(255,255,255,0);
+	color: white;
+}
+
+.button-text {
+	text-align: center;
+	margin-top: 50%;
+}

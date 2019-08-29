@@ -109,6 +109,7 @@ var port = 8080;
 app.use('/js',express.static(__dirname+'/js'));
 app.use('/css',express.static(__dirname+'/css'));
 app.use('/Contracts',express.static(__dirname+'/Contracts'));
+app.use('/Images',express.static(__dirname+'/Images'));
 
 
 const httpsOptions = {
@@ -124,7 +125,7 @@ https.createServer(httpsOptions, app).listen(port, function(){
 
 
 //app.listen(port);
-console.log("listening on port: " + port);
+console.log("**listening on port: " + port);
 
 
 //===================================================
@@ -149,6 +150,7 @@ app.get(["/RiderView.html"], function(req,res){
 app.get(["/EthPrice"], function(req,res){
   res.json({'currentPrice':currentPrice});
 });
+
 
 app.post(["/db"], function(req,res){
   console.log(req.body.message);
