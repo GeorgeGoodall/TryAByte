@@ -5,45 +5,11 @@
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="css/basic.css">
 </head>
-<body style="background-image: url('Images/customers.jpg'); background-repeat: no-repeat; background-size: cover;">
+<body style="background-image: url('Images/customers.jpg'); background-repeat: no-repeat; background-size:cover; background-attachment:fixed; background-position: center">
 	<style type="text/css">
-		.itemTyle{
-			margin-left: auto;
-			margin-right: auto;
-			margin-top: 20px;
-			margin-bottom: 15px;
-			background-color: lightgrey;
-			padding: 10px;
-			width: 400px;
-			height: 120px;
-		}
-		.pannelButton {
-			float: left; 
-			width: 50%; 
-			margin-bottom: 40px;
-		}
-		#MenuArea{
-			float: left;
-			width: 20vw;
-			margin-left: 40vw;
-			padding: 10px;
-			background-color: lightgrey;
-		}
-		#cart{
-			float: left;
-			width: 20vw;
-			margin-left: 10vw;
-			padding: 10px;
-			background-color: lightgrey;
-		}
-		.item{
-			width: 60%;
-			margin-left: auto;
-			margin-right: auto;
-			margin-top: 5px;
-			margin-bottom: 5px;
-			background-color: white;
-		}
+
+
+		
 
 
 	</style>
@@ -56,16 +22,16 @@
 	<script src="js/customer.js"></script>
 	<script src="js/app.js"></script>
 
-	<h1 class="text-center">Try A Byte</h1>
+	<h1 class="title-text">Try A Byte</h1>
 
 	<div id="loading" style="display: block">
 		<h2 class="text-center">Loading...</h2>
 	</div>
 	<div id="main" style="display: none">
-		<div id="RestaurantsButton" onclick="viewRestaurants()" class="pannelButton" style="background: lightblue">
+		<div id="RestaurantsButton" onclick="viewRestaurants()" class="pannelButton">
 			<p class="text-center" style="font-size: 40px">Restaurants</p>
 		</div>
-		<div id="OrdersButton" onclick="viewOrders()" class="pannelButton" style="background: lightgreen">
+		<div id="OrdersButton" onclick="viewOrders()" class="pannelButton">
 			<p class="text-center" style="font-size: 40px">Your Orders</p>
 		</div>
 		<br><br><br><br>
@@ -83,7 +49,7 @@
 			<h1 id="RestaurantTitle">Restaurant Title</h1>
 			<p id="RestaurantAddress">49 fake address streed.com</p>
 			<div id="MenuArea">
-				<h2>Menu</h2>
+				<h2 class="title-text">Menu</h2>
 				<div class="item" id="item1">
 					<p class="text-center" style="font-size: 20px">Chips: 200</p>
 				</div>

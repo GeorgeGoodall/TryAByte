@@ -139,7 +139,6 @@ function viewRestaurants(){
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("RestaurantView").style.display = "none";
 	document.getElementById("OrderView").style.display = "none";
-	document.getElementById("main").style.background = "lightblue";
 }
 
 function viewOrders(){
@@ -148,7 +147,6 @@ function viewOrders(){
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("RestaurantView").style.display = "none";
 	document.getElementById("OrderView").style.display = "none";
-	document.getElementById("main").style.background = "lightgreen";
 }
 
 function viewSettings(){
@@ -157,7 +155,6 @@ function viewSettings(){
 	document.getElementById("Settings").style.display = "block";
 	document.getElementById("RestaurantView").style.display = "none";
 	document.getElementById("OrderView").style.display = "none";
-	document.getElementById("main").style.background = "pink";
 }
 
 
@@ -199,7 +196,7 @@ async function populateRestaurantView(id){
 				'<h1 id="RestaurantTitle" class="text-center">'+name+'</h1>' +
 					'<p id="RestaurantAddress" class="text-center">'+address+'</p>'+
 					'<div id="MenuArea">'+
-						'<h2 class="text-center">Menu</h2>'+
+						'<h2 class="text-center" style="margin-top: 5px;">Menu</h2>'+
 						'<div id="MenuContent"></div>'+
 					'</div>'+
 					'<div id="cart">'+
