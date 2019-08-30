@@ -129,6 +129,8 @@ App = {
 },
 
 initAccount: function(){
+
+	ethereum.send('eth_requestAccounts');
 	
 	var accountsRequest = web3.eth.getCoinbase(function(err,account){
       if(err === null && account != null){       

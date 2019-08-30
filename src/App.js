@@ -24,11 +24,11 @@ var riderFactory;
 loadContracts();
 
 async function loadContracts(){
-  var orderABI = JSON.parse(fs.readFileSync('src/Contracts/Order.json', 'utf8'));
-  var customerFactoryABI = JSON.parse(fs.readFileSync('src/Contracts/CustomerFactory.json', 'utf8'));
-  var restaurantFactoryABI = JSON.parse(fs.readFileSync('src/Contracts/RestaurantFactory.json', 'utf8'));
-  var riderFactoryABI = JSON.parse(fs.readFileSync('src/Contracts/RiderFactory.json', 'utf8'));
-  var controllerABI = JSON.parse(fs.readFileSync('src/Contracts/Controller.json', 'utf8'));
+  var orderABI = JSON.parse(fs.readFileSync('Contracts/Order.json', 'utf8'));
+  var customerFactoryABI = JSON.parse(fs.readFileSync('Contracts/CustomerFactory.json', 'utf8'));
+  var restaurantFactoryABI = JSON.parse(fs.readFileSync('Contracts/RestaurantFactory.json', 'utf8'));
+  var riderFactoryABI = JSON.parse(fs.readFileSync('Contracts/RiderFactory.json', 'utf8'));
+  var controllerABI = JSON.parse(fs.readFileSync('Contracts/Controller.json', 'utf8'));
 
   orderContract = web3js.eth.contract(orderABI.abi);
   var customerFactoryContract = web3js.eth.contract(customerFactoryABI.abi);
