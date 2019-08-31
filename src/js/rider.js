@@ -152,7 +152,6 @@ function viewRestaurants(){
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("RestaurantView").style.display = "none";
 	document.getElementById("OrderView").style.display = "none";
-	document.getElementById("main").style.background = "pink";
 }
 
 function viewSettings(){
@@ -162,7 +161,6 @@ function viewSettings(){
 	document.getElementById("Settings").style.display = "block";
 	document.getElementById("RestaurantView").style.display = "none";
 	document.getElementById("OrderView").style.display = "none";
-	document.getElementById("main").style.background = "lightgreen";
 }
 
 function viewOrders(){
@@ -172,7 +170,6 @@ function viewOrders(){
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("RestaurantView").style.display = "none";
 	document.getElementById("OrderView").style.display = "none";
-	document.getElementById("main").style.background = "lightblue";
 }
 
 

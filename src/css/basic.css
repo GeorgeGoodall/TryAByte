@@ -20,11 +20,22 @@ button {
 	background-color: rgba(25,25,25,0.8);
 	padding: 10px;
 	width: 400px;
-	height: 120px;
+	height: auto;
 }
 
 .itemTyle:hover {
 	background-color: rgba(100,100,100,0.5);
+}
+
+.pannelButton2 {
+	float: left; 
+	width: 33.33%; 
+	margin-bottom: 40px;
+	background-color: rgba(25,25,25,1);
+}
+
+.pannelButton2:hover {
+	background-color: rgba(100,100,100,0.8);
 }
 
 .pannelButton {
@@ -62,6 +73,15 @@ button {
 	padding: 20px; 	
 }
 
+#Order {
+	border: solid black;
+	border-radius: 5px;
+	background-color: rgba(25,25,25,0.8);
+	height: auto;
+	overflow: auto;
+	padding: 20px; 	
+}
+
 #MenuArea{
 	background-color: black;
 	float: left;
@@ -78,6 +98,7 @@ button {
 	margin-left: 10vw;
 	padding: 10px;
 }
+
 .item{
 	width: 60%;
 	margin-left: auto;
@@ -85,3 +106,17 @@ button {
 	margin-top: 5px;
 	margin-bottom: 5px;
 }
+
+.item:hover {
+	color: lightgrey;
+	cursor: pointer;
+}
+
+.itemclickable{
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+

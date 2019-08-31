@@ -301,13 +301,13 @@ async function populateOrderView(id){
 	}
 
 
-
+	
 	var htmlMenu = "";
 	for(var i = 0; i<orderVars[2];i++){
 		(function(counter){
 			order.getItem(counter).then(function(item){
 				var priceEth = item[1]*Math.pow(10,-18);
-				htmlMenu = 	'<div class="item">'+
+				htmlMenu = 	'<div class="itemclickable">'+
 								'<p class="text-center" style="font-size: 20px">'+web3.toAscii(item[0])+": " + Math.round(priceEth*10000)/10000 + ' (£'+ Math.round(priceEth * App.conversion.currentPrice * 100) / 100+')</p>'+
 							'</div>';
 				$("#ItemsArea").append(htmlMenu);
