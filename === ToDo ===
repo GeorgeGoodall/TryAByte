@@ -1,5 +1,10 @@
 === ToDo ===
 ============
+    - change item list to display x i items instead of displaying items multiple times
+    - change css for items in past orders that are unclickable
+
+
+
 	Urgent
 		- store address hash onchain, also request address prior to ordering.
 
