@@ -3,32 +3,9 @@
 <head>
 	<title>TryAByte</title>
 	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="css/basic.css">
 </head>
-<body>
-	<style type="text/css">
-		.itemTyle{
-			margin-left: auto;
-			margin-right: auto;
-			margin-top: 20px;
-			margin-bottom: 15px;
-			background-color: lightgrey;
-			padding: 10px;
-			width: 400px;
-			height: 120px;
-		}
-		.pannelButton {
-			float: left; 
-			width: 50%; 
-		}
-		.item{
-			width: 60%;
-			margin-left: auto;
-			margin-right: auto;
-			margin-top: 5px;
-			margin-bottom: 5px;
-			background-color: white;
-		}
-	</style>
+<body style="background-image: url('Images/restaurant.jpg'); background-repeat: no-repeat; background-size:cover; background-attachment:fixed; background-position: center">
 	<script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -40,13 +17,13 @@
 	</div>
 
 	<div id="main" style="display: none">
-		<div style="background-color: pink">
-			<h1 id="RestaurantName" class="text-center" >Restaurant Name</h1>	
+		<div>
+			<h1 id="RestaurantName" class="title-text" >Restaurant Name</h1>	
 		</div>
-		<div id="OrdersButton" onclick="viewOrders()" class="pannelButton" style="background: lightblue">
+		<div id="OrdersButton" onclick="viewOrders()" class="pannelButton">
 			<p class="text-center" style="font-size: 40px">Orders</p>
 		</div>
-		<div id="SettingsButton" onclick="viewSettings()" class="pannelButton" style="background: lightgreen">
+		<div id="SettingsButton" onclick="viewSettings()" class="pannelButton">
 			<p class="text-center" style="font-size: 40px">Settings</p>
 		</div>
 		<br><br><br><br>
@@ -54,7 +31,7 @@
 			<div id="RestaurantDeetails">
 				
 			</div>
-			<div id="MenuEdit" style="width: 50vw; background-color: lightgreen; float: right">
+			<div id="MenuEdit" style="width: 50vw;float: right">
 				<div id="menuListToChange" style="width: 40%; float:left">
 					<h2 class="text-center">Menu Staging</h2>
 					<div>
@@ -83,8 +60,8 @@
 			</div>
 		</div>
 		<div id="Orders">
-			<div id="CurrentOrders" style="width: 50%; float: left; background-color: inherit;"><h2 id="currentOrdersTitle" class="text-center"></h2></div>
-			<div id="CompleteOrders" style="width: 50%; float: left; background-color: inherit"><h2 id="completeOrdersTitle" class="text-center"></h2></div>'
+			<div id="CurrentOrders" style="width: 50%; float: left;"><h2 id="currentOrdersTitle" class="text-center"></h2></div>
+			<div id="CompleteOrders" style="width: 50%; float: left;"><h2 id="completeOrdersTitle" class="text-center"></h2></div>'
 		</div>
 		<div id="Order">
 			

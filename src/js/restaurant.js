@@ -150,14 +150,12 @@ function viewOrders(){
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("Orders").style.display = "block";
 	document.getElementById("Order").style.display = "none";
-	document.getElementById("main").style.background = "lightblue";
 }
 
 function viewSettings(){
 	document.getElementById("Settings").style.display = "block";
 	document.getElementById("Orders").style.display = "none"
 	document.getElementById("Order").style.display = "none";
-	document.getElementById("main").style.background = "lightgreen";
 }
 
 async function viewOrder(address){
@@ -169,7 +167,6 @@ async function viewOrder(address){
 	document.getElementById("Orders").style.display = "none"
 	document.getElementById("Settings").style.display = "none";
 	document.getElementById("Order").style.display = "block";
-	document.getElementById("main").style.background = "lightblue";
 }
 
 async function populateOrderView(address){

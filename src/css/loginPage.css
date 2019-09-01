@@ -1,5 +1,5 @@
 body {
-	
+	font-family: Courier;
 }
 
 .title {
@@ -11,12 +11,13 @@ body {
 
 .loginButton {
 	height:400px; 
-	width:33.333%;
+	width:30%;
 	float: left; 
-	margin: 0%;
-	border-radius: 0px;
+	margin: 1.66%;
+	border-radius: 100px;
 	color: black;
-	background-color: rgba(255,255,255,0.5);
+	font-style: bold;
+	background-color: rgba(255,255,255,0.2);
 	background-blend-mode: screen;
 	text-align: bottom;
 	border-style: solid;

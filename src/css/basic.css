@@ -1,4 +1,5 @@
 body {
+	font-family: Courier;
 	color: white;
 }
 
@@ -19,7 +20,7 @@ button {
 	border-radius: 5px;
 	background-color: rgba(25,25,25,0.8);
 	padding: 10px;
-	width: 400px;
+	width: 500px;
 	height: auto;
 }
 
@@ -56,15 +57,7 @@ button {
 	padding: 15px;
 }
 
-#RestaurantView {
-	border: solid black;
-	border-radius: 5px;
-	background-color: rgba(25,25,25,0.8);
-	height: auto;
-	overflow: auto;
-	padding: 20px; 
-}
-#OrderView {
+#OrderView, #CurrentOrders, #RestaurantView, #Settings  {
 	border: solid black;
 	border-radius: 5px;
 	background-color: rgba(25,25,25,0.8);
