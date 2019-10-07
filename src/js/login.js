@@ -1,5 +1,5 @@
 function initLogin(){
-	console.log("initLogin");
+	//console.log("initLogin");
 	hideAccountCreations();
 
 }
@@ -15,7 +15,24 @@ function afterAsync(){
 	initiateEvents();
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
+	document.getElementById("login").style.display = "none";
+	document.getElementById("noWeb3").style.display = "none";
 
+}
+
+function showLogin(){
+	document.getElementById("loading").style.display = "none";
+	document.getElementById("main").style.display = "none";
+	document.getElementById("login").style.display = "block";
+	document.getElementById("noWeb3").style.display = "none";
+}
+
+function noWeb3(){
+	document.getElementById("loading").style.display = "none";
+	document.getElementById("login").style.display = "none";
+	document.getElementById("main").style.display = "none";
+	document.getElementById("noWeb3").style.display = "block";
+	
 }
 
 async function initiateEvents(){
@@ -144,6 +161,7 @@ async function makeRiderClick(){
 
 $(function() {
   $(window).load(function() {
+  	App.init();
   	initLogin();
   });
 });

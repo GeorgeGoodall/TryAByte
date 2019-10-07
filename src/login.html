@@ -8,6 +8,12 @@
 <body style="background-image: linear-gradient(to bottom, rgba(255,255,255,1), rgba(55,55,55,0.4), rgba(25,25,25,0.6), rgba(5,5,5,0.8)), url('Images/background.jpg'); background-size: cover;">
 	
 	<h1 class="title"><B>TryAByte</B></h1>
+	<div id="login" style="display: none">
+		<button onclick="App.login();" style="margin-left: 45%; font-size: 40px">Log in</button>
+	</div>
+	<div id="noWeb3" style="display: none">
+		<h1 class="title">You need metamask to use this application, please download from here: <a href="https://metamask.io/" class="">https://metamask.io/</a></h1>
+	</div>
 	<div id="loading" style="display: block">
 		<h1 class="title">Loading...</h1>
 	</div>
