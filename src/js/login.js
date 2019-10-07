@@ -13,9 +13,25 @@ function hideAccountCreations(){
 function afterAsync(){
 	//addUserCounts();
 	initiateEvents();
+	displayScreen();
+
+}
+
+function displayScreen(){
 	document.getElementById("loading").style.display = "none";
 	document.getElementById("main").style.display = "block";
+}
 
+function displayLoading(){
+	document.getElementById("main").style.display = "none";
+	document.getElementById("loading").style.display = "block";
+	document.getElementById("noWeb3").style.display = "none";
+}
+
+function noWeb3(){
+	document.getElementById("main").style.display = "none";
+	document.getElementById("loading").style.display = "none";
+	document.getElementById("noWeb3").style.display = "block";
 }
 
 async function initiateEvents(){

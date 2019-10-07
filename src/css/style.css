@@ -1,0 +1,29 @@
+body{
+  margin: 0px;
+  background-color: #aeccc8;
+}
+
+#pageBanner {
+  background-color: #00d1b2;
+  height: 200px;
+  width: 100%;
+}
+
+#header {
+  position: relative;
+}
+
+#postCodeEnterArea {
+  position: relative;
+  top: -100px;
+
+}
+
+#Homepage-Content {
+
+}
+
+#postCodeEnterArea {
+  max-width: 85%;
+
+}

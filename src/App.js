@@ -1,5 +1,6 @@
 var express = require('express');
 var https = require("https");
+var http = require("http");
 var bodyParser = require('body-parser');
 var mongoose = require("mongoose");
 const sigUtil = require('eth-sig-util');
@@ -20,6 +21,8 @@ var controller;
 var customerFactory;
 var restaurantFactory;
 var riderFactory;
+
+var port = 9000;
 
 loadContracts();
 
@@ -104,8 +107,6 @@ app.use(bodyParser.json());
 
 app.locals.points = "test";
 
-var port = 8080;
-
 app.use('/js',express.static(__dirname+'/js'));
 app.use('/css',express.static(__dirname+'/css'));
 app.use('/Contracts',express.static(__dirname+'/Contracts'));
@@ -118,9 +119,11 @@ const httpsOptions = {
 }
 
 
-https.createServer(httpsOptions, app).listen(port, function(){
+var http = http.createServer({}, app).listen(port, function(){
   console.log('hosting');
 });
+
+
 
 
 
@@ -130,9 +133,20 @@ console.log("**listening on port: " + port);
 
 //===================================================
 
+app.get(['/'], function(req,res){
+  res.sendFile(__dirname+'/Homepage.html');
+});
 
-app.get(['/',"/login","/login.html"], function(req,res){
+
+app.get(["/login","/login.html"], function(req,res){
   res.sendFile(__dirname+'/login.html');
+});
+
+
+
+app.get(["/restaurants"], function(req,res){
+  // output screen with list of restaurants
+  res.sendFile(__dirname+'/restaurantQuery.html');
 });
 
 app.get(["/RestaurantHome.html"], function(req,res){

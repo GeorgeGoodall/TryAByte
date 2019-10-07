@@ -17,14 +17,42 @@ App = {
 
   conversion: 130,
 
+  accountInterval: null,
+
+  initialised: false,
+
+  loginLock: false,
+
 
 
   init: function(){
-  	console.log("Initialising App")
-  	web3.currentProvider.publicConfigStore.on('update', App.initAccount);
-	var loadedWeb3 = App.initWeb3();
-	App.getEthPrice();
-	return App.initContracts();
+  	console.log("Initialising App");
+
+  	account = '0x0';
+  	
+  },
+
+  login: function(){
+  	if(typeof web3 != 'undefined'){
+		if(App.web3Provider != web3.currentProvider){
+			App.initWeb3();
+		}
+		if(typeof web3.eth.accounts[0] == 'undefined' && !App.loginLock){
+			App.loginLock = true;
+			App.account = '0x0';
+  			ethereum.enable().then(function(res){
+  				App.loginLock = false;
+  			})
+  		}
+  		if(web3.eth.accounts[0] !== account && typeof web3.eth.accounts[0] != 'undefined'){
+  			App.account = web3.eth.accounts[0];
+  			if(!App.initialised){
+  				App.getEthPrice();
+				App.initContracts();
+				App.initialised = true;
+			}
+  		}
+  	}
   },
 
   initWeb3: function (){
@@ -33,12 +61,11 @@ App = {
       console.log(App.web3Provider);
       console.log("Found Web3 Provider");
       web3 = new Web3(web3.currentProvider);
+      return true;
     } else {
-      console.log("No Web3 Provider Found, attemting to connect to localhost. please install metamask");
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-      web3 = new Web3(App.web3Provider);
-    }
-    return;
+      console.log("No Web3 Provider Found");
+      return false;    
+  	}
   },
 
 	initHDWallet: function (){
@@ -128,61 +155,8 @@ App = {
 
 },
 
-initAccount: function(){
-
-	ethereum.send('eth_requestAccounts');
-	
-	var accountsRequest = web3.eth.getCoinbase(function(err,account){
-      if(err === null && account != null){       
-        App.account = account;
-        console.log("success getting account: " + account);
-      }
-      else{
-       	console.log("error getting account: " + err);
-      }
-    });
-
-    // var accountInterval = setInterval(function(){
-    // 	if(web3.eth.accounts[0] !== App.account){
-    // 		console.log("changed account: " + web3.eth.accounts[0]);
-    // 		App.account = web3.eth.accounts[0];
-    // 	}
-    // },100);
-},
-
-// // changed from when only controller was deployed (controller would deploy other contracts)
-// initFactoriesOld: function(){
-// 	App.initAccount();
-
-// 	App.contracts.Controller.deployed({from: "App.account"}).then(async function(instance){
-// 		console.log("controllerDeployed");
-// 		var owner = await instance.owner();
-// 		App.controllerInstance = instance;
-// 		console.log(">"+instance);
-// 		return controllerInstance.restaurantFactoryAddress().then(function(address){
-// 			console.log("restaurantFactoryAddress: " + address);
-// 			return new App.contracts.RestaurantFactory(address);
-// 		}).then(function(instance){
-// 			App.restaurantFactoryInstance = instance;
-// 			return controllerInstance.customerFactoryAddress();
-// 		}).then(function(address){
-// 			console.log("CustomerFactoryAddress: " + address);
-// 			return new App.contracts.CustomerFactory(address);
-// 		}).then(function(instance){
-// 			App.customerFactoryInstance = instance;
-// 			return controllerInstance.riderFactoryAddress();
-// 		}).then(function(address){
-// 			console.log("RiderFactoryAddress: " + address);
-// 			return new App.contracts.RiderFactory(address);
-// 		}).then(function(instance){
-// 			App.riderFactoryInstance = instance;
-// 			afterAsync();
-// 		});
-// 	});
-// },
 
 initFactories2: async function(){
-	App.initAccount();
 
 	await App.contracts.Controller.deployed().then(async function(instance){
 		console.log("controller Deployed at " + instance.address);
@@ -209,7 +183,6 @@ initFactories2: async function(){
 },
 
 initFactories: async function(){
-	App.initAccount();
 
 	App.controllerInstance = await new App.contracts.Controller(controllerAddress);
 
