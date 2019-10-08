@@ -10,9 +10,30 @@ contract Restaurant {
 
     //using lib for bytes32;
 
+    // additional variables to add
+    // restaurant logo: need link to logo file and hash of file
+    // banner image of restaurant
+
+    // latitud and longitude for indexing on area
+
+    // todo:
+
+
 	uint public id;
 	string public name;
+
 	string public location;
+    uint public longitude;
+    uint public latitude;
+
+    string public logoURI;
+    bytes32 private logoHash;
+
+    string public bannerImageURI;
+    bytes32 private bannerImageHash;
+
+
+
 	string public contactNumber;
 	uint public rating;
 
@@ -41,10 +62,14 @@ contract Restaurant {
     event OrderMadeEvent(address orderAddress);
     event MenuUpdated();
 
-	constructor(address _controller, address payable _owner, uint _id, string memory _name,string memory _address,string memory _contactNumber) public {
+	constructor(address _controller, address payable _owner, uint _id, string memory _name,string memory _address, uint _latitude, uint _longitude, string memory _contactNumber) public {
 		id = _id;
 		name = _name;
-		location = _address;
+		
+        location = _address;
+        latitude = _latitude;
+        longitude = _longitude;
+
 		contactNumber = _contactNumber;
 		totalOrders = 0;
         totalPay = 0;
@@ -53,6 +78,19 @@ contract Restaurant {
 		owner = _owner;
 		restaurantFactoryAddress = msg.sender;
 	}
+
+    function updateLogo(string calldata imageURI, bytes32 imageHash) external{
+        require(msg.sender == owner);
+        logoURI = imageURI;
+        logoHash = imageHash;
+    }
+
+
+    function updateBanner(string calldata imageURI, bytes32 imageHash) external{
+        require(msg.sender == owner);
+        bannerImageURI = imageURI;
+        bannerImageHash = imageHash;
+    }
 
     // ToDo Remove this
     function getMenuLength() external view returns(uint length){
