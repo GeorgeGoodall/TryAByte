@@ -133,20 +133,27 @@ console.log("**listening on port: " + port);
 
 //===================================================
 
+// new HTML locations
+
 app.get(['/'], function(req,res){
-  res.sendFile(__dirname+'/Homepage.html');
+  res.sendFile(__dirname+'/html/Homepage.html');
 });
-
-
-app.get(["/login","/login.html"], function(req,res){
-  res.sendFile(__dirname+'/login.html');
-});
-
-
 
 app.get(["/restaurants"], function(req,res){
   // output screen with list of restaurants
-  res.sendFile(__dirname+'/restaurantQuery.html');
+  res.sendFile(__dirname+'/html/restaurantQuery.html');
+});
+
+app.get(["/restaurantview"], function(req,res){
+  // output screen with list of restaurants
+  res.sendFile(__dirname+'/html/RestaurantView.html');
+});
+
+
+// old get/post 
+
+app.get(["/login","/login.html"], function(req,res){
+  res.sendFile(__dirname+'html/login.html');
 });
 
 app.get(["/RestaurantHome.html"], function(req,res){

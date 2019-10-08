@@ -14,6 +14,7 @@ body{
 }
 
 #postCodeEnterArea {
+  box-shadow: 0px 7px 3px 2px rgb(100, 100, 100, 0.8);
   position: relative;
   top: -100px;
 
@@ -25,5 +26,34 @@ body{
 
 #postCodeEnterArea {
   max-width: 85%;
+
+}
+
+#pageContent {
+	padding: 0px 20px 0px 20px;
+}
+
+.product {
+	border-top: 1px dashed #aeaeae;
+	margin-bottom: 10px;
+	padding-top: 10px;
+}
+
+.deetails {
+	right:0px;
+	position: absolute;
+}
+
+.middle {
+	position: relative;
+	top: -100px;
+}
+
+.trollyItem {
+	border-top: 1px solid #aeaeae;
+}
+
+.deliveryRadio {
+	padding: 10px 20px 30px 20px;
 
 }
