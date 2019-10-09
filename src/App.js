@@ -149,6 +149,16 @@ app.get(["/restaurantview"], function(req,res){
   res.sendFile(__dirname+'/html/RestaurantView.html');
 });
 
+app.get(["/becomeapartner"], function(req,res){
+  // output screen with list of restaurants
+  res.sendFile(__dirname+'/html/BecomeAPartner.html');
+});
+
+app.get(["/restaurantAccountCreation"], function(req,res){
+  // output screen with list of restaurants
+  res.sendFile(__dirname+'/html/RestaurantAccountCreation.html');
+});
+
 
 // old get/post 
 

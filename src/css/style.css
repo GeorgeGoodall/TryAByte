@@ -3,6 +3,11 @@ body{
   background-color: #aeccc8;
 }
 
+button {
+	margin: 5px;
+}
+
+
 #pageBanner {
   background-color: #00d1b2;
   height: 200px;
@@ -33,10 +38,26 @@ body{
 	padding: 0px 20px 0px 20px;
 }
 
+.less-wide {
+	width: 70%;
+	max-width: 70%;
+	margin-left: 20px;
+}
+
+.to-left {
+	padding-top: 5px;
+}
+
+.add-seperator {
+	padding-bottom: 10px;
+	border-bottom: 1px dashed #aeaeae;
+}
+
 .product {
 	border-top: 1px dashed #aeaeae;
 	margin-bottom: 10px;
-	padding-top: 10px;
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
 
 .deetails {
@@ -60,4 +81,28 @@ body{
 
 .paymentArea {
 	border-top: 1px solid #aeaeae;	
+}
+
+.isnt-wide {
+	max-width: 80px;
+}
+
+
+.menuStagingPrices {
+	max-width: 100px;
+}
+
+.itemAddButton {
+	float:right; 
+	position: relative; 
+	top: -13px;
+}
+
+.price {
+	float: right; 
+	margin-right: 10px
+}
+
+.subtitle {
+	margin-bottom: 5px;
 }

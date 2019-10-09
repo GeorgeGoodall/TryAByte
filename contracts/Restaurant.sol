@@ -29,13 +29,8 @@ contract Restaurant {
     string public logoURI;
     bytes32 private logoHash;
 
-    string public bannerImageURI;
-    bytes32 private bannerImageHash;
-
-
 
 	string public contactNumber;
-	uint public rating;
 
 	address payable public owner;
     address public controllerAddress;
@@ -51,7 +46,9 @@ contract Restaurant {
 	
 	struct Item{
 		bytes32 itemName;
-		uint itemCost; // in wei (10^-18 Eth)
+        string description;
+        bytes32[] options;
+		uint[] optionsCost; // in wei (10^-18 Eth)
 	}
 	
     uint public menuLength;
@@ -62,7 +59,12 @@ contract Restaurant {
     event OrderMadeEvent(address orderAddress);
     event MenuUpdated();
 
-	constructor(address _controller, address payable _owner, uint _id, string memory _name,string memory _address, uint _latitude, uint _longitude, string memory _contactNumber) public {
+	constructor(address _controller, address payable _owner, 
+                uint _id, string memory _name,
+                string memory _address, uint _latitude, uint _longitude, 
+                string memory _contactNumber,
+                bytes32[] memory itemNames, bytes32[] memory itemDescriptions, bytes32[] memory itemOptions, uint[] memory prices) public {
+        // itemOptions and prices will have to be parsed as they are 2d arrays
 		id = _id;
 		name = _name;
 		
@@ -85,30 +87,23 @@ contract Restaurant {
         logoHash = imageHash;
     }
 
-
-    function updateBanner(string calldata imageURI, bytes32 imageHash) external{
-        require(msg.sender == owner);
-        bannerImageURI = imageURI;
-        bannerImageHash = imageHash;
-    }
-
     // ToDo Remove this
     function getMenuLength() external view returns(uint length){
         return menuLength;
     }
     
 
-    function menuAddItems(bytes32[] calldata itemNames, uint[] calldata prices) external {
-        require(msg.sender == owner);
-        require(itemNames.length == prices.length);
+    // function menuAddItems(bytes32[] calldata itemNames, uint[] calldata prices) external {
+    //     require(msg.sender == owner);
+    //     require(itemNames.length == prices.length);
         
-        // should add checks that an item isn't added twice
-        for(uint i = 0; i<itemNames.length;i++){
-            menu[menuLength] = Item(itemNames[i],prices[i]);
-            menuLength++;
-        }
-        emit MenuUpdated();
-    }
+    //     // should add checks that an item isn't added twice
+    //     for(uint i = 0; i<itemNames.length;i++){
+    //         menu[menuLength] = Item(itemNames[i],prices[i]);
+    //         menuLength++;
+    //     }
+    //     emit MenuUpdated();
+    // }
 
     
     
@@ -140,10 +135,11 @@ contract Restaurant {
         emit MenuUpdated();
     }
 
+    // todo: fix this
     function getOrderPrice(uint[] memory itemIds) public view returns (uint){
         uint price = 0;
         for(uint i = 0; i < itemIds.length; i++){
-            price += menu[itemIds[i]].itemCost;
+            price += menu[itemIds[i]].optionsCost[0];
         }
         return price;
     }
@@ -160,7 +156,7 @@ contract Restaurant {
             if (itemIds[i] >= 0 && itemIds[i] < menuLength){
                 // could consider sending itemID and price to reduce gas cost
                 items[i] = menu[uint(itemIds[i])].itemName; 
-                prices[i] = menu[uint(itemIds[i])].itemCost;
+                prices[i] = menu[uint(itemIds[i])].optionsCost[0];
             }
             else{
                 revert("Invalid Items");
@@ -177,7 +173,7 @@ contract Restaurant {
     }
     
     function getMenuItem(uint itemId)public view returns(bytes32 itemname, uint cost){
-        return (menu[itemId].itemName,menu[itemId].itemCost);
+        return (menu[itemId].itemName,menu[itemId].optionsCost[0]);
     }
 
     function setStatus(address orderAddress, uint status) public{
