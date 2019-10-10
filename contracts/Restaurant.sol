@@ -46,7 +46,7 @@ contract Restaurant {
 	
 	struct Item{
 		bytes32 itemName;
-        string description;
+        bytes32 description;
         bytes32[] options;
 		uint[] optionsCost; // in wei (10^-18 Eth)
 	}
@@ -62,8 +62,8 @@ contract Restaurant {
 	constructor(address _controller, address payable _owner, 
                 uint _id, string memory _name,
                 string memory _address, uint _latitude, uint _longitude, 
-                string memory _contactNumber,
-                bytes32[] memory itemNames, bytes32[] memory itemDescriptions, bytes32[] memory itemOptions, uint[] memory prices) public {
+                string memory _contactNumber
+                ) public {
         // itemOptions and prices will have to be parsed as they are 2d arrays
 		id = _id;
 		name = _name;
@@ -93,17 +93,51 @@ contract Restaurant {
     }
     
 
-    // function menuAddItems(bytes32[] calldata itemNames, uint[] calldata prices) external {
-    //     require(msg.sender == owner);
-    //     require(itemNames.length == prices.length);
+    function menuAddItems(bytes32[] calldata itemNames, bytes32[] calldata itemDescriptions, bytes32[] calldata _optionNames, uint[] calldata _prices) external {
+        require(msg.sender == owner);
+        require(itemNames.length == itemDescriptions.length);
+        require(_optionNames.length == _prices.length);
         
-    //     // should add checks that an item isn't added twice
-    //     for(uint i = 0; i<itemNames.length;i++){
-    //         menu[menuLength] = Item(itemNames[i],prices[i]);
-    //         menuLength++;
-    //     }
-    //     emit MenuUpdated();
-    // }
+        uint itemindex = 0;
+        uint optionIndex = 0;
+        bool isNewItem = true;
+
+        bytes32 itemName;
+        bytes32 itemDescription;
+        bytes32[] memory optionNames = new bytes32[](5);
+        uint[] memory prices = new uint[](5);
+
+
+        for(uint i = 0; i < _optionNames.length; i++){
+
+            if(isNewItem){
+                itemName = itemNames[itemindex];
+                itemDescription = itemDescription[itemindex];
+                isNewItem = false;
+            }
+
+            bytes32 optionName = optionNames[i];
+
+            if(optionName == "0x0"){
+                menu[itemindex] = Item(itemName,itemDescription,optionNames,prices);
+                menuLength++;
+                itemindex++;
+                optionIndex = 0;
+                isNewItem = true;
+            }
+            else{
+                optionNames[optionIndex] = _optionNames[i];
+                prices[optionIndex] = _prices[i];
+                optionIndex++;
+            }
+
+        }
+
+        menu[itemindex] = Item(itemName,itemDescription,optionNames,prices);
+        menuLength++;
+
+
+    }
 
     
     

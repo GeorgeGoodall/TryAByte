@@ -22,7 +22,7 @@ contract RestaurantFactory {
 	}
 
 	// factory function creates a new restaurant
-	function createRestaurant(string calldata name, string calldata _address, uint latitude, uint longitude, string calldata contactNumber,bytes32[] calldata itemNames, bytes32[] calldata itemDescriptions, bytes32[] calldata itemOptions, uint[] calldata prices) external returns(address newRestaurant){
+	function createRestaurant(string calldata name, string calldata _address, uint latitude, uint longitude, string calldata contactNumber) external returns(address newRestaurant){
 		//ToDo: require deposit to create a restaurant
 		require(restaurants2[msg.sender] == address(0x0), "your address already has a restaurant associated with it");
 		require(bytes(name).length >0, "name cannot be empty");
@@ -30,7 +30,7 @@ contract RestaurantFactory {
 		require(bytes(contactNumber).length >0, "contact number can not be empty");
 
 
-		Restaurant theNewRestaurant = new Restaurant(controller,msg.sender,restaurantCount, name, _address, latitude, longitude, contactNumber,itemNames,itemDescriptions,itemOptions,prices);
+		Restaurant theNewRestaurant = new Restaurant(controller,msg.sender,restaurantCount, name, _address, latitude, longitude, contactNumber);
 		restaurants0[restaurantCount] = address(theNewRestaurant);
 		restaurantCount ++;
 		restaurants1[address(theNewRestaurant)] = msg.sender;

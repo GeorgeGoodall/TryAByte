@@ -63,8 +63,9 @@ App = {
       web3 = new Web3(web3.currentProvider);
       return true;
     } else {
-      console.log("No Web3 Provider Found");
-      return false;    
+      console.log("No Web3 Provider Found, attemting to connect to localhost. please install metamask");
+      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      web3 = new Web3(App.web3Provider);   
   	}
   },
 

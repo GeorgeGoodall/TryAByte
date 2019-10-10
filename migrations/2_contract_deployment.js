@@ -27,22 +27,22 @@ module.exports = function(deployer) {
 	  		var restFactAddress;
 	  		await deployer.deploy(RestaurantFactory,instance.address).then(async function(restaurantFactInstance){
 				restFactAddress = restaurantFactInstance.address;
-				await restaurantFactInstance.createRestaurant("George's Test Restaurant","Fake Address Street","0123456789",{gas: 4000000}).then(async function(){
+				await restaurantFactInstance.createRestaurant("George's Test Restaurant","Fake Address Street",200,300,"0123456789",{gas: 4000000}).then(async function(){
 		  			console.log("Test restaurant Made");
-		  			await restaurantFactInstance.restaurants0(0).then(async function(address){
-		  				console.log("restaurant address: " + address);
-						var menuStaging = [["0x46697368",2],["0x4368697073",1],["0x6265616e73",1],["0x70656173",1]];
-						var itemNames = [];
-						var itemPrices = [];
-						for(var i = 0; i< menuStaging.length; i++){
-							itemNames[i] = menuStaging[i][0];
-							// change value from finney (10^-3 eth) to wei (10^-18 eth)
-							itemPrices[i] = menuStaging[i][1] * Math.pow(10,15);
-						}
-				      	var restaurant = await new Restaurant(address)
-				      	await restaurant.menuAddItems(itemNames,itemPrices);
-				      	console.log("Test restaurant Menu updated");
-				      });
+		  		// 	await restaurantFactInstance.restaurants0(0).then(async function(address){
+		  		// 		console.log("restaurant address: " + address);
+						// var menuStaging = [["0x46697368",2],["0x4368697073",1],["0x6265616e73",1],["0x70656173",1]];
+						// var itemNames = [];
+						// var itemPrices = [];
+						// for(var i = 0; i< menuStaging.length; i++){
+						// 	itemNames[i] = menuStaging[i][0];
+						// 	// change value from finney (10^-3 eth) to wei (10^-18 eth)
+						// 	itemPrices[i] = menuStaging[i][1] * Math.pow(10,15);
+						// }
+				  //     	var restaurant = await new Restaurant(address)
+				  //     	await restaurant.menuAddItems(itemNames,itemPrices);
+				  //     	console.log("Test restaurant Menu updated");
+				  //     });
 			    });
 			  return;
 	  		});

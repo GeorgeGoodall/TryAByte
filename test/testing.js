@@ -72,7 +72,7 @@ describe('Contract: RestaurantFactory', function(){
 	});
 
 	it("Can create a restaurant", function(){
-		return restaurantFactoryInstance.methods.createRestaurant("Test Restaurant", "41 Test Address, Cardiff", "0123456789").send({from: theAccounts[2], gas: 4000000}).then(function(){
+		return restaurantFactoryInstance.methods.createRestaurant("Test Restaurant", "41 Test Address, Cardiff", 200 , 300, "0123456789").send({from: theAccounts[2], gas: 4000000}).then(function(){
 			return restaurantFactoryInstance.methods.restaurantCount().call();
 		}).then(function(count){
 			assert.equal(count,2);
@@ -156,15 +156,10 @@ describe('Contract: Restaurant', function(){
 	});
 
 	it("Can Add Menu Items",function(){
-		return restaurantInstance.methods.menuAddItems([web3.utils.fromAscii("Fish"),
-														web3.utils.fromAscii("Chips"),
-														web3.utils.fromAscii("Pie"),
-														web3.utils.fromAscii("cake"),
-														web3.utils.fromAscii("beans"),
-														web3.utils.fromAscii("Jacket Potato"),
-														web3.utils.fromAscii("Burger"),
-														web3.utils.fromAscii("spaghetti")],
-														[300,200,100,400,500,600,700,800]).send({from:theAccounts[2], gas:3000000}).then(function(){
+		return restaurantInstance.methods.menuAddItems([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")],
+														[web3.utils.fromAscii("Fish desc"),web3.utils.fromAscii("Chips desc")],
+														[web3.utils.fromAscii("cod"),web3.utils.fromAscii("hadock"),"0x0",web3.utils.fromAscii("small"),web3.utils.fromAscii("large")],
+														[200,300,0,150,250]).send({from:theAccounts[2], gas:3000000}).then(function(){
 			return restaurantInstance.methods.getMenuLength().call().then(function(menuLength){
 				assert.equal(menuLength,8,"Menu length hasn't increased");
 			});
