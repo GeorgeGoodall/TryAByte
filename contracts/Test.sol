@@ -12,4 +12,8 @@ contract Test{
 	function emitEvent() public {
 		emit testEvent("this is a test");
 	}
+
+	function compareBytes32(bytes32 a) public returns(bool) {
+		return (a == "large"); 
+	}
 }

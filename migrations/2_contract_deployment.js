@@ -74,6 +74,6 @@ module.exports = function(deployer) {
 
 
 
-	//deployer.deploy(test);
+	deployer.deploy(test);
 
 };

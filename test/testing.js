@@ -158,7 +158,7 @@ describe('Contract: Restaurant', function(){
 	it("Can Add Menu Items",function(){
 		return restaurantInstance.methods.menuAddItems([web3.utils.fromAscii("Fish"),web3.utils.fromAscii("Chips")],
 														[web3.utils.fromAscii("Fish desc"),web3.utils.fromAscii("Chips desc")],
-														[web3.utils.fromAscii("cod"),web3.utils.fromAscii("hadock"),"0x0",web3.utils.fromAscii("small"),web3.utils.fromAscii("large")],
+														[web3.utils.fromAscii("cod"),web3.utils.fromAscii("hadock"),"0x3c3e",web3.utils.fromAscii("small"),web3.utils.fromAscii("large")],
 														[200,300,0,150,250]).send({from:theAccounts[2], gas:3000000}).then(function(){
 			return restaurantInstance.methods.getMenuLength().call().then(function(menuLength){
 				assert.equal(menuLength,8,"Menu length hasn't increased");
