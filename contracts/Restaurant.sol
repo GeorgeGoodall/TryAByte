@@ -116,7 +116,7 @@ contract Restaurant {
                 isNewItem = false;
             }
 
-            bytes32 optionName = optionNames[i];
+            bytes32 optionName = _optionNames[i];
 
             if(optionName == "<>"){
                 menu[itemindex] = Item(itemName,itemDescription,optionNames,prices);
