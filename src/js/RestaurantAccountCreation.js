@@ -8,9 +8,15 @@ Restaurant = {
 	county: "county",
 	postcode: "postcode",
 
+	contractAddress: null,
+	restaurantInstance: null,
+
 
 	number: "07987654321",
+
 	logoAddress: "Images/index.png",
+	logoHash: null,
+
 	menu: [],
 
 	init: function(){
@@ -45,8 +51,6 @@ function MenuItem(){
 }
 
 function updateRestaurantObject(variable, value){
-	console.log("changing: " + variable + " to: " + value);
-
 	// update object
 	if(variable == 'name'){
 		Restaurant.name = value;
@@ -62,11 +66,165 @@ function updateRestaurantObject(variable, value){
 		Restaurant.postcode = value;
 	}else if(variable == 'number'){
 		Restaurant.number = value;
-	}else if(variable == 'logo'){
-		Restaurant.logoAddress = value;
 	}
 
 	updateDisplay();
+}
+
+async function formSubmit(){
+	checkLogin().then(function(res){
+		if(res){
+			makeRestaurant();
+			return false;
+		  }
+	});
+	return false;
+}
+
+async function checkLogin(){
+	if(App.account == "0x0" || App.account == null){
+		App.login().then(function(result){
+			if(result){
+				alert("logged in as: " + App.account);
+				return true;
+
+			}else{
+				alert("could not log you in:");
+				return false;
+			}
+		})
+	}
+
+	return true;
+}
+
+async function makeRestaurant(){
+
+	// get all inputs and check they ok
+	var name = document.getElementById('name').value;
+	var country = document.getElementById('country').value;
+	var address = document.getElementById('address').value;
+	var town = document.getElementById('town').value;
+	var county = document.getElementById('county').value;
+	var postcode = document.getElementById('postcode').value;
+	var number = document.getElementById('number').value;
+
+	//ToDo: checks on input
+	//ToDo: get coordinates from address using google reverse map thing
+
+	var _address =  address  + "," + town + "," + county + "," + county + "," + postcode;
+
+	// make restaurant
+	App.restaurantFactoryInstance.createRestaurant(name,_address,0,0,number,{from: App.account, gas: 4000000}).then(async function(result){
+      Restaurant.contractAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
+      Restaurant.restaurantInstance = await new App.contracts.Restaurant(Restaurant.contractAddress);
+      console.log("restaurant Made at: " + Restaurant.contractAddress);
+      
+      console.log("commit Logo");
+      await commitLogo();
+      
+
+      // add the restaurant menu
+    });
+    // .catch(function(error){
+    // 	console.error(error);
+    // });
+}
+
+async function commitLogo(){
+	const msgParams = [
+	{
+	    type: 'string',      	// Any valid solidity type
+	    name: 'restaurantAddress',   // Any string label you want
+	    value: Restaurant.contractAddress,  	// The value to sign, this should be changed
+	}];
+
+	await web3.currentProvider.sendAsync(
+	{
+	    method: 'eth_signTypedData',
+	    params: [msgParams, App.account],
+	    from: App.account,
+  	}, 
+  	async function (err, result) {
+  		console.log("requesting logo update to server for restaurant at: " + Restaurant.contractAddress);
+  		$.ajax({ 
+		      type: 'POST', 
+		      url: '/commitLogo',
+		      async: true,  
+		      data: {
+		      			signature: result.result,
+		    			contractAddress: Restaurant.contractAddress,
+		    		},
+		      dataType: 'text',
+		      success: function (data) { 
+		      	if(data != ''){
+		      		callback(data);
+		      	}else{
+
+		      	}
+		      }
+		    });		
+  	});
+  	console.log("start");
+	//await Restaurant.restaurantInstance.updateLogo(Restaurant.logoAddress, Restaurant.logoHash,{from: App.account, gas: 4000000});
+	console.log("end");
+}
+
+async function uploadLogo(input) {
+
+	App.login();
+
+		// set image
+	var preview = document.getElementById("restaurantLogo");
+	var reader;
+
+	var logoInput = document.getElementById("logoInput");
+
+	if (logoInput.files && logoInput.files[0]) {
+	    // display the image
+	    readerPreview = new FileReader();
+	    readerPreview.onload = function(e) {
+	    	  preview.setAttribute('src', e.target.result);
+	    }
+	    
+	    // hash the image
+	    readerRaw = new FileReader();
+	    readerRaw.onload = async function(e) {
+	      	var arrayBuffer = e.target.result
+	      	var digestBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+	      	var byteArray = new Uint8Array(digestBuffer);
+	      	var hashString = "0x";
+	      	for(var i = 0; i < byteArray.length; i++)
+	      		hashString+=byteArray[i];
+	      	Restaurant.logoHash = hashString;
+
+	    }
+	    
+	    // upload image to server
+	    data = new FormData();
+	    data.append( 'file', logoInput.files[0] );
+	    data.append( 'userAddress', App.account );
+	    console.log("updating image from " + App.account);
+
+	    var messageLock = false;
+
+	    xhr = new XMLHttpRequest();
+	    xhr.open( 'POST', '/uploadTemp', true );
+	    xhr.onreadystatechange = function ( response ) {
+	    	if(response.target.responseText != "" && !messageLock){
+	    		messageLock = true;
+		    	if(response.target.status != 200){
+		    		alert("Error: " + response.target.responseText);
+		    	}else{
+		    		// initiate display of image
+		    		readerPreview.readAsDataURL(logoInput.files[0]);
+		    		// initiate getting image hash
+		    		readerRaw.readAsArrayBuffer(logoInput.files[0]);
+		    	}
+	    	}
+	    };
+	    xhr.send(data);
+	  }
 }
 
 function updateRestaurantMenu(_variable, value){

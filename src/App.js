@@ -6,6 +6,8 @@ var mongoose = require("mongoose");
 const sigUtil = require('eth-sig-util');
 var fs = require('fs');
 var path = require('path');
+var multer = require('multer');
+var upload = multer({ dest: 'uploads/' })
 
 // todo move http provide link to dotenv
 require('dotenv').config();
@@ -15,6 +17,7 @@ var web3js = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io
 //var web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 
 var orderContract;
+var restaurantContract;
 
 var controllerAddress = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
 var controller;
@@ -28,12 +31,14 @@ loadContracts();
 
 async function loadContracts(){
   var orderABI = JSON.parse(fs.readFileSync('Contracts/Order.json', 'utf8'));
+  var restaurantABI = JSON.parse(fs.readFileSync('Contracts/Restaurant.json', 'utf8'));
   var customerFactoryABI = JSON.parse(fs.readFileSync('Contracts/CustomerFactory.json', 'utf8'));
   var restaurantFactoryABI = JSON.parse(fs.readFileSync('Contracts/RestaurantFactory.json', 'utf8'));
   var riderFactoryABI = JSON.parse(fs.readFileSync('Contracts/RiderFactory.json', 'utf8'));
   var controllerABI = JSON.parse(fs.readFileSync('Contracts/Controller.json', 'utf8'));
 
   orderContract = web3js.eth.contract(orderABI.abi);
+  restaurantContract = web3js.eth.contract(restaurantABI.abi);
   var customerFactoryContract = web3js.eth.contract(customerFactoryABI.abi);
   var restaurantFactoryContract = web3js.eth.contract(restaurantFactoryABI.abi);
   var riderFactoryContract = web3js.eth.contract(riderFactoryABI.abi);
@@ -157,6 +162,94 @@ app.get(["/becomeapartner"], function(req,res){
 app.get(["/restaurantAccountCreation"], function(req,res){
   // output screen with list of restaurants
   res.sendFile(__dirname+'/html/RestaurantAccountCreation.html');
+});
+
+
+//ajax
+app.post(["/uploadTemp"], upload.single('file'), function(req,res){
+  console.log(req);
+  console.log("userAddress: " + req.body.userAddress);
+  const oldPath = req.file.path;
+  const temp = '/uploads/temp/'+req.body.userAddress+'.png'; // file name is the id of the restaurant
+  const targetPath = path.join(__dirname, temp);
+
+  console.log("writing file from " + oldPath + " to " + targetPath);
+
+  if (path.extname(req.file.originalname).toLowerCase() === ".png") {
+    fs.rename(oldPath, targetPath, err => {
+      if (err){
+        res
+        .status(200)
+        .contentType("text/plain")
+        .end("Error: " + err);
+        return;
+      }
+
+      res
+        .status(200)
+        .contentType("text/plain")
+        .end("File uploaded!");
+    });
+  } else {
+    fs.unlink(oldPath, err => {
+      if (err){
+        res
+        .status(200)
+        .contentType("text/plain")
+        .end("Error: " + err);
+        return;
+      }
+
+      res
+        .status(403)
+        .contentType("text/plain")
+        .end("Only .png files are allowed!");
+    });
+  }
+});
+
+app.post(["/commitLogo"], async function(req,res){
+  const msgParams = [
+  {
+      type: 'string',       // Any valid solidity type
+      name: 'restaurantAddress',   // Any string label you want
+      value: req.body.contractAddress,    // The value to sign, this should be changed
+  }];
+
+  const recovered = sigUtil.recoverTypedSignature({
+    data: msgParams,
+    sig: req.body.signature 
+  });
+  
+  console.log('Recovered signature: ' + recovered);
+
+  // check if customer, restaurant or rider sent this message
+  var restaurant = restaurantContract.at(req.body.contractAddress);
+  var contractOwnerAddress = await restaurant.owner();
+
+  if(contractOwnerAddress == recovered){
+
+    // process and move the image file to storage
+    var oldPath = "/uploads/temp/" + contractOwnerAddress + ".png";
+
+    var restaurantID = await restaurant.id();
+    var newPath = "/uploads/logos/"+restaurantID+".png";
+
+    console.log("signature match: commiting logo from " + oldPath + " to " + newPath);
+
+    fs.rename(oldPath, targetPath, err => {
+      if (err) return handleError(err, res);
+
+      res
+        .status(200)
+        .contentType("text/plain")
+        .end("File commited!");
+    })
+
+  }else{
+    console.log("signature mismatch: you aren't the owner of this contract");
+  }
+
 });
 
 

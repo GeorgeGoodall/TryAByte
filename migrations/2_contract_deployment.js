@@ -27,7 +27,7 @@ module.exports = function(deployer) {
 	  		var restFactAddress;
 	  		await deployer.deploy(RestaurantFactory,instance.address).then(async function(restaurantFactInstance){
 				restFactAddress = restaurantFactInstance.address;
-				await restaurantFactInstance.createRestaurant("George's Test Restaurant","Fake Address Street",200,300,"0123456789",{gas: 4000000}).then(async function(){
+				await restaurantFactInstance.createRestaurant("George's Test Restaurant","0x46616b65204164647265737320537472656574",200,300,"0123456789",{gas: 4000000}).then(async function(){
 		  			console.log("Test restaurant Made");
 		  		// 	await restaurantFactInstance.restaurants0(0).then(async function(address){
 		  		// 		console.log("restaurant address: " + address);

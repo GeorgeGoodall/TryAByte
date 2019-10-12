@@ -22,11 +22,11 @@ contract Restaurant {
 	uint public id;
 	string public name;
 
-	string public location;
+	bytes public location;
     uint public longitude;
     uint public latitude;
 
-    string public logoURI;
+    bytes public logoURI;
     bytes32 private logoHash;
 
 
@@ -60,8 +60,8 @@ contract Restaurant {
     event MenuUpdated();
 
 	constructor(address _controller, address payable _owner, 
-                uint _id, string memory _name,
-                string memory _address, uint _latitude, uint _longitude, 
+                uint _id, string memory _name, 
+                bytes memory _address, uint _latitude, uint _longitude, 
                 string memory _contactNumber
                 ) public {
         // itemOptions and prices will have to be parsed as they are 2d arrays
@@ -79,9 +79,11 @@ contract Restaurant {
         controllerAddress = _controller;
 		owner = _owner;
 		restaurantFactoryAddress = msg.sender;
+
+
 	}
 
-    function updateLogo(string calldata imageURI, bytes32 imageHash) external{
+    function updateLogo(bytes calldata imageURI, bytes32 imageHash) external{
         require(msg.sender == owner);
         logoURI = imageURI;
         logoHash = imageHash;

@@ -1,4 +1,7 @@
-var controllerAddress = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b"; // updated order event to emit key hash, also added reset function
+var controllerAddressRemote = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
+var controllerAddressLocal = "0xC96e74571109262e5B0dE2112b0F58B1e169B5Df";
+//var controllerAddressLocal = "0xA1105c975ec8DE480E50ce97C0357AfC1620127c";
+// updated order event to emit key hash, also added reset function
 //"0x0C65a3108b992F01FCeb6354990BB83e43d80FC7" // changed customer address to public in order
 //"0xD3528B260364497a29f6b344D24b866E4B58C2f5"; // addresses stored in mongodb
 //"0xF9531f71247903B6e108CfF44858Af561EaAe101"; // addresses stored in order contract
@@ -11,6 +14,7 @@ App = {
   account: '0x0',
 
   controllerInstance: null,
+  controllerAddress: null,
   restaurantFactoryInstance: null,
   customerFactoryInstance: null,
   riderFactoryInstance: null,
@@ -21,42 +25,69 @@ App = {
 
   initialised: false,
 
-  loginLock: false,
+  local: true,
 
 
 
   init: function(){
-  	console.log("Initialising App");
+  	if(App.local)
+  		App.controllerAddress = controllerAddressLocal;
+  	else
+  		App.controllerAddress = controllerAddressRemote;
 
-  	account = '0x0';
-  	
+
+  	if(!App.initialised){
+	  	console.log("Initialising App");
+	  	if(typeof web3 != 'undefined'){
+			if(App.web3Provider != web3.currentProvider){
+				App.initWeb3();
+			}
+		}
+		else{
+			alert("no web3 provider found");
+		}
+	  	App.getEthPrice();
+		App.initContracts();
+		App.initialised = true;
+	}
   },
 
-  login: function(){
+  login: async function(){
   	if(typeof web3 != 'undefined'){
 		if(App.web3Provider != web3.currentProvider){
 			App.initWeb3();
 		}
-		if(typeof web3.eth.accounts[0] == 'undefined' && !App.loginLock){
-			App.loginLock = true;
+		if(typeof web3.eth.accounts[0] == 'undefined'){
 			App.account = '0x0';
   			ethereum.enable().then(function(res){
-  				App.loginLock = false;
+  				if(web3.eth.accounts[0] !== App.account && typeof web3.eth.accounts[0] != 'undefined'){
+  					App.account = web3.eth.accounts[0];
+  					alert("Logged in as " + App.account);
+  					return true;
+  				}
   			})
+  		}else{
+  			if(web3.eth.accounts[0] !== App.account && typeof web3.eth.accounts[0] != 'undefined'){
+  				if(App.local){
+  					var accountID = prompt("please enter the account index", "[0-10]");
+  					App.account = web3.eth.accounts[accountID];
+  				}
+  				else
+  					App.account = web3.eth.accounts[0];
+  				alert("Logged in with address " + App.account);
+  				return true;
+  			}
   		}
-  		if(web3.eth.accounts[0] !== account && typeof web3.eth.accounts[0] != 'undefined'){
-  			App.account = web3.eth.accounts[0];
-  			if(!App.initialised){
-  				App.getEthPrice();
-				App.initContracts();
-				App.initialised = true;
-			}
-  		}
+
   	}
+  	else{
+  		alert("no web3 provider found");
+  	}
+  	return false;
   },
 
   initWeb3: function (){
-    if(typeof web3 !== 'undefined'){
+    if(typeof web3 !== 'undefined' && !App.local){
       App.web3Provider = web3.currentProvider;
       console.log(App.web3Provider);
       console.log("Found Web3 Provider");
@@ -81,6 +112,7 @@ App = {
 	  url: '/Contracts/Controller.json',
 	  async: false,
 	  success: function(controller){
+	  	console.log("success loading controller JSON");
 	    App.contracts["Controller"] = TruffleContract(controller);
 	    App.contracts["Controller"].setProvider(App.web3Provider);
 	  },
@@ -92,6 +124,7 @@ App = {
 	  url: '/Contracts/RestaurantFactory.json',
 	  async: false,
 	  success: function(RestaurantFactory){
+	  	console.log("success loading restaurantFactory JSON");
 	    App.contracts["RestaurantFactory"] = TruffleContract(RestaurantFactory);
 	    App.contracts["RestaurantFactory"].setProvider(App.web3Provider);
 	  }
@@ -100,6 +133,7 @@ App = {
 	  url: '/Contracts/CustomerFactory.json',
 	  async: false,
 	  success: function(CustomerFactory){
+	  	console.log("success loading customerFactory JSON");
 	    App.contracts["CustomerFactory"] = TruffleContract(CustomerFactory);
 	    App.contracts["CustomerFactory"].setProvider(App.web3Provider);
 	  }
@@ -108,6 +142,7 @@ App = {
 	  url: '/Contracts/RiderFactory.json',
 	  async: false,
 	  success: function(RiderFactory){
+	  	console.log("success loading RiderFactory JSON");
 	    App.contracts["RiderFactory"] = TruffleContract(RiderFactory);
 	    App.contracts["RiderFactory"].setProvider(App.web3Provider);
 	  }
@@ -116,7 +151,7 @@ App = {
 	  url: '/Contracts/Restaurant.json',
 	  async: true,
 	  success: function(Restaurant){
-	    console.log("success loading restaurant JSON")
+	    console.log("success loading restaurant JSON");
 	    App.contracts["Restaurant"] = TruffleContract(Restaurant);
 	    App.contracts["Restaurant"].setProvider(App.web3Provider);
 	  }
@@ -125,7 +160,7 @@ App = {
 	  url: '/Contracts/Customer.json',
 	  async: true,
 	  success: function(Customer){
-	    console.log("success loading Customer JSON")
+	    console.log("success loading Customer JSON");
 	    App.contracts["Customer"] = TruffleContract(Customer);
 	    App.contracts["Customer"].setProvider(App.web3Provider);
 	  }
@@ -134,7 +169,7 @@ App = {
 	  url: '/Contracts/Rider.json',
 	  async: true,
 	  success: function(Rider){
-	    console.log("success loading Rider JSON")
+	    console.log("success loading Rider JSON");
 	    App.contracts["Rider"] = TruffleContract(Rider);
 	    App.contracts["Rider"].setProvider(App.web3Provider);
 	  }
@@ -143,17 +178,17 @@ App = {
 	  url: '/Contracts/Order.json',
 	  async: true,
 	  success: function(Order){
-	    console.log("success loading Order JSON")
+	    console.log("success loading Order JSON");
 	    App.contracts["Order"] = TruffleContract(Order);
 	    App.contracts["Order"].setProvider(App.web3Provider);
 	  }
 	});
 	//return App.initFactories(); modified after controller migration changed
 
-	
-	await App.initFactories();
-	return afterAsync();
-
+	if(!App.local)
+		await App.initFactories();
+	else
+		await App.initFactories();
 },
 
 
@@ -184,8 +219,8 @@ initFactories2: async function(){
 },
 
 initFactories: async function(){
-
-	App.controllerInstance = await new App.contracts.Controller(controllerAddress);
+	console.log("init initFactories");
+	App.controllerInstance = await new App.contracts.Controller(App.controllerAddress);
 
 	await App.controllerInstance.restaurantFactoryAddress().then(function(address){
 		console.log("restaurantFactoryAddress: " + address);

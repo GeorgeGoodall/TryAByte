@@ -161,7 +161,7 @@ describe('Contract: Restaurant', function(){
 														[web3.utils.fromAscii("cod"),web3.utils.fromAscii("hadock"),"0x3c3e",web3.utils.fromAscii("small"),web3.utils.fromAscii("large")],
 														[200,300,0,150,250]).send({from:theAccounts[2], gas:3000000}).then(function(){
 			return restaurantInstance.methods.getMenuLength().call().then(function(menuLength){
-				assert.equal(menuLength,8,"Menu length hasn't increased");
+				assert.equal(menuLength,2,"Menu length hasn't increased");
 			});
 		});
 	});
