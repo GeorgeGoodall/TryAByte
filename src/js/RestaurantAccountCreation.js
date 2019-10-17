@@ -98,6 +98,14 @@ async function checkLogin(){
 	return true;
 }
 
+async function getRestaurant(){
+	if(typeof App.address == "undefined" || App.address == null)
+		App.login();
+
+	Restaurant.contractAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
+	Restaurant.restaurantInstance = await new App.contracts.Restaurant(Restaurant.contractAddress);
+}
+
 async function makeRestaurant(){
 
 	// get all inputs and check they ok
@@ -112,31 +120,92 @@ async function makeRestaurant(){
 	//ToDo: checks on input
 	//ToDo: get coordinates from address using google reverse map thing
 
-	var _address =  address  + "," + town + "," + county + "," + county + "," + postcode;
+	var _address =  address  + "," + town + "," + county + "," + country + "," + postcode;
+	var errorString = "";
+	if(typeof name == 'undefined')
+		errorString += "name is undefined\n";
+	if(typeof country == 'undefined')
+		errorString += "country is undefined\n";
+	if(typeof address == 'undefined')
+		errorString += "address is undefined\n";
+	if(typeof town == 'undefined')
+		errorString += "town is undefined\n";
+	if(typeof county == 'undefined')
+		errorString += "county is undefined\n";
+	if(typeof postcode == 'undefined')
+		errorString += "postcode is undefined\n";
+	if(typeof number == 'undefined')
+		errorString += "number is undefined\n";
+	if(Restaurant.logoHash == null)
+		errorString += "please upload a logo\n";
+	// should check that a logo has been uploaded
+		
+	// should check that the menu is valid
 
-	// make restaurant
-	App.restaurantFactoryInstance.createRestaurant(name,_address,0,0,number,{from: App.account, gas: 4000000}).then(async function(result){
-      Restaurant.contractAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
-      Restaurant.restaurantInstance = await new App.contracts.Restaurant(Restaurant.contractAddress);
-      console.log("restaurant Made at: " + Restaurant.contractAddress);
-      
-      console.log("commit Logo");
-      await commitLogo();
-      
+	if(errorString != ""){
+		alert(errorString);
+	}
+	else{
+		// make restaurant
+		console.log("making restaurant");
+		App.restaurantFactoryInstance.createRestaurant(name,web3.fromAscii(_address),10,10,number,{from: App.account, gas: 4000000}).then(async function(err,result){
+	      console.log(err);
+	      console.log(result);
 
-      // add the restaurant menu
-    });
-    // .catch(function(error){
-    // 	console.error(error);
-    // });
+
+	      Restaurant.contractAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
+	      Restaurant.restaurantInstance = await new App.contracts.Restaurant(Restaurant.contractAddress);
+	      console.log("restaurant Made at: " + Restaurant.contractAddress);
+	      
+	      console.log("commit Logo");
+	      await commitLogo();
+	      
+	      // add the restaurant menu
+
+
+
+	    });
+
+	}
+
+	
+}
+
+async function makeMenu(){
+	var itemNames = [];
+	var itemDescriptions = [];
+	var optionNames = [];
+	var optionPrices = [];
+
+	for(var i = 0; i < Restaurant.menu.length; i++){
+		itemNames.push(web3.fromAscii(Restaurant.menu[i].name));
+		itemDescriptions.push(web3.fromAscii(Restaurant.menu[i].name));
+		for(var j = 0; j < Restaurant.menu[i].options.length; j++){
+			optionNames.push(web3.fromAscii(Restaurant.menu[i].options[j]));
+		}
+		optionNames.push(web3.fromAscii("<>"));
+		for(var j = 0; j < Restaurant.menu[i].prices.length; j++){
+			optionPrices.push(web3.fromAscii(Restaurant.menu[i].prices[j]));
+		}
+		optionPrices.push(web3.fromAscii("<>"));
+	}
+
+	console.log(itemNames,itemDescriptions,optionNames,optionPrices);
+
+	Restaurant.restaurantInstance.menuAddItems(itemNames,itemDescriptions,optionNames,optionPrices,{from: App.account, gas: 4000000}).then(function(err,result){
+	      console.log(err);
+	      console.log(result);
+	})
 }
 
 async function commitLogo(){
+	var messageToSign = 'Request to commit logo to storage to be used by contract at ' + Restaurant.contractAddress;
+
 	const msgParams = [
 	{
 	    type: 'string',      	// Any valid solidity type
 	    name: 'restaurantAddress',   // Any string label you want
-	    value: Restaurant.contractAddress,  	// The value to sign, this should be changed
+	    value: messageToSign, 
 	}];
 
 	await web3.currentProvider.sendAsync(
@@ -146,28 +215,39 @@ async function commitLogo(){
 	    from: App.account,
   	}, 
   	async function (err, result) {
+
   		console.log("requesting logo update to server for restaurant at: " + Restaurant.contractAddress);
+  		
+  		console.log(result);
+
   		$.ajax({ 
 		      type: 'POST', 
 		      url: '/commitLogo',
-		      async: true,  
+		      async: true,
 		      data: {
 		      			signature: result.result,
 		    			contractAddress: Restaurant.contractAddress,
 		    		},
-		      dataType: 'text',
-		      success: function (data) { 
-		      	if(data != ''){
-		      		callback(data);
-		      	}else{
-
+		      dataType: 'json',
+		      success: function (data) {
+		      	console.log(data);
+		      	Restaurant.logoAddress = data.location;
+		      	Restaurant.restaurantInstance.updateLogo(Restaurant.logoAddress, Restaurant.logoHash,{from: App.account, gas: 4000000})
+		      	.then(function(result){
+		      		console.log(result);
+		      	});		      },
+		      error: function (error){
+		      	if(error.status == 503){
+		      		alert("No Logo Found, please upload one");
 		      	}
+		      	else{
+		      		alert("Failed to commit logo");
+		      	}
+		      	
 		      }
 		    });		
   	});
-  	console.log("start");
-	//await Restaurant.restaurantInstance.updateLogo(Restaurant.logoAddress, Restaurant.logoHash,{from: App.account, gas: 4000000});
-	console.log("end");
+	
 }
 
 async function uploadLogo(input) {
@@ -193,11 +273,17 @@ async function uploadLogo(input) {
 	      	var arrayBuffer = e.target.result
 	      	var digestBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
 	      	var byteArray = new Uint8Array(digestBuffer);
+	      	console.log(byteArray);
 	      	var hashString = "0x";
-	      	for(var i = 0; i < byteArray.length; i++)
-	      		hashString+=byteArray[i];
-	      	Restaurant.logoHash = hashString;
+	      	for(var i = 0; i < byteArray.length; i++){
+	      		var currentByte = byteArray[i].toString(16);
+	      		if(currentByte.length == 1)
+	      			currentByte = "0"+currentByte;
+	      		hashString+=currentByte;
 
+	      	}
+	      	Restaurant.logoHash = hashString;
+	      	console.log("setting logo hash");
 	    }
 	    
 	    // upload image to server

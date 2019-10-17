@@ -114,7 +114,7 @@ contract Restaurant {
 
             if(isNewItem){
                 itemName = itemNames[itemindex];
-                itemDescription = itemDescription[itemindex];
+                itemDescription = itemDescriptions[itemindex];
                 isNewItem = false;
             }
 

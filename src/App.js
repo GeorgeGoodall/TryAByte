@@ -13,13 +13,14 @@ var upload = multer({ dest: 'uploads/' })
 require('dotenv').config();
 var Web3 = require('web3');
 
-var web3js = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/a5c0811537054f2d9396aeb399c2efc7"));
-//var web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
+//var web3js = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/a5c0811537054f2d9396aeb399c2efc7"));
+var web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 
 var orderContract;
 var restaurantContract;
 
-var controllerAddress = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
+var controllerAddress = "0xE7267E2AbC4c6E5e0b172DAAef908Ff28A8228aD";
+//var controllerAddress = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
 var controller;
 var customerFactory;
 var restaurantFactory;
@@ -194,7 +195,7 @@ app.post(["/uploadTemp"], upload.single('file'), function(req,res){
     fs.unlink(oldPath, err => {
       if (err){
         res
-        .status(200)
+        .status(400)
         .contentType("text/plain")
         .end("Error: " + err);
         return;
@@ -209,6 +210,7 @@ app.post(["/uploadTemp"], upload.single('file'), function(req,res){
 });
 
 app.post(["/commitLogo"], async function(req,res){
+
   const msgParams = [
   {
       type: 'string',       // Any valid solidity type
@@ -221,33 +223,45 @@ app.post(["/commitLogo"], async function(req,res){
     sig: req.body.signature 
   });
   
-  console.log('Recovered signature: ' + recovered);
+  console.log('Recovered signature: "' + recovered + '" With type of ' + typeof recovered);
 
+  
   // check if customer, restaurant or rider sent this message
-  var restaurant = restaurantContract.at(req.body.contractAddress);
+
+  var restaurantContractAddressFromSignature = restaurantFactory.restaurants2(recovered);
+  console.log(restaurantContractAddressFromSignature)
+  console.log("getting contract at: " + restaurantContractAddressFromSignature);
+
+
+  var restaurant = restaurantContract.at(restaurantContractAddressFromSignature);
   var contractOwnerAddress = await restaurant.owner();
 
   if(contractOwnerAddress == recovered){
 
     // process and move the image file to storage
     var oldPath = "/uploads/temp/" + contractOwnerAddress + ".png";
+    oldPath = path.join(__dirname, oldPath);
 
     var restaurantID = await restaurant.id();
     var newPath = "/uploads/logos/"+restaurantID+".png";
+    newPath = path.join(__dirname, newPath);
 
     console.log("signature match: commiting logo from " + oldPath + " to " + newPath);
 
-    fs.rename(oldPath, targetPath, err => {
-      if (err) return handleError(err, res);
+    fs.rename(oldPath, newPath, err => {
+      if (err){
+        res.send(503, {err: err});
+        return;
+      }
 
-      res
-        .status(200)
-        .contentType("text/plain")
-        .end("File commited!");
-    })
+      res.send({message: "File Commited!", location: newPath});
+      return;
+    });
 
   }else{
     console.log("signature mismatch: you aren't the owner of this contract");
+    console.log(contractOwnerAddress);
+    console.log(recovered);
   }
 
 });
