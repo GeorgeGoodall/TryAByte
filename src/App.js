@@ -19,7 +19,7 @@ var web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 var orderContract;
 var restaurantContract;
 
-var controllerAddress = "0xE7267E2AbC4c6E5e0b172DAAef908Ff28A8228aD";
+var controllerAddress = "0xfEFEaA9e2Bd48C426BBC5b24318C59860eE58e25";
 //var controllerAddress = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
 var controller;
 var customerFactory;

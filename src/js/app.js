@@ -1,6 +1,6 @@
 //var controllerAddressRemote = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
-var controllerAddressRemote = "0xE7267E2AbC4c6E5e0b172DAAef908Ff28A8228aD";
-var controllerAddressLocal = "0xE7267E2AbC4c6E5e0b172DAAef908Ff28A8228aD";
+var controllerAddressRemote = "0xfEFEaA9e2Bd48C426BBC5b24318C59860eE58e25";
+var controllerAddressLocal = "0xfEFEaA9e2Bd48C426BBC5b24318C59860eE58e25";
 //var controllerAddressLocal = "0xA1105c975ec8DE480E50ce97C0357AfC1620127c";
 // updated order event to emit key hash, also added reset function
 //"0x0C65a3108b992F01FCeb6354990BB83e43d80FC7" // changed customer address to public in order

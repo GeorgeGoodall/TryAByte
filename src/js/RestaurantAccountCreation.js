@@ -176,23 +176,23 @@ async function makeMenu(){
 	var itemDescriptions = [];
 	var optionNames = [];
 	var optionPrices = [];
+	var optionFlags = []; // this will store the lengths of each grouping of options in the 1D array
 
 	for(var i = 0; i < Restaurant.menu.length; i++){
 		itemNames.push(web3.fromAscii(Restaurant.menu[i].name));
-		itemDescriptions.push(web3.fromAscii(Restaurant.menu[i].name));
+		itemDescriptions.push(web3.fromAscii(Restaurant.menu[i].description));
 		for(var j = 0; j < Restaurant.menu[i].options.length; j++){
 			optionNames.push(web3.fromAscii(Restaurant.menu[i].options[j]));
 		}
-		optionNames.push(web3.fromAscii("<>"));
 		for(var j = 0; j < Restaurant.menu[i].prices.length; j++){
-			optionPrices.push(web3.fromAscii(Restaurant.menu[i].prices[j]));
+			optionPrices.push(Restaurant.menu[i].prices[j]);
 		}
-		optionPrices.push(web3.fromAscii("<>"));
+		optionFlags.push(Restaurant.menu[i].options.length);
 	}
 
-	console.log(itemNames,itemDescriptions,optionNames,optionPrices);
+	console.log(itemNames,itemDescriptions,optionNames,optionPrices,optionFlags);
 
-	Restaurant.restaurantInstance.menuAddItems(itemNames,itemDescriptions,optionNames,optionPrices,{from: App.account, gas: 4000000}).then(function(err,result){
+	Restaurant.restaurantInstance.menuAddItems(itemNames,itemDescriptions,optionNames,optionPrices,optionFlags,{from: App.account, gas: 4000000}).then(function(err,result){
 	      console.log(err);
 	      console.log(result);
 	})
