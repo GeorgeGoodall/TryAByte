@@ -12,8 +12,11 @@
 	<script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script src="js/RestaurantAccountCreation.js"></script>
+
 	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/EthereumInterface.js"></script>
+	<script type="text/javascript" src="js/Restaurant.js"></script>
+	<script type="text/javascript" src="js/RestaurantAccountCreation.js"></script>
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -77,27 +80,27 @@
 						<h1 class="title is-3">Restaurant Account Creation Form:</h1>
 						<div class="field">
 							<label class="label title is-4">Restaurant Name:</label>
-							<input type="text" class="input" id='name'onkeyup="updateRestaurantObject(this.id,this.value)">
+							<input type="text" class="input" id='name'onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
 						</div>
 						<div class="field">
 							<label class="label title is-4">Restaurant Address:</label>
 							<label class="label" >Country</label>
-							<input type="text" id="country" class="input " onkeyup="updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="country" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
 							<label class="label" >Address</label>
-							<input type="text" id="address" class="input " onkeyup="updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="address" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
 							<label class="label" >Town/City</label>
-							<input type="text" id="town" class="input " onkeyup="updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="town" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
 							<label class="label" >County/State</label>
-							<input type="text" id="county" class="input " onkeyup="updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="county" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
 							<label class="label" >Postcode</label>
-							<input type="text" id="postcode" class="input " onkeyup="updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="postcode" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
 						</div>
 						<div class="field">
 							<label class="label title is-4">Restaurant Contact Number:</label>
-							<input type="text" class="input" id="number" onkeyup="updateRestaurantObject(this.id,this.value)">
+							<input type="text" class="input" id="number" onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
 						</div>
 						</form>
-						<form id="logoForm" onchange="uploadLogo(this);return false;">
+						<form id="logoForm" onchange="restaurant.uploadLogo(this);return false;">
 							<div class="field">
 								<div class="file">
 									<label class="file-label">

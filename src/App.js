@@ -19,8 +19,7 @@ var web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 var orderContract;
 var restaurantContract;
 
-var controllerAddress = "0xfEFEaA9e2Bd48C426BBC5b24318C59860eE58e25";
-//var controllerAddress = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
+var controllerAddress = "0xFE9A1014A451a4ab27C6E4D388aeCE094A8e52C3";
 var controller;
 var customerFactory;
 var restaurantFactory;
@@ -117,6 +116,7 @@ app.use('/js',express.static(__dirname+'/js'));
 app.use('/css',express.static(__dirname+'/css'));
 app.use('/Contracts',express.static(__dirname+'/Contracts'));
 app.use('/Images',express.static(__dirname+'/Images'));
+app.use('/uploads',express.static(__dirname+'/uploads'));
 
 
 const httpsOptions = {
@@ -165,57 +165,23 @@ app.get(["/restaurantAccountCreation"], function(req,res){
   res.sendFile(__dirname+'/html/RestaurantAccountCreation.html');
 });
 
-
-//ajax
-app.post(["/uploadTemp"], upload.single('file'), function(req,res){
-  console.log(req);
-  console.log("userAddress: " + req.body.userAddress);
-  const oldPath = req.file.path;
-  const temp = '/uploads/temp/'+req.body.userAddress+'.png'; // file name is the id of the restaurant
-  const targetPath = path.join(__dirname, temp);
-
-  console.log("writing file from " + oldPath + " to " + targetPath);
-
-  if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-    fs.rename(oldPath, targetPath, err => {
-      if (err){
-        res
-        .status(200)
-        .contentType("text/plain")
-        .end("Error: " + err);
-        return;
-      }
-
-      res
-        .status(200)
-        .contentType("text/plain")
-        .end("File uploaded!");
-    });
-  } else {
-    fs.unlink(oldPath, err => {
-      if (err){
-        res
-        .status(400)
-        .contentType("text/plain")
-        .end("Error: " + err);
-        return;
-      }
-
-      res
-        .status(403)
-        .contentType("text/plain")
-        .end("Only .png files are allowed!");
-    });
-  }
+app.get(["/editYourRestaurant"], function(req,res){
+  // output screen with list of restaurants
+  res.sendFile(__dirname+'/html/EditYourRestaurant.html');
 });
 
-app.post(["/commitLogo"], async function(req,res){
+app.get([""])
 
+
+//ajax
+app.post(["/uploadImage"], upload.single('file'), async function(req,res){
+  console.log("message: " + req.body.message);
+  // validate the signiture
   const msgParams = [
   {
       type: 'string',       // Any valid solidity type
-      name: 'restaurantAddress',   // Any string label you want
-      value: req.body.contractAddress,    // The value to sign, this should be changed
+      name: 'message',   // Any string label you want
+      value: req.body.message,    // The value to sign, this should be changed
   }];
 
   const recovered = sigUtil.recoverTypedSignature({
@@ -224,48 +190,70 @@ app.post(["/commitLogo"], async function(req,res){
   });
   
   console.log('Recovered signature: "' + recovered + '" With type of ' + typeof recovered);
-
-  
-  // check if customer, restaurant or rider sent this message
-
   var restaurantContractAddressFromSignature = restaurantFactory.restaurants2(recovered);
-  console.log(restaurantContractAddressFromSignature)
+
+  if(restaurantContractAddressFromSignature == "0x"){
+    res.status(200).contentType("text/plain")
+      .end("No Contract Assosiated with your addreess");
+      return;
+  }
+
   console.log("getting contract at: " + restaurantContractAddressFromSignature);
+
 
 
   var restaurant = restaurantContract.at(restaurantContractAddressFromSignature);
   var contractOwnerAddress = await restaurant.owner();
 
+  // if valid
   if(contractOwnerAddress == recovered){
+    // if valid then store the image
+    const oldPath = req.file.path;
+    var id = restaurant.id();
+    const temp = '/uploads/logos/'+id+'.png'; // file name is the id of the restaurant
+    const targetPath = path.join(__dirname, temp);
+    if (path.extname(req.file.originalname).toLowerCase() === ".png") {
+      fs.rename(oldPath, targetPath, err => {
+        if (err){
+          res.status(200).contentType("text/plain")
+          .end("Error: " + err);
+          return;
+        }
+        console.log("writing file from " + oldPath + " to " + targetPath);
+        res
+          .status(200)
+          .contentType("text/plain")
+          .end("File uploaded!");
+      });
+    } else {
+      fs.unlink(oldPath, err => {
+        if (err){
+          res
+          .status(400)
+          .contentType("text/plain")
+          .end("Error: " + err);
+          return;
+        }
 
-    // process and move the image file to storage
-    var oldPath = "/uploads/temp/" + contractOwnerAddress + ".png";
-    oldPath = path.join(__dirname, oldPath);
-
-    var restaurantID = await restaurant.id();
-    var newPath = "/uploads/logos/"+restaurantID+".png";
-    newPath = path.join(__dirname, newPath);
-
-    console.log("signature match: commiting logo from " + oldPath + " to " + newPath);
-
-    fs.rename(oldPath, newPath, err => {
-      if (err){
-        res.send(503, {err: err});
-        return;
-      }
-
-      res.send({message: "File Commited!", location: newPath});
-      return;
-    });
-
-  }else{
-    console.log("signature mismatch: you aren't the owner of this contract");
-    console.log(contractOwnerAddress);
-    console.log(recovered);
+        res
+          .status(403)
+          .contentType("text/plain")
+          .end("Only .png files are allowed!");
+      });
+    }
+    
   }
-
+  else{
+    console.log("signature mismatch: you aren't the owner of this contract");
+    console.log("contract Owner     : " + contractOwnerAddress);
+    console.log("recovered signature: " + recovered);
+    res
+      .status(400)
+      .contentType("text/plain")
+      .end("signature mismatch: you aren't the owner of this contract");
+      return;
+  }
 });
-
 
 // old get/post 
 

@@ -1,11 +1,6 @@
-//var controllerAddressRemote = "0xAfcA2cA5270C46af7C0462aA530A3B31b729e92b";
-var controllerAddressRemote = "0xfEFEaA9e2Bd48C426BBC5b24318C59860eE58e25";
-var controllerAddressLocal = "0xfEFEaA9e2Bd48C426BBC5b24318C59860eE58e25";
-//var controllerAddressLocal = "0xA1105c975ec8DE480E50ce97C0357AfC1620127c";
-// updated order event to emit key hash, also added reset function
-//"0x0C65a3108b992F01FCeb6354990BB83e43d80FC7" // changed customer address to public in order
-//"0xD3528B260364497a29f6b344D24b866E4B58C2f5"; // addresses stored in mongodb
-//"0xF9531f71247903B6e108CfF44858Af561EaAe101"; // addresses stored in order contract
+var controllerAddressRemote = "0xfCf1416c8AF0237be6eb43Dba902A53C71309D38";
+var controllerAddressLocal = "0xfCf1416c8AF0237be6eb43Dba902A53C71309D38";
+
 
 
 App = {
@@ -30,7 +25,7 @@ App = {
 
 
 
-  init: function(){
+  init: async function(){
   	if(App.local)
   		App.controllerAddress = controllerAddressLocal;
   	else
@@ -47,8 +42,8 @@ App = {
 		else{
 			alert("no web3 provider found");
 		}
-	  	App.getEthPrice();
-		App.initContracts();
+	  	await App.getEthPrice();
+		await App.initContracts();
 		App.initialised = true;
 	}
   },
@@ -60,10 +55,9 @@ App = {
 		}
 		if(typeof web3.eth.accounts[0] == 'undefined'){
 			App.account = '0x0';
-  			ethereum.enable().then(function(res){
+  			await ethereum.enable().then(function(res){
   				if(web3.eth.accounts[0] !== App.account && typeof web3.eth.accounts[0] != 'undefined'){
   					App.account = web3.eth.accounts[0];
-  					alert("Logged in as " + App.account);
   					return true;
   				}
   			})
@@ -75,7 +69,6 @@ App = {
   				}
   				else
   					App.account = web3.eth.accounts[0];
-  				alert("Logged in with address " + App.account);
   				return true;
   			}
   		}
@@ -273,8 +266,9 @@ getEthPrice: function(){
 }
 
 $(function() {
-  $(window).load(function() {
-  	App.init();
+  $(window).load(async function() {
+  	await App.init();
+  	init();
   });
 });
 

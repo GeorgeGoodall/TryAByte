@@ -106,3 +106,7 @@ button {
 .subtitle {
 	margin-bottom: 5px;
 }
+
+.table tr {
+	border-bottom: solid darkgrey;
+}

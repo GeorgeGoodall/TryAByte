@@ -8,31 +8,22 @@ pragma solidity ^0.5.0;
 
 contract Restaurant {
 
-    //using lib for bytes32;
-
     // additional variables to add
-    // restaurant logo: need link to logo file and hash of file
-    // banner image of restaurant
-
-    // latitud and longitude for indexing on area
-
-    // todo:
-
 
 	uint public id;
-	string public name;
+	bytes32 public name; 
 
-	bytes public location;
-    uint public longitude;
-    uint public latitude;
+	bytes public location; 
+    uint public longitude; 
+    uint public latitude; 
 
-    bytes public logoURI;
-    bytes32 private logoHash;
+    bytes public logoURI; 
+    bytes32 public logoHash; 
 
 
-	string public contactNumber;
+	bytes32 public contactNumber; 
 
-	address payable public owner;
+	address payable public owner; 
     address public controllerAddress;
 	address public restaurantFactoryAddress;
 
@@ -52,7 +43,9 @@ contract Restaurant {
 	}
 	
     uint public menuLength;
-	mapping(uint => Item) public menu; 
+	mapping(uint => Item) public menu;
+    uint[60] private menuIndexes;
+    uint private menuMappingLength;
 
     enum restaurantState{acceptedOrder, preparingCargo, readyForCollection, HandedOver}
 	
@@ -60,9 +53,9 @@ contract Restaurant {
     event MenuUpdated();
 
 	constructor(address _controller, address payable _owner, 
-                uint _id, string memory _name, 
+                uint _id, bytes32 _name, 
                 bytes memory _address, uint _latitude, uint _longitude, 
-                string memory _contactNumber
+                bytes32 _contactNumber
                 ) public {
         // itemOptions and prices will have to be parsed as they are 2d arrays
 		id = _id;
@@ -76,13 +69,17 @@ contract Restaurant {
 		totalOrders = 0;
         totalPay = 0;
 
+        menuLength = 0;
+        menuMappingLength = 0;
+
         controllerAddress = _controller;
 		owner = _owner;
 		restaurantFactoryAddress = msg.sender;
 	}
 
     function getMenuItem(uint index) public view returns(bytes32 itemName, bytes32 itemDescription, bytes32[] memory optionNames, uint[] memory optionPrices){
-        Item memory i = menu[index];
+        require(index < menuLength, "index out of bounds");
+        Item memory i = menu[menuIndexes[index]];
         return (i.itemName, i.description, i.options, i.optionsCost);
     }
 
@@ -98,13 +95,35 @@ contract Restaurant {
     }
     
 
-    function menuAddItems(bytes32[] calldata itemNames, bytes32[] calldata itemDescriptions, bytes32[] calldata _optionNames, uint[] calldata _prices, uint[] calldata optionFlags) external {
-        require(msg.sender == owner);
-        require(itemNames.length == itemDescriptions.length);
-        require(_optionNames.length == _prices.length);
+    function updateMenu(bytes32[] memory itemNames, bytes32[] memory itemDescriptions, bytes32[] memory _optionNames, uint[] memory _prices, uint[] memory optionFlags, uint[] memory itemsToRemove) public{
+        //require(msg.sender == owner, "you are not the owner");
+        require(itemNames.length == itemDescriptions.length, "the number of descriptions and item names do not match");
+        require(_optionNames.length == _prices.length, "the number of options and prices do not match");
+        require(itemNames.length == optionFlags.length, "the number of item names and option flags do not match");
+        uint optionFlagsSum = 0;
+        for(uint i = 0; i < optionFlags.length; i++){
+            optionFlagsSum += optionFlags[i];
+        }
+        require(_optionNames.length == optionFlagsSum, "the number of options and the sum of the option flags do not match");
+        for(uint i = 0; i < itemsToRemove.length; i++){
+            require(itemsToRemove[i] < menuIndexes.length, "you have requested to delete an index that is out of range");
+        }
         
-        uint optionIndex = 0;
+        // remove from menu 
+        for(uint i = 0; i < itemsToRemove.length; i++){
+            if(itemsToRemove[i] <= menuIndexes.length){
+                if(menuLength > 0){
+                    for(uint j = itemsToRemove[i]; j < menuLength-1; j++){
+                        menuIndexes[j] = menuIndexes[j + 1];  
+                    }
+                }
+                delete menuIndexes[menuIndexes.length-1];
+                menuLength--;
+            }
+        }
 
+        // add to menu
+        uint optionIndex = 0;
         bytes32 itemName;
         bytes32 itemDescription;
         bytes32[] memory optionNames;
@@ -124,41 +143,14 @@ contract Restaurant {
                 optionIndex++;
             }
 
-            menu[menuLength] = Item(itemName,itemDescription,optionNames,prices);
+            menu[menuMappingLength] = Item(itemName,itemDescription,optionNames,prices);
+            menuIndexes[menuLength] = menuMappingLength;
             menuLength++;
+            menuMappingLength++;
             
         }
     }
 
-    
-    
-    // function menuRemoveItems(uint[] calldata itemIds) external{
-    //     require(msg.sender == owner);
-    //     require(itemIds.length>0);
-
-    //     uint totalItemsToKeep = menuLength - uint(itemIds.length);
-
-    //     uint[] memory itemsToKeep = new uint[](totalItemsToKeep);
-    //     uint counter = 0;
-    //     for(uint i = 0; i<menuLength;i++){
-    //         bool idUndeleted = true;
-    //         for(uint j = 0; j < itemIds.length; j++){
-    //             if(i == itemIds[j]){
-    //                 idUndeleted = false;
-    //             }
-    //         }
-    //         if(idUndeleted){
-    //             itemsToKeep[counter] = i;
-    //             counter++;
-    //         }
-    //     }
-
-    //     for(uint i = 0; i < itemsToKeep.length; i++){
-    //         menu[i] = menu[itemsToKeep[i]];
-    //     }
-    //     menuLength = itemsToKeep.length;
-    //     emit MenuUpdated();
-    // }
 
     // todo: fix this
     function getOrderPrice(uint[] memory itemIds) public view returns (uint){
@@ -209,5 +201,44 @@ contract Restaurant {
 
     function() external payable {
 
+    }
+
+
+    // Setters
+    function updateRestaurant(bytes32 _name, bytes32 _number, address payable _owner, bytes memory _location, uint _latitude, uint _longitude, bytes memory _logoURI, bytes32 _logoHash) public {
+        require(msg.sender == owner);
+        if(_name.length > 0 )
+            setName(_name);
+        if(_number.length > 0 )
+            setNumber(_number);
+        if(_owner != address(0))
+            setOwner(_owner);
+        if(_location.length > 0)
+            setLocation(_location, _latitude, _longitude);
+        if(_logoURI.length > 0)
+            setName(_name);
+    }
+    function setName(bytes32 _name) public {
+        require(msg.sender == owner);
+        name = _name;
+    }
+    function setNumber(bytes32 _number) public {
+        require(msg.sender == owner);
+        contactNumber = _number;
+    }
+    function setOwner(address payable _owner) public {
+        require(msg.sender == owner);
+        owner = _owner;
+    }
+    function setLocation(bytes memory _location, uint _latitude, uint _longitude) public {
+        require(msg.sender == owner);
+        location = _location;
+        latitude - _latitude;
+        longitude = _longitude;
+    }
+    function setLogo(bytes memory _logoURI, bytes32 _logoHash) public {
+        require(msg.sender == owner);
+        logoURI = _logoURI;
+        logoHash = _logoHash;
     }
 }
