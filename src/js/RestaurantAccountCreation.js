@@ -69,7 +69,7 @@ function printMenuItem(item){
 					'<h1 class="title is-7">'+
 						'<span>'+item.name+'</span>'+
 						'<span><button class="button is-small itemAddButton">Add</button></span>'+
-						'<span class="price">'+item.prices[0]+'</span>'+
+						'<span class="price">'+item.options[0].price+'</span>'+
 					'</h1>'+
 					'<h1 class="subtitle is-7" style="margin-right: 150px;">'+item.description+'</h1>'+
 				'</div>';
@@ -80,12 +80,13 @@ function printMenuItem(item){
 					'<h1 class="subtitle is-7" style="margin-right: 150px; margin-bottom: 50px;">'+item.description+'</h1>';
 					
 			for(var i = 0; i < item.options.length; i++){
-				option = '<div class="title is-7">'+
-							'<span>'+item.options[i]+'</span>'+
+				var option = item.options[i];
+				optionHTML = '<div class="title is-7">'+
+							'<span>'+option.name+'</span>'+
 							'<span><button class="button is-small itemAddButton">Add</button></span>'+
-							'<span class="price">'+item.prices[i]+'</span>'+
+							'<span class="price">'+option.price+'</span>'+
 						'</div>';
-				html += option;
+				html += optionHTML;
 			}
 			html += '</div>';
 		}
@@ -101,20 +102,31 @@ function menuStagingAddRow(item = new MenuItem()){
 				'<th><input onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" style="min-width: 300px" type="text" class="input is-small" id="itemName,'+totalRows+'" value="'+item.name+'"></th>'+
 				'<th><textarea onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" style="min-width: 400px" name="" id="itemDescription,'+totalRows+'" cols="30" rows="3" class="textarea is-small" value="">'+item.description+'</textarea></th>'+
 				'<th style="min-width: 100px; max-width: 300px" id="itemOptions'+totalRows+'">';
-	for(var i = 0; i < item.options.length; i++)
-		html +=		'<input onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" id="itemOption,'+totalRows+','+i+'" type="text" class="input is-small" placeholder="leave empty if no options" value="'+item.options[i]+'">';
+	if(item.options.length > 1)
+		for(var i = 0; i < item.options.length; i++)
+			html +=	'<input onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" id="itemOption,'+totalRows+','+i+'" type="text" class="input is-small" placeholder="leave empty if no options" value="'+item.options[i].name+'">';
 	html += 	'</th>'+
 				'<th style="min-width: 100px; max-width: 200px" id="itemPrices'+totalRows+'">';
-	for(var i = 0; i < item.prices.length; i++)
-		html +=		'<input onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" id="itemPrice,'+totalRows+','+i+'" type="text" class="input is-small" value="'+item.prices[i]+'">';
+	if(item.options.length == 0){
+		html +=		'<input onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" id="itemPrice,'+totalRows+'" type="text" class="input is-small" value="">';
+	}
+	for(var i = 0; i < item.options.length; i++){
+		html +=		'<input onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" id="itemPrice,'+totalRows+','+i+'" type="text" class="input is-small" value="'+item.options[i].price+'">';
+	}
+	html += 	'</th>'+
+				'<th style="width: 20px" id="itemDeletes'+totalRows+'">';
+	if(item.options.length != 1)
+		for(var i = 0; i < item.options.length; i++)
+			html +=		'<div id="itemDelete,'+totalRows+','+i+'" style="height: 27px"><a class="delete" onclick="menuStagingRemoveOption('+totalRows+','+i+')"></a></div>';
 	html += 	'</th>';
 	if(!item.toBeDeleted){
-		html += '<th style="width: 150px"><button class="button" onclick="menuStagingRemoveRow('+totalRows+'); return false;">Remove Item</button><button class="button" onclick="menuStagingAddOption('+totalRows+'); return false;">Add Option</button><button class="button" onclick="menuStagingRemoveOption('+totalRows+'); return false;">Remove Option</button></th>';
+		html += '<th style="width: 150px"><button class="button" onclick="menuStagingRemoveRow('+totalRows+'); return false;">Remove Item</button><button class="button" onclick="menuStagingAddOption('+totalRows+'); return false;">Add Option</button></th>';
 	}
 	html += '</tr>';
 
+
 	if(!item.toBeDeleted){
-		totalOptions[totalRows] = 1;
+		totalOptions[totalRows] = item.options.length;
 		console.log("Printing menu staging with id: " + totalRows);
 		totalRows++;
 		document.getElementById('menuBody').insertAdjacentHTML('beforeend',html);
@@ -138,24 +150,45 @@ function menuStagingRemoveRow(id){
 
 function menuStagingAddOption(id){
 	optionsCount = totalOptions[id];
+
+	if(optionsCount == 1){ // if you are adding the first option, add the option name and delete button to the item price
+		optionHtml = '<input id="itemOption,'+id+','+(optionsCount-1)+'" type="text" class="input is-small" placeholder="leave empty if no options" onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" value="">'
+		deleteButton = '<div id="itemDelete,'+id+','+(optionsCount-1)+'" style="height: 27px"><a class="delete" onclick="menuStagingRemoveOption('+id+','+(optionsCount-1)+')"></a></div>';
+		document.getElementById("itemOptions"+id).insertAdjacentHTML('beforeend',optionHtml);
+		document.getElementById("itemDeletes"+id).insertAdjacentHTML('beforeend',deleteButton);
+	}
+
 	optionHtml = '<input id="itemOption,'+id+','+optionsCount+'" type="text" class="input is-small" placeholder="leave empty if no options" onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" value="">'
 	priceHtml = '<input id="itemPrice,'+id+','+optionsCount+'" type="text" class="input is-small" onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)" value="">';
+	deleteButton = '<div id="itemDelete,'+id+','+optionsCount+'" style="height: 27px"><a class="delete" onclick="menuStagingRemoveOption('+id+','+optionsCount+')"></a></div>';
+
 
 	document.getElementById("itemOptions"+id).insertAdjacentHTML('beforeend',optionHtml);
 	document.getElementById("itemPrices"+id).insertAdjacentHTML('beforeend',priceHtml);
+	document.getElementById("itemDeletes"+id).insertAdjacentHTML('beforeend',deleteButton);
 
 	totalOptions[id]++;
 }
 
-function menuStagingRemoveOption(id){
-	optionsCount = totalOptions[id];
-	optionHtml = '<input id="itemOption,'+id+','+optionsCount+'" type="text" class="input is-small" placeholder="leave empty if no options" onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)">'
-	priceHtml = '<input id="itemPrice,'+id+','+optionsCount+'" type="text" class="input is-small" onkeyup="restaurant.updateRestaurantMenu(this.id,this.value)">';
+function menuStagingRemoveOption(itemId,optionId){
+	console.log("itemOption"+itemId+','+optionId);
 
-	document.getElementById("itemOptions"+id).insertAdjacentHTML('beforeend',optionHtml);
-	document.getElementById("itemPrices"+id).insertAdjacentHTML('beforeend',priceHtml);
+	var element = document.getElementById("itemOption,"+itemId+','+optionId);
+	element.parentNode.removeChild(element);
+	element = document.getElementById("itemPrice,"+itemId+','+optionId);
+	element.parentNode.removeChild(element);
+	element = document.getElementById("itemDelete,"+itemId+','+optionId);
+	element.parentNode.removeChild(element);
 
-	totalOptions[id]++;
+	restaurant.removeMenuOption(itemId, optionId);
+
+	totalOptions[itemId]--;
+	if(totalOptions[itemId] == 1){
+		element = document.getElementById("itemOption,"+itemId+',0');
+		element.parentNode.removeChild(element);
+		element = document.getElementById("itemDelete,"+itemId+',0');
+		element.parentNode.removeChild(element);
+	}
 }
 
 

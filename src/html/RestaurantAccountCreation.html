@@ -18,6 +18,8 @@
 	<script type="text/javascript" src="js/Restaurant.js"></script>
 	<script type="text/javascript" src="js/RestaurantAccountCreation.js"></script>
 
+	<script type="text/javascript" src="js/solTest.js"></script>
+
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -138,8 +140,28 @@
 							</div>
 							<button class="button" onclick="menuStagingAddRow(); return false;">Add Item</button>
 						</div>
+
+						<div class="field">
+							<label class="label title is-4">ToDelete:</label>
+							<div class="field">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>Item name</th>
+											<th>Description</th>
+											<th>Options</th>
+											<th>Item/Option Price</th>
+										</tr>
+									</thead>
+									<tbody id="toDeleteList">
+										
+									</tbody>
+								</table>				
+							</div>
+							<button class="button" onclick="menuStagingAddRow(); return false;">Add Item</button>
+						</div>
 						<button class="button" onclick="formSubmit(); return false;">Submit</button>
-					
+						
 				</div>
 			</div>
 		</div>

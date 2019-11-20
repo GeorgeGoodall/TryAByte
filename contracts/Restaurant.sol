@@ -40,6 +40,7 @@ contract Restaurant {
         bytes32 description;
         bytes32[] options;
 		uint[] optionsCost; // in wei (10^-18 Eth)
+        uint optionsCount;
 	}
 	
     uint public menuLength;
@@ -77,10 +78,11 @@ contract Restaurant {
 		restaurantFactoryAddress = msg.sender;
 	}
 
-    function getMenuItem(uint index) public view returns(bytes32 itemName, bytes32 itemDescription, bytes32[] memory optionNames, uint[] memory optionPrices){
+    function getMenuItem(uint index) public view returns(bytes32 itemName, bytes32 itemDescription, bytes32[] memory optionNames, uint[] memory optionPrices, uint optionsCount){
         require(index < menuLength, "index out of bounds");
+        // this needs modifying to only return indexes that are within the menulength
         Item memory i = menu[menuIndexes[index]];
-        return (i.itemName, i.description, i.options, i.optionsCost);
+        return (i.itemName, i.description, i.options, i.optionsCost, i.optionsCount);
     }
 
     function updateLogo(bytes calldata imageURI, bytes32 imageHash) external{
@@ -94,9 +96,75 @@ contract Restaurant {
         return menuLength;
     }
     
+    // menuIndex
+    // itemType
+    // uint new prices
+    // byte32 new text
 
-    function updateMenu(bytes32[] memory itemNames, bytes32[] memory itemDescriptions, bytes32[] memory _optionNames, uint[] memory _prices, uint[] memory optionFlags, uint[] memory itemsToRemove) public{
-        //require(msg.sender == owner, "you are not the owner");
+    function updateMenu(bytes32[] memory itemNames, bytes32[] memory itemDescriptions, bytes32[] memory _optionNames, uint[] memory _prices, uint[] memory optionFlags,uint[] memory itemsToRemove, uint[] memory optionsToRemove, uint[] memory optionsToRemoveFlags,uint[] memory itemIds, bytes32[] memory _addOptionNames, uint[] memory _addPrices, uint[] memory addOptionFlags) 
+    public {
+        require(msg.sender == owner, "you are not the owner");
+        // also need the ability to swap item and option indexes,
+        // also need the ability to modify item and option names and prices
+        if(itemIds.length > 0) //add options should be able to add an option at any index
+            menuAddOptions(itemIds, _addOptionNames, _addPrices, addOptionFlags);
+        if(itemNames.length > 0)
+            menuAddItems(itemNames,itemDescriptions,_optionNames,_prices,optionFlags);
+        if(itemsToRemove.length > 0)
+            menuRemoveItems(itemsToRemove,optionsToRemove,optionsToRemoveFlags);
+    }
+
+
+
+    function menuRemoveItems(uint[] memory itemsToRemove, uint[] memory optionsToRemove, uint[] memory optionsToRemoveFlags) public {
+        require(msg.sender == owner, "you are not the owner");
+        require(itemsToRemove.length == optionsToRemoveFlags.length, "the number of items to remove and the number of optionsToRemoveFlags do not match");
+        for(uint itemsToRemoveIndex = 0; itemsToRemoveIndex < itemsToRemove.length; itemsToRemoveIndex++){
+            require(itemsToRemove[itemsToRemoveIndex] < menuIndexes.length, "you have requested to delete an index that is out of range");
+        }
+        uint optionsToRemoveFlagsSum = 0;
+        for(uint optionsToRemoveFlagsIndex = 0; optionsToRemoveFlagsIndex < optionsToRemoveFlags.length; optionsToRemoveFlagsIndex++){
+            optionsToRemoveFlagsSum += optionsToRemoveFlags[optionsToRemoveFlagsIndex];
+        }
+        require(optionsToRemove.length == optionsToRemoveFlagsSum, "the number of options to remove and the sum of the options to remove flags do not match");
+        // ToDo: add require that checks to make sure the option index isn't out of range
+
+
+        // remove from menu 
+        uint optionsToRemoveIndex = 0;
+        for(int i = int(itemsToRemove.length-1); i >= 0; i--){ // work backwards through the array as not to change the indexes of any unworked items
+            if(itemsToRemove[uint(i)] <= menuLength){
+                if(menuLength > 0){
+                    if(optionsToRemoveFlags[uint(i)] == 0){ 
+                        // move all items after the items to delete down and option and delete the last item
+                        for(uint j = itemsToRemove[uint(i)]; j < menuLength-1; j++){
+                            menuIndexes[j] = menuIndexes[j + 1];  
+                        }
+                        delete menuIndexes[menuLength-1];
+                        menuLength--;
+                    }
+                    else{
+                        // for each option to remove specified by the optionToRemoveFlag
+                        for(int j = int(optionsToRemoveFlags[uint(i)] + optionsToRemoveIndex - 1); j >= int(optionsToRemoveIndex); j--){
+                            // move all options after the option to delete down an index and remove the last option
+                            for(uint k = optionsToRemove[uint(j)]; k < menu[menuIndexes[itemsToRemove[uint(i)]]].optionsCount-1; k++){
+                                menu[menuIndexes[itemsToRemove[uint(i)]]].options[k] = menu[menuIndexes[itemsToRemove[uint(i)]]].options[k+1];
+                                menu[menuIndexes[itemsToRemove[uint(i)]]].optionsCost[k] = menu[menuIndexes[itemsToRemove[uint(i)]]].optionsCost[k+1];
+                            }
+                            delete menu[menuIndexes[itemsToRemove[uint(i)]]].options[menu[menuIndexes[itemsToRemove[uint(i)]]].optionsCount-1];
+                            delete menu[menuIndexes[itemsToRemove[uint(i)]]].optionsCost[menu[menuIndexes[itemsToRemove[uint(i)]]].optionsCount-1];
+                            menu[menuIndexes[itemsToRemove[uint(i)]]].optionsCount--;
+                        }
+                        optionsToRemoveIndex += optionsToRemoveFlags[uint(i)];
+                    }
+                }
+            }
+        }
+    }
+
+    // should also be able to modify items
+    function menuAddItems(bytes32[] memory itemNames, bytes32[] memory itemDescriptions, bytes32[] memory _optionNames, uint[] memory _prices, uint[] memory optionFlags) public{
+        require(msg.sender == owner, "you are not the owner");
         require(itemNames.length == itemDescriptions.length, "the number of descriptions and item names do not match");
         require(_optionNames.length == _prices.length, "the number of options and prices do not match");
         require(itemNames.length == optionFlags.length, "the number of item names and option flags do not match");
@@ -105,23 +173,9 @@ contract Restaurant {
             optionFlagsSum += optionFlags[i];
         }
         require(_optionNames.length == optionFlagsSum, "the number of options and the sum of the option flags do not match");
-        for(uint i = 0; i < itemsToRemove.length; i++){
-            require(itemsToRemove[i] < menuIndexes.length, "you have requested to delete an index that is out of range");
-        }
-        
-        // remove from menu 
-        for(uint i = 0; i < itemsToRemove.length; i++){
-            if(itemsToRemove[i] <= menuIndexes.length){
-                if(menuLength > 0){
-                    for(uint j = itemsToRemove[i]; j < menuLength-1; j++){
-                        menuIndexes[j] = menuIndexes[j + 1];  
-                    }
-                }
-                delete menuIndexes[menuIndexes.length-1];
-                menuLength--;
-            }
-        }
 
+        // checks on if an item is in the menu should be done client side, maybe??
+                
         // add to menu
         uint optionIndex = 0;
         bytes32 itemName;
@@ -134,20 +188,49 @@ contract Restaurant {
             itemName = itemNames[i];
             itemDescription = itemDescriptions[i];
 
-            optionNames = new bytes32[](optionFlags[i]);
-            prices = new uint[](optionFlags[i]);
+            optionNames = new bytes32[](8);
+            prices = new uint[](8);
             
+            //ToDo: need to require that the total number of options for an item is less than the options array limit, or have the limit increase when it is exceeded
+
             for(uint j = 0; j < optionFlags[i]; j++){
                 optionNames[j] = _optionNames[optionIndex];
                 prices[j] = _prices[optionIndex];
                 optionIndex++;
             }
 
-            menu[menuMappingLength] = Item(itemName,itemDescription,optionNames,prices);
+            // if the optionsflag is one then the number of options is 0
+            uint optionsCount = 0;
+            if(optionFlags[i] != 1)
+                optionsCount = optionFlags[i];
+            
+
+            menu[menuMappingLength] = Item(itemName,itemDescription,optionNames,prices, optionFlags[i]);
             menuIndexes[menuLength] = menuMappingLength;
             menuLength++;
             menuMappingLength++;
             
+        }
+    }
+
+    function menuAddOptions(uint[] memory itemIds, bytes32[] memory _optionNames, uint[] memory _prices, uint[] memory optionFlags) public {
+        require(msg.sender == owner, "you are not the owner");
+        require(itemIds.length == optionFlags.length, "the number of item ids does not match the number of option flags");
+        require(_optionNames.length == _prices.length, "the number of options does not match the number of prices");
+        uint optionFlagsSum = 0;
+        for(uint i = 0; i < optionFlags.length; i++){
+            optionFlagsSum += optionFlags[i];
+        }
+        require(_optionNames.length == optionFlagsSum, "the number of option names does not match the sum of the flags");
+
+        uint optionIndex = 0;
+        for(uint i = 0; i < itemIds.length; i++){
+            for(uint j = optionIndex; j < optionFlags[i]+optionIndex; j++){
+                menu[menuIndexes[itemIds[i]]].options[menu[menuIndexes[itemIds[i]]].optionsCount] = _optionNames[j];
+                menu[menuIndexes[itemIds[i]]].optionsCost[menu[menuIndexes[itemIds[i]]].optionsCount] = _prices[j];
+                menu[menuIndexes[itemIds[i]]].optionsCount++;
+            }
+            optionIndex+=optionFlags[i];
         }
     }
 

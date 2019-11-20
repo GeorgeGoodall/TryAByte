@@ -1,11 +1,19 @@
 // menuItemClass
+function ItemOption(_id,_name = "",_price = "",_onChain = false){
+	this.id = _id;
+	this.name = _name;
+	this.price = _price;
+	this.onChain = _onChain;
+	this.toBeDeleted = false;
+}
+
+// menuItemClass
 function MenuItem(){
 	this.name = "";
 	this.description = "";
-	this.options = [""];
-	this.prices = [""];
+	this.options = [];
+	this.options[0] = new ItemOption();
 	this.onChain = false;
-	this.toBeDeleted = false;
 }
 
 // Restaurant Class
@@ -28,8 +36,13 @@ function Restaurant(address){
 
 	this.menu = [];
 
+	this.onChain = false;
+	this.initialised = false;
+
 	this.init = async function(){
 		await this.getRestaurant();
+		this.initialised = true;
+		
 	}
 
 	this.getRestaurant = async function(){
@@ -40,6 +53,7 @@ function Restaurant(address){
 		var restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
 		if(restaurantAddress != "0x"){
 			console.log("Found restaurant at: " + restaurantAddress)
+			this.onChain = true;
 			this.contractAddress = restaurantAddress;
 			this.restaurantInstance = await new App.contracts.Restaurant(this.contractAddress);
 
@@ -54,20 +68,19 @@ function Restaurant(address){
 
 			for(var i = 0; i < menuLength; i++){
 				var menuItem = await this.restaurantInstance.getMenuItem(i);
-				this.updateRestaurantMenu("itemName,"+i,web3.toUtf8(menuItem[0]));
-				this.updateRestaurantMenu("itemDescription,"+i,web3.toUtf8(menuItem[1]));
-				for(var j = 0; j < menuItem[2].length; j++){
-					this.updateRestaurantMenu("itemOption,"+i+","+j,web3.toUtf8(menuItem[2][j]));
+				this.updateRestaurantMenu("itemName,"+i,web3.toUtf8(menuItem[0]),false);
+				this.updateRestaurantMenu("itemDescription,"+i,web3.toUtf8(menuItem[1]),false);
+				for(var j = 0; j < menuItem[4]; j++){
+					this.menu[i].options[j] = new ItemOption(j,web3.toUtf8(menuItem[2][j]),menuItem[3][j],true);
 				}
-				for(var j = 0; j < menuItem[2].length; j++){
-					this.updateRestaurantMenu("itemPrice,"+i+","+j,menuItem[3][j]);
-				}
-				this.updateRestaurantMenu("onChain,"+i,true);
+				this.updateRestaurantMenu("onChain,"+i,true,false);
+				this.menu[i].id = i;
 				menuStagingAddRow(this.menu[i]);
 			}
-
 			updateMenuDisplay(this);
-
+		}
+		else{
+			this.onChain = false;
 		}
 	}
 
@@ -98,30 +111,55 @@ function Restaurant(address){
 		}
 	}
 
-	this.updateRestaurantMenu = function(_variable, value){
+	this.updateRestaurantMenu = function(_variable, value, updateDisplay = true){
 		console.log("updating " + _variable + " to " + value);
 
 		variable = _variable.split(",");
-		if(typeof(this.menu[variable[1]]) == 'undefined')
+		if(typeof(this.menu[variable[1]]) == 'undefined'){
 			this.menu[variable[1]] = new MenuItem();
+		}
+	
+		if(typeof variable[2] != 'undefined')
+			if(typeof(this.menu[variable[1]].options[variable[2]]) == 'undefined')
+				this.menu[variable[1]].options[variable[2]] = new ItemOption(variable[2]);
 
+		var optionIndex = 0;
+		if(typeof variable[2] != 'undefined')
+			optionIndex = variable[2];
+		
 		if(variable[0] == 'itemName'){
 			this.menu[variable[1]].name = value;
 		}else if(variable[0] == 'itemDescription'){
 			this.menu[variable[1]].description = value;
 		}else if(variable[0] == 'itemOption'){
-			this.menu[variable[1]].options[variable[2]] = value;
+			this.menu[variable[1]].options[optionIndex].name = value;
+			if(this.initialised)
+				this.menu[variable[1]].options[optionIndex].onChain = false;
 		}else if(variable[0] == 'itemPrice'){
-			this.menu[variable[1]].prices[variable[2]] = value;
+			this.menu[variable[1]].options[optionIndex].price = value;
 		}else if(variable[0] == 'onChain'){
 			this.menu[variable[1]].onChain = value;
 		}
-		updateMenuDisplay(this);
+		if(updateDisplay)
+			updateMenuDisplay(this);
 	}
 
+	
+
 	this.removeMenuItem = function(id){
-		if(id < this.menu.length)
+		if(id < this.menu.length){
 			this.menu[id].toBeDeleted = true;
+			for(option in this.menu[id].options){
+				option.toBeDeleted = false;
+			}
+		}
+	}
+
+
+	this.removeMenuOption = function(id,optionID){
+		if(id < this.menu.length && optionID < this.menu[id].options.length){
+			this.menu[id].options[optionID].toBeDeleted = true;
+		}
 	}
 
 	// combine this and commit logo into one function

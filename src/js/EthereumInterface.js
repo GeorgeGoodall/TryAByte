@@ -60,33 +60,102 @@ async function makeRestaurant(restaurant){
 }
 
 async function makeMenu(restaurant){
+	// vars for adding items
 	var itemNames = [];
 	var itemDescriptions = [];
 	var optionNames = [];
 	var optionPrices = [];
 	var optionFlags = []; // this will store the lengths of each grouping of options in the 1D array
 
+	// vars for removing
+	var itemsToRemove = [];
+	var optionsToRemove = [];
+	var optionsToRemoveFlags = [];
+
+	// vars for adding options 
+	var itemsForNewOptionsIds = [];
+	var addOptionNames = [];
+	var addOptionPrices = [];
+	var addOptionFlags = [];
+
 	for(var i = 0; i < restaurant.menu.length; i++){
 		if(typeof restaurant.menu[i] != "undefined"){
-			if(restaurant.menu[i].name != "" && restaurant.menu[i].description != "" && !restaurant.menu[i].onChain){
+			// get all items that have been added that are not onchain
+			if(restaurant.menu[i].name != "" && restaurant.menu[i].description != "" && !restaurant.menu[i].onChain && !restaurant.menu[i].toBeDeleted){
 				itemNames.push(web3.fromAscii(restaurant.menu[i].name));
 				itemDescriptions.push(web3.fromAscii(restaurant.menu[i].description));
 				for(var j = 0; j < restaurant.menu[i].options.length; j++){
-					optionNames.push(web3.fromAscii(restaurant.menu[i].options[j]));
-				}
-				for(var j = 0; j < restaurant.menu[i].prices.length; j++){
-					optionPrices.push(restaurant.menu[i].prices[j]);
+					optionNames.push(web3.fromAscii(restaurant.menu[i].options[j].name));
+					optionPrices.push(restaurant.menu[i].options[j].price);
 				}
 				optionFlags.push(restaurant.menu[i].options.length);
 			}
+
+			// get all items that have to been deleted and are on chain
+			if(restaurant.menu[i].name != "" && restaurant.menu[i].description != "" && restaurant.menu[i].onChain && restaurant.menu[i].toBeDeleted){
+				itemsToRemove.push(restaurant.menu[i].id);
+				optionsToRemoveFlags.push(0);
+			}
+			
+			var optionsToDeleteTemp = [];
+			var optionsToAddTemp = [];
+
+			console.log();
+
+			for(var j = 0; j < restaurant.menu[i].options.length; j++){
+				var option = restaurant.menu[i].options[j];
+				console.log(option);
+				// gets all options that have to be deleted that are on chain
+				if(restaurant.menu[i].onChain && option.toBeDeleted && option.onChain){	
+					optionsToDeleteTemp.push(option.id);
+				}
+				// if the option is a new option
+				if(restaurant.menu[i].onChain && !option.toBeDeleted && !option.onChain){
+					optionsToAddTemp.push(option)
+				}
+
+
+				// hack solution for now, ideally this would be resolved by instead of simply deleting, the option name would be updated
+				var deleteFirstOption = true;
+				if(restaurant.menu[i].onChain && option.onChain){
+					deleteFirstOption = false;
+				}
+			}
+			if(deleteFirstOption){
+				optionsToDeleteTemp = [0].concat(optionsToDeleteTemp);
+			}
+			if(optionsToDeleteTemp.length > 0){
+				itemsToRemove.push(restaurant.menu[i].id);
+				optionsToRemove = optionsToRemove.concat(optionsToDeleteTemp);
+				optionsToRemoveFlags.push(optionsToDeleteTemp.length);
+			}
+			if(optionsToAddTemp.length > 0){
+				itemsForNewOptionsIds.push(restaurant.menu[i].id);
+				for(var k = 0; k <optionsToAddTemp.length; k++){
+					console.log(optionsToAddTemp[k]);
+					addOptionNames.push(optionsToAddTemp[k].name);
+					addOptionPrices.push(optionsToAddTemp[k].price);
+				}
+				addOptionFlags.push(optionsToAddTemp.length);
+
+
+
+			}
+			
+			// get options to add to the items
+
+
 		}
 	}
 
-	console.log(itemNames,itemDescriptions,optionNames,optionPrices,optionFlags);
+	console.log(itemNames, itemDescriptions, optionNames, optionPrices, optionFlags);
+	console.log(itemsToRemove, optionsToRemove, optionsToRemoveFlags);
+	console.log(itemsForNewOptionsIds, addOptionNames, addOptionPrices, addOptionFlags);
 
-	// get the current menu and compare to decide what items need deleting or store a record of what items have been deleted and input that
-
-	restaurant.restaurantInstance.updateMenu(itemNames,itemDescriptions,optionNames,optionPrices,optionFlags,[],{from: App.account, gas: 4000000}).then(function(err,result){
+	restaurant.restaurantInstance.updateMenu(itemNames,itemDescriptions,optionNames,optionPrices,optionFlags,
+											itemsToRemove,optionsToRemove,optionsToRemoveFlags,
+											itemsForNewOptionsIds, addOptionNames, addOptionPrices, addOptionFlags,
+											{from: App.account, gas: 4000000}).then(function(err,result){
 	      console.log(err);
 	      console.log(result);
 	})

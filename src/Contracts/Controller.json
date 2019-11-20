@@ -152,9 +152,9 @@
       "signature": "0xaedbfd70"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"minimumDeliveryFee\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"customerFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"restaurantFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newFee\",\"type\":\"uint256\"}],\"name\":\"updateMinDeliveryFee\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"resetApplication\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_restaurantFactoryAddress\",\"type\":\"address\"},{\"name\":\"_customerFactoryAddress\",\"type\":\"address\"},{\"name\":\"_riderFactoryAddress\",\"type\":\"address\"}],\"name\":\"setFactoryAddresses\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"riderFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":\"Controller\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":{\"keccak256\":\"0xa94cfffbe0cc465d742bfec204b1821b2367147829eae456b8a8589d077249f5\",\"urls\":[\"bzzr://c06d4e8d059d5c4bace88469dc2cdaf8f02a69aa8264dd34db63dd9c5c0d1ac5\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Customer.sol\":{\"keccak256\":\"0x6efd4edf9d4202df60e37435974f2945b0d405ba878f698cf19805110aa5e26e\",\"urls\":[\"bzzr://472a60ef9491a81d0278d0a3664558b731fad82434aba6c58593a4924935fca0\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/CustomerFactory.sol\":{\"keccak256\":\"0x26a329b16a9e1a110e99d0ce77995da6d98273f25c5eb2422b36c3aac775478d\",\"urls\":[\"bzzr://fd3daacea202eef27c0ddf078f30be8b6c12305597b32b3d03c8f1e52867aa83\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Order.sol\":{\"keccak256\":\"0x38a425e72d4f69c4e6f1f624c54ab2fedd1cc6ab7d3027235ea27e5dd7e69af5\",\"urls\":[\"bzzr://d69df6407b34e5eb0286dc938bf890d5236afc000a4bd595be71f20bceee72dc\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Restaurant.sol\":{\"keccak256\":\"0x02d9b24c402ea3929a4040c4faa4982f7bb9e66a2344f304fdaf94afec4d02be\",\"urls\":[\"bzzr://1a328b43ef8df21e089804f9f55d032fac64c41154dea0bae0d2826a4b667187\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RestaurantFactory.sol\":{\"keccak256\":\"0xafa6d13a53ccdd4a635737d7c5d58d309500167ec7fbe0a79aad8978fd04a6aa\",\"urls\":[\"bzzr://f8704720efd452029ba6f6ae4da0e2dc4b3fe4101ccdea1cc87c08b99c3f8e13\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol\":{\"keccak256\":\"0x29fc074e85b0e7425a4966918f5930536d6bd3fa4f22aac3131f5d2870dfaef5\",\"urls\":[\"bzzr://8a5fc6a610d6b1a6f4906ac68fd689e003ed53ac17f8cf1a46e20e6fe43d6681\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RiderFactory.sol\":{\"keccak256\":\"0xa831081ba7c49daa02a159fe8cda34c9d34e79f9986077c1249043af7671b487\",\"urls\":[\"bzzr://7b69aa4d4c72fbd7dae35316896919c3c02e7cb8a7a26f18955444d08c8c2a35\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b5060008054600160a060020a0319163317905566071afd498d00006004556104988061003d6000396000f3fe60806040526004361061007f5763ffffffff60e060020a6000350416633cf5040a81146100845780635ed097f3146100c05780636455e5ac146100d557806368db65a4146101065780638da5cb5b1461011b578063a5b8f59d14610130578063aedbfd701461015c578063ba89c91614610171578063c9286d57146101b6575b600080fd5b34801561009057600080fd5b506100ae600480360360208110156100a757600080fd5b50356101cb565b60408051918252519081900360200190f35b3480156100cc57600080fd5b506100ae6101ef565b3480156100e157600080fd5b506100ea6101f5565b60408051600160a060020a039092168252519081900360200190f35b34801561011257600080fd5b506100ea610204565b34801561012757600080fd5b506100ea610213565b34801561013c57600080fd5b5061015a6004803603602081101561015357600080fd5b5035610222565b005b34801561016857600080fd5b5061015a6102a0565b34801561017d57600080fd5b5061015a6004803603606081101561019457600080fd5b50600160a060020a0381358116916020810135821691604090910135166103fa565b3480156101c257600080fd5b506100ea61045d565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b600254600160a060020a031681565b600154600160a060020a031681565b600054600160a060020a031681565b600054600160a060020a0316331461029b57604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601560248201527f796f7520617265206e6f7420746865206f776e65720000000000000000000000604482015290519081900360640190fd5b600455565b600054600160a060020a031633146102b757600080fd5b600160009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b15801561030a57600080fd5b505af115801561031e573d6000803e3d6000fd5b50505050600260009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b15801561037557600080fd5b505af1158015610389573d6000803e3d6000fd5b50505050600360009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b1580156103e057600080fd5b505af11580156103f4573d6000803e3d6000fd5b50505050565b600054600160a060020a0316331461041157600080fd5b60018054600160a060020a0394851673ffffffffffffffffffffffffffffffffffffffff1991821617909155600280549385169382169390931790925560038054919093169116179055565b600354600160a060020a03168156fea165627a7a72305820bd4fdc6a892ec07a4720f57675674b23807a6edfb409d871774035de8ef2f86d0029",
-  "deployedBytecode": "0x60806040526004361061007f5763ffffffff60e060020a6000350416633cf5040a81146100845780635ed097f3146100c05780636455e5ac146100d557806368db65a4146101065780638da5cb5b1461011b578063a5b8f59d14610130578063aedbfd701461015c578063ba89c91614610171578063c9286d57146101b6575b600080fd5b34801561009057600080fd5b506100ae600480360360208110156100a757600080fd5b50356101cb565b60408051918252519081900360200190f35b3480156100cc57600080fd5b506100ae6101ef565b3480156100e157600080fd5b506100ea6101f5565b60408051600160a060020a039092168252519081900360200190f35b34801561011257600080fd5b506100ea610204565b34801561012757600080fd5b506100ea610213565b34801561013c57600080fd5b5061015a6004803603602081101561015357600080fd5b5035610222565b005b34801561016857600080fd5b5061015a6102a0565b34801561017d57600080fd5b5061015a6004803603606081101561019457600080fd5b50600160a060020a0381358116916020810135821691604090910135166103fa565b3480156101c257600080fd5b506100ea61045d565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b600254600160a060020a031681565b600154600160a060020a031681565b600054600160a060020a031681565b600054600160a060020a0316331461029b57604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601560248201527f796f7520617265206e6f7420746865206f776e65720000000000000000000000604482015290519081900360640190fd5b600455565b600054600160a060020a031633146102b757600080fd5b600160009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b15801561030a57600080fd5b505af115801561031e573d6000803e3d6000fd5b50505050600260009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b15801561037557600080fd5b505af1158015610389573d6000803e3d6000fd5b50505050600360009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b1580156103e057600080fd5b505af11580156103f4573d6000803e3d6000fd5b50505050565b600054600160a060020a0316331461041157600080fd5b60018054600160a060020a0394851673ffffffffffffffffffffffffffffffffffffffff1991821617909155600280549385169382169390931790925560038054919093169116179055565b600354600160a060020a03168156fea165627a7a72305820bd4fdc6a892ec07a4720f57675674b23807a6edfb409d871774035de8ef2f86d0029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"minimumDeliveryFee\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"customerFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"restaurantFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newFee\",\"type\":\"uint256\"}],\"name\":\"updateMinDeliveryFee\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"resetApplication\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_restaurantFactoryAddress\",\"type\":\"address\"},{\"name\":\"_customerFactoryAddress\",\"type\":\"address\"},{\"name\":\"_riderFactoryAddress\",\"type\":\"address\"}],\"name\":\"setFactoryAddresses\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"riderFactoryAddress\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":\"Controller\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":{\"keccak256\":\"0xa94cfffbe0cc465d742bfec204b1821b2367147829eae456b8a8589d077249f5\",\"urls\":[\"bzzr://c06d4e8d059d5c4bace88469dc2cdaf8f02a69aa8264dd34db63dd9c5c0d1ac5\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Customer.sol\":{\"keccak256\":\"0x6efd4edf9d4202df60e37435974f2945b0d405ba878f698cf19805110aa5e26e\",\"urls\":[\"bzzr://472a60ef9491a81d0278d0a3664558b731fad82434aba6c58593a4924935fca0\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/CustomerFactory.sol\":{\"keccak256\":\"0x26a329b16a9e1a110e99d0ce77995da6d98273f25c5eb2422b36c3aac775478d\",\"urls\":[\"bzzr://fd3daacea202eef27c0ddf078f30be8b6c12305597b32b3d03c8f1e52867aa83\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Order.sol\":{\"keccak256\":\"0x38a425e72d4f69c4e6f1f624c54ab2fedd1cc6ab7d3027235ea27e5dd7e69af5\",\"urls\":[\"bzzr://d69df6407b34e5eb0286dc938bf890d5236afc000a4bd595be71f20bceee72dc\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Restaurant.sol\":{\"keccak256\":\"0xd18bf3c0822d796cac6c75ad2a1ee95fa4481ea5eae689775a4cd017325af522\",\"urls\":[\"bzzr://b13bfaf0bc5602713fe719dc2d60a16166e367e20cdd28b6e7e391d484a1661e\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RestaurantFactory.sol\":{\"keccak256\":\"0xafa6d13a53ccdd4a635737d7c5d58d309500167ec7fbe0a79aad8978fd04a6aa\",\"urls\":[\"bzzr://f8704720efd452029ba6f6ae4da0e2dc4b3fe4101ccdea1cc87c08b99c3f8e13\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol\":{\"keccak256\":\"0x29fc074e85b0e7425a4966918f5930536d6bd3fa4f22aac3131f5d2870dfaef5\",\"urls\":[\"bzzr://8a5fc6a610d6b1a6f4906ac68fd689e003ed53ac17f8cf1a46e20e6fe43d6681\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RiderFactory.sol\":{\"keccak256\":\"0xa831081ba7c49daa02a159fe8cda34c9d34e79f9986077c1249043af7671b487\",\"urls\":[\"bzzr://7b69aa4d4c72fbd7dae35316896919c3c02e7cb8a7a26f18955444d08c8c2a35\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b5060008054600160a060020a0319163317905566071afd498d00006004556104988061003d6000396000f3fe60806040526004361061007f5763ffffffff60e060020a6000350416633cf5040a81146100845780635ed097f3146100c05780636455e5ac146100d557806368db65a4146101065780638da5cb5b1461011b578063a5b8f59d14610130578063aedbfd701461015c578063ba89c91614610171578063c9286d57146101b6575b600080fd5b34801561009057600080fd5b506100ae600480360360208110156100a757600080fd5b50356101cb565b60408051918252519081900360200190f35b3480156100cc57600080fd5b506100ae6101ef565b3480156100e157600080fd5b506100ea6101f5565b60408051600160a060020a039092168252519081900360200190f35b34801561011257600080fd5b506100ea610204565b34801561012757600080fd5b506100ea610213565b34801561013c57600080fd5b5061015a6004803603602081101561015357600080fd5b5035610222565b005b34801561016857600080fd5b5061015a6102a0565b34801561017d57600080fd5b5061015a6004803603606081101561019457600080fd5b50600160a060020a0381358116916020810135821691604090910135166103fa565b3480156101c257600080fd5b506100ea61045d565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b600254600160a060020a031681565b600154600160a060020a031681565b600054600160a060020a031681565b600054600160a060020a0316331461029b57604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601560248201527f796f7520617265206e6f7420746865206f776e65720000000000000000000000604482015290519081900360640190fd5b600455565b600054600160a060020a031633146102b757600080fd5b600160009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b15801561030a57600080fd5b505af115801561031e573d6000803e3d6000fd5b50505050600260009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b15801561037557600080fd5b505af1158015610389573d6000803e3d6000fd5b50505050600360009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b1580156103e057600080fd5b505af11580156103f4573d6000803e3d6000fd5b50505050565b600054600160a060020a0316331461041157600080fd5b60018054600160a060020a0394851673ffffffffffffffffffffffffffffffffffffffff1991821617909155600280549385169382169390931790925560038054919093169116179055565b600354600160a060020a03168156fea165627a7a723058207bc0ee0835911ea8b5392e15ab4db504a4fefc186af685b5aea80fb45efe2e120029",
+  "deployedBytecode": "0x60806040526004361061007f5763ffffffff60e060020a6000350416633cf5040a81146100845780635ed097f3146100c05780636455e5ac146100d557806368db65a4146101065780638da5cb5b1461011b578063a5b8f59d14610130578063aedbfd701461015c578063ba89c91614610171578063c9286d57146101b6575b600080fd5b34801561009057600080fd5b506100ae600480360360208110156100a757600080fd5b50356101cb565b60408051918252519081900360200190f35b3480156100cc57600080fd5b506100ae6101ef565b3480156100e157600080fd5b506100ea6101f5565b60408051600160a060020a039092168252519081900360200190f35b34801561011257600080fd5b506100ea610204565b34801561012757600080fd5b506100ea610213565b34801561013c57600080fd5b5061015a6004803603602081101561015357600080fd5b5035610222565b005b34801561016857600080fd5b5061015a6102a0565b34801561017d57600080fd5b5061015a6004803603606081101561019457600080fd5b50600160a060020a0381358116916020810135821691604090910135166103fa565b3480156101c257600080fd5b506100ea61045d565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b600254600160a060020a031681565b600154600160a060020a031681565b600054600160a060020a031681565b600054600160a060020a0316331461029b57604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601560248201527f796f7520617265206e6f7420746865206f776e65720000000000000000000000604482015290519081900360640190fd5b600455565b600054600160a060020a031633146102b757600080fd5b600160009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b15801561030a57600080fd5b505af115801561031e573d6000803e3d6000fd5b50505050600260009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b15801561037557600080fd5b505af1158015610389573d6000803e3d6000fd5b50505050600360009054906101000a9004600160a060020a0316600160a060020a031663d826f88f6040518163ffffffff1660e060020a028152600401600060405180830381600087803b1580156103e057600080fd5b505af11580156103f4573d6000803e3d6000fd5b50505050565b600054600160a060020a0316331461041157600080fd5b60018054600160a060020a0394851673ffffffffffffffffffffffffffffffffffffffff1991821617909155600280549385169382169390931790925560038054919093169116179055565b600354600160a060020a03168156fea165627a7a723058207bc0ee0835911ea8b5392e15ab4db504a4fefc186af685b5aea80fb45efe2e120029",
   "sourceMap": "122:1176:0:-;;;326:123;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;350:5:0;:18;;-1:-1:-1;;;;;;350:18:0;358:10;350:18;;;393:16;372:18;:37;122:1176;;;;;;",
   "deployedSourceMap": "122:1176:0:-;;;;;;;;;-1:-1:-1;;;122:1176:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;921:107;;8:9:-1;5:2;;;30:1;27;20:12;5:2;921:107:0;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;921:107:0;;;;;;;;;;;;;;;;;;;291:30;;8:9:-1;5:2;;;30:1;27;20:12;5:2;291:30:0;;;;213:37;;8:9:-1;5:2;;;30:1;27;20:12;5:2;213:37:0;;;;;;;;-1:-1:-1;;;;;213:37:0;;;;;;;;;;;;;;171:39;;8:9:-1;5:2;;;30:1;27;20:12;5:2;171:39:0;;;;146:20;;8:9:-1;5:2;;;30:1;27;20:12;5:2;146:20:0;;;;778:140;;8:9:-1;5:2;;;30:1;27;20:12;5:2;778:140:0;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;778:140:0;;;;;1073:223;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1073:223:0;;;;452:323;;8:9:-1;5:2;;;30:1;27;20:12;5:2;452:323:0;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;;;;;;452:323:0;;;;;;;;;;;;;;;;;;;;253:34;;8:9:-1;5:2;;;30:1;27;20:12;5:2;253:34:0;;;;921:107;1001:22;;;;;;;;;;;;;26:21:-1;;;22:32;;6:49;;1001:22:0;;;;;;991:33;;;;;;921:107::o;291:30::-;;;;:::o;213:37::-;;;-1:-1:-1;;;;;213:37:0;;:::o;171:39::-;;;-1:-1:-1;;;;;171:39:0;;:::o;146:20::-;;;-1:-1:-1;;;;;146:20:0;;:::o;778:140::-;853:5;;-1:-1:-1;;;;;853:5:0;839:10;:19;831:52;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;887:18;:27;778:140::o;1073:223::-;1135:5;;-1:-1:-1;;;;;1135:5:0;1121:10;:19;1113:28;;;;;;1163:24;;;;;;;;;-1:-1:-1;;;;;1163:24:0;-1:-1:-1;;;;;1145:49:0;;:51;;;;;-1:-1:-1;;;1145:51:0;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1145:51:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1145:51:0;;;;1216:22;;;;;;;;;-1:-1:-1;;;;;1216:22:0;-1:-1:-1;;;;;1200:45:0;;:47;;;;;-1:-1:-1;;;1200:47:0;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1200:47:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1200:47:0;;;;1264:19;;;;;;;;;-1:-1:-1;;;;;1264:19:0;-1:-1:-1;;;;;1251:39:0;;:41;;;;;-1:-1:-1;;;1251:41:0;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1251:41:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1251:41:0;;;;1073:223::o;452:323::-;611:5;;-1:-1:-1;;;;;611:5:0;597:10;:19;589:28;;;;;;621:24;:52;;-1:-1:-1;;;;;621:52:0;;;-1:-1:-1;;621:52:0;;;;;;;677:22;:48;;;;;;;;;;;;;;;729:19;:42;;;;;;;;;;;452:323::o;253:34::-;;;-1:-1:-1;;;;;253:34:0;;:::o",
   "source": "pragma solidity ^0.5.0;\n\nimport \"./RestaurantFactory.sol\";\nimport \"./CustomerFactory.sol\";\nimport \"./RiderFactory.sol\";\n\n\ncontract Controller {\n\n\taddress public owner;\n\t\n\taddress public restaurantFactoryAddress;\n\taddress public customerFactoryAddress;\n\taddress public riderFactoryAddress;\n\n\tuint public minimumDeliveryFee;\n\n\n\tconstructor() public{\n\t\towner = msg.sender;\n\t\tminimumDeliveryFee = 2000000000000000; // set min delivery fee to 0.02 eth\n\t}\n\n\tfunction setFactoryAddresses(address _restaurantFactoryAddress, address _customerFactoryAddress, address _riderFactoryAddress) public{\n\t\trequire(msg.sender == owner);\n\t\trestaurantFactoryAddress = _restaurantFactoryAddress;\n\t\tcustomerFactoryAddress = _customerFactoryAddress;\n\t\triderFactoryAddress = _riderFactoryAddress;\n\t}\n\n\tfunction updateMinDeliveryFee(uint newFee) public{\n\t\trequire(msg.sender == owner,\"you are not the owner\");\n\t\tminimumDeliveryFee = newFee;\n\t}\n\n\tfunction getHash(bytes32 data) public pure returns(bytes32){\n\t\treturn keccak256(abi.encodePacked(data));\n\t}\n\n\t// removes all user accounts and orders.\n\tfunction resetApplication() public { \n\t\trequire(msg.sender == owner);\n\t\tRestaurantFactory(restaurantFactoryAddress).reset();\n\t\tCustomerFactory(customerFactoryAddress).reset();\n\t\tRiderFactory(riderFactoryAddress).reset();\n\t}\n}",
@@ -186,7 +186,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 120,
-        "sourceUnit": 2001,
+        "sourceUnit": 2768,
         "src": "25:33:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -208,7 +208,7 @@
         "id": 4,
         "nodeType": "ImportDirective",
         "scope": 120,
-        "sourceUnit": 2377,
+        "sourceUnit": 3144,
         "src": "91:28:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -397,7 +397,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2583,
+                        "referencedDeclaration": 3350,
                         "src": "358:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -535,7 +535,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2583,
+                            "referencedDeclaration": 3350,
                             "src": "597:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -589,10 +589,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2586,
-                        2587
+                        3353,
+                        3354
                       ],
-                      "referencedDeclaration": 2586,
+                      "referencedDeclaration": 3353,
                       "src": "589:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -893,7 +893,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2583,
+                            "referencedDeclaration": 3350,
                             "src": "839:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -969,10 +969,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2586,
-                        2587
+                        3353,
+                        3354
                       ],
-                      "referencedDeclaration": 2587,
+                      "referencedDeclaration": 3354,
                       "src": "831:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -1137,7 +1137,7 @@
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2570,
+                            "referencedDeclaration": 3337,
                             "src": "1001:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
@@ -1184,7 +1184,7 @@
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2577,
+                      "referencedDeclaration": 3344,
                       "src": "991:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -1320,7 +1320,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2583,
+                            "referencedDeclaration": 3350,
                             "src": "1121:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -1374,10 +1374,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2586,
-                        2587
+                        3353,
+                        3354
                       ],
-                      "referencedDeclaration": 2586,
+                      "referencedDeclaration": 3353,
                       "src": "1113:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -1436,10 +1436,10 @@
                           "name": "RestaurantFactory",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2000,
+                          "referencedDeclaration": 2767,
                           "src": "1145:17:0",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_RestaurantFactory_$2000_$",
+                            "typeIdentifier": "t_type$_t_contract$_RestaurantFactory_$2767_$",
                             "typeString": "type(contract RestaurantFactory)"
                           }
                         },
@@ -1453,7 +1453,7 @@
                         "nodeType": "FunctionCall",
                         "src": "1145:43:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_RestaurantFactory_$2000",
+                          "typeIdentifier": "t_contract$_RestaurantFactory_$2767",
                           "typeString": "contract RestaurantFactory"
                         }
                       },
@@ -1464,7 +1464,7 @@
                       "lValueRequested": false,
                       "memberName": "reset",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 1999,
+                      "referencedDeclaration": 2766,
                       "src": "1145:49:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$__$returns$__$",
@@ -1610,10 +1610,10 @@
                           "name": "RiderFactory",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2376,
+                          "referencedDeclaration": 3143,
                           "src": "1251:12:0",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_RiderFactory_$2376_$",
+                            "typeIdentifier": "t_type$_t_contract$_RiderFactory_$3143_$",
                             "typeString": "type(contract RiderFactory)"
                           }
                         },
@@ -1627,7 +1627,7 @@
                         "nodeType": "FunctionCall",
                         "src": "1251:33:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_RiderFactory_$2376",
+                          "typeIdentifier": "t_contract$_RiderFactory_$3143",
                           "typeString": "contract RiderFactory"
                         }
                       },
@@ -1638,7 +1638,7 @@
                       "lValueRequested": false,
                       "memberName": "reset",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2375,
+                      "referencedDeclaration": 3142,
                       "src": "1251:39:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$__$returns$__$",
@@ -1724,7 +1724,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 120,
-        "sourceUnit": 2001,
+        "sourceUnit": 2768,
         "src": "25:33:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1746,7 +1746,7 @@
         "id": 4,
         "nodeType": "ImportDirective",
         "scope": 120,
-        "sourceUnit": 2377,
+        "sourceUnit": 3144,
         "src": "91:28:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -1935,7 +1935,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2583,
+                        "referencedDeclaration": 3350,
                         "src": "358:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -2073,7 +2073,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2583,
+                            "referencedDeclaration": 3350,
                             "src": "597:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -2127,10 +2127,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2586,
-                        2587
+                        3353,
+                        3354
                       ],
-                      "referencedDeclaration": 2586,
+                      "referencedDeclaration": 3353,
                       "src": "589:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -2431,7 +2431,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2583,
+                            "referencedDeclaration": 3350,
                             "src": "839:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -2507,10 +2507,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2586,
-                        2587
+                        3353,
+                        3354
                       ],
-                      "referencedDeclaration": 2587,
+                      "referencedDeclaration": 3354,
                       "src": "831:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -2675,7 +2675,7 @@
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2570,
+                            "referencedDeclaration": 3337,
                             "src": "1001:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
@@ -2722,7 +2722,7 @@
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 2577,
+                      "referencedDeclaration": 3344,
                       "src": "991:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -2858,7 +2858,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 2583,
+                            "referencedDeclaration": 3350,
                             "src": "1121:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -2912,10 +2912,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2586,
-                        2587
+                        3353,
+                        3354
                       ],
-                      "referencedDeclaration": 2586,
+                      "referencedDeclaration": 3353,
                       "src": "1113:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -2974,10 +2974,10 @@
                           "name": "RestaurantFactory",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2000,
+                          "referencedDeclaration": 2767,
                           "src": "1145:17:0",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_RestaurantFactory_$2000_$",
+                            "typeIdentifier": "t_type$_t_contract$_RestaurantFactory_$2767_$",
                             "typeString": "type(contract RestaurantFactory)"
                           }
                         },
@@ -2991,7 +2991,7 @@
                         "nodeType": "FunctionCall",
                         "src": "1145:43:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_RestaurantFactory_$2000",
+                          "typeIdentifier": "t_contract$_RestaurantFactory_$2767",
                           "typeString": "contract RestaurantFactory"
                         }
                       },
@@ -3002,7 +3002,7 @@
                       "lValueRequested": false,
                       "memberName": "reset",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 1999,
+                      "referencedDeclaration": 2766,
                       "src": "1145:49:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$__$returns$__$",
@@ -3148,10 +3148,10 @@
                           "name": "RiderFactory",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2376,
+                          "referencedDeclaration": 3143,
                           "src": "1251:12:0",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_RiderFactory_$2376_$",
+                            "typeIdentifier": "t_type$_t_contract$_RiderFactory_$3143_$",
                             "typeString": "type(contract RiderFactory)"
                           }
                         },
@@ -3165,7 +3165,7 @@
                         "nodeType": "FunctionCall",
                         "src": "1251:33:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_RiderFactory_$2376",
+                          "typeIdentifier": "t_contract$_RiderFactory_$3143",
                           "typeString": "contract RiderFactory"
                         }
                       },
@@ -3176,7 +3176,7 @@
                       "lValueRequested": false,
                       "memberName": "reset",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2375,
+                      "referencedDeclaration": 3142,
                       "src": "1251:39:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$__$returns$__$",
@@ -3243,12 +3243,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xAd55bef129eFa3D180dBE6E6aC270Da5F5C665B3",
-      "transactionHash": "0x3a8af7fbe24b3f0d6ee94c5b135016f3c3610a86c8c858402759208a494c15c2"
+      "address": "0xcC4F98e3adca09CA6d993930F9EAE782A91A566A",
+      "transactionHash": "0x3e4372ae9b61c90ec6c966bfcedcacc2a499b77d84ef9e8669e0ec91647a0aa7"
     }
   },
   "schemaVersion": "3.0.6",
-  "updatedAt": "2019-10-31T10:38:54.652Z",
+  "updatedAt": "2019-11-14T18:22:34.038Z",
   "devdoc": {
     "methods": {}
   },
