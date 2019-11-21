@@ -80,6 +80,23 @@ App = {
   	return false;
   },
 
+  checkLogin: async function (){
+	if(App.account == "0x0" || App.account == null){
+		App.login().then(function(result){
+			if(result){
+				console.log("logged in as: " + App.account);
+				return true;
+
+			}else{
+				alert("could not log you in:");
+				return false;
+			}
+		})
+	}
+
+	return true;
+},
+
   initWeb3: function (){
     if(typeof web3 !== 'undefined' && !App.local){
       App.web3Provider = web3.currentProvider;
@@ -267,8 +284,8 @@ getEthPrice: function(){
 
 $(function() {
   $(window).load(async function() {
+  	await App.checkLogin();
   	await App.init();
-  	init();
   });
 });
 

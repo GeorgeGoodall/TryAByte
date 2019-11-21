@@ -142,7 +142,7 @@ console.log("**listening on port: " + port);
 // new HTML locations
 
 app.get(['/'], function(req,res){
-  res.sendFile(__dirname+'/html/Homepage.html');
+  res.sendFile(__dirname+'/html/index.html');
 });
 
 app.get(["/restaurants"], function(req,res){

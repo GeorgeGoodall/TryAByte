@@ -82,27 +82,27 @@
 						<h1 class="title is-3">Restaurant Account Creation Form:</h1>
 						<div class="field">
 							<label class="label title is-4">Restaurant Name:</label>
-							<input type="text" class="input" id='name'onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
+							<input type="text" class="input" id='name'onkeyup="restaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 						</div>
 						<div class="field">
 							<label class="label title is-4">Restaurant Address:</label>
 							<label class="label" >Country</label>
-							<input type="text" id="country" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="country" class="input " onkeyup="restaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 							<label class="label" >Address</label>
-							<input type="text" id="address" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="address" class="input " onkeyup="restaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 							<label class="label" >Town/City</label>
-							<input type="text" id="town" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="town" class="input " onkeyup="restaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 							<label class="label" >County/State</label>
-							<input type="text" id="county" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="county" class="input " onkeyup="restaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 							<label class="label" >Postcode</label>
-							<input type="text" id="postcode" class="input " onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
+							<input type="text" id="postcode" class="input " onkeyup="restaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 						</div>
 						<div class="field">
 							<label class="label title is-4">Restaurant Contact Number:</label>
-							<input type="text" class="input" id="number" onkeyup="restaurant.updateRestaurantObject(this.id,this.value)">
+							<input type="text" class="input" id="number" onkeyup="restaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 						</div>
 						</form>
-						<form id="logoForm" onchange="restaurant.uploadLogo(this);return false;">
+						<form id="logoForm" onchange="restaurantSettingsPage.uploadLogo(this);return false;">
 							<div class="field">
 								<div class="file">
 									<label class="file-label">

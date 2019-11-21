@@ -1,5 +1,11 @@
+html{
+	min-height: 100%;
+	background-color: #aeccc8 !important;
+}
+
 body{
   margin: 0px;
+  height: 100%;
   background-color: #aeccc8;
 }
 
