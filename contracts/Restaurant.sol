@@ -35,13 +35,13 @@ contract Restaurant {
 
     uint totalPay;
 	
-	struct Item{
-		bytes32 itemName;
-        bytes32 description;
-        bytes32[] options;
-		uint[] optionsCost; // in wei (10^-18 Eth)
-        uint optionsCount;
-	}
+	// struct Item{
+	// 	bytes32 itemName;
+ //        bytes32 description;
+ //        bytes32[] options;
+	// 	uint[] optionsCost; // in wei (10^-18 Eth)
+ //        uint optionsCount;
+	// }
 	
     uint public menuLength;
 	mapping(uint => Item) public menu;
