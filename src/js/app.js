@@ -1,5 +1,5 @@
-var controllerAddressRemote = "0x5EB2577269692557DF7f948877E06f5385783237";
-var controllerAddressLocal = "0x5EB2577269692557DF7f948877E06f5385783237";
+var controllerAddressRemote = "0xEe5e1F47481A43567A19E7A29d2A2D1a7db842E5";
+var controllerAddressLocal = "0xEe5e1F47481A43567A19E7A29d2A2D1a7db842E5";
 
 
 
@@ -88,7 +88,7 @@ App = {
 				return true;
 
 			}else{
-				alert("could not log you in:");
+				console.log("could not log you in:");
 				return false;
 			}
 		})
@@ -117,6 +117,7 @@ App = {
 	},
 
 
+  // lots of redundent code, could clean this up
   initContracts: async function () {
   	console.log("Init Contracts");
 	var controllerRequest = $.ajax({
@@ -165,6 +166,15 @@ App = {
 	    console.log("success loading restaurant JSON");
 	    App.contracts["Restaurant"] = TruffleContract(Restaurant);
 	    App.contracts["Restaurant"].setProvider(App.web3Provider);
+	  }
+	});
+	var RestaurantRequest = $.ajax({
+	  url: '/Contracts/Menu.json',
+	  async: true,
+	  success: function(Menu){
+	    console.log("success loading menu JSON");
+	    App.contracts["Menu"] = TruffleContract(Menu);
+	    App.contracts["Menu"].setProvider(App.web3Provider);
 	  }
 	});
 	var CustomerRequest = $.ajax({
@@ -286,6 +296,7 @@ $(function() {
   $(window).load(async function() {
   	await App.checkLogin();
   	await App.init();
+  	await main_init();
   });
 });
 

@@ -89,6 +89,8 @@ contract('Menu', function(accounts){
 		});
 	});
 
+	// fish, beans, Peas, chips
+
 	it("can remove items", function(){
 		return menuInstance.removeItem(2).then(function(){
 			return menuInstance.getEntry.call(2);
@@ -116,11 +118,13 @@ contract('Menu', function(accounts){
 		});
 	});
 
+	// beans, chips
+
 	it("can add options to an item", function(){
-		return menuInstance.addOption(1,0,web3.utils.fromAscii("super-size"),500).then(function(){
+		return menuInstance.getEntry.call(1).then(function(item){
+			menuInstance.addOption(1,0,web3.utils.fromAscii("super-size"),500);
 			return menuInstance.getEntry.call(1);
 		}).then(function(item){
-
 			assert.equal(web3.utils.toUtf8(item[0]),"Chips");
 			assert.equal(web3.utils.toUtf8(item[1]),"Golden Chips");
 			assert.equal(web3.utils.toUtf8(item[2][0]),"super-size");
@@ -130,18 +134,179 @@ contract('Menu', function(accounts){
 		}).then(function(){
 			return menuInstance.getEntry.call(1);
 		}).then(function(item){
-			console.log(item);
-
 			assert.equal(web3.utils.toUtf8(item[0]),"Chips");
 			assert.equal(web3.utils.toUtf8(item[1]),"Golden Chips");
 			assert.equal(web3.utils.toUtf8(item[2][4]),"super-small");
 			assert.equal(item[3][4],50);
-
-			//return menuInstance.addOption(0,0,web3.utils.fromAscii("super-size"),500);
 		});;
 	});
 
+	it("can swap item indexes", function(){
+		return menuInstance.swapItems(0,1).then(function(){
+			return menuInstance.getEntry.call(0);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[0]),"Chips");
+			assert.equal(web3.utils.toUtf8(item[1]),"Golden Chips");
+			assert.equal(web3.utils.toUtf8(item[2][0]),"super-size");
+			assert.equal(item[3][0],500);
+
+			return menuInstance.getEntry.call(1);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[0]),"beans");
+			assert.equal(web3.utils.toUtf8(item[1]),"way too gassy");
+			assert.equal(web3.utils.toUtf8(item[2][0]),"");
+			assert.equal(item[3][0],150);
+		});
+	});
+
+	it("can swap option indexes", function(){
+		return menuInstance.getEntry.call(0).then(function(item){
+			menuInstance.swapOptions(0,0,1);
+			return menuInstance.getEntry.call(0);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[0]),"Chips");
+			assert.equal(web3.utils.toUtf8(item[1]),"Golden Chips");
+			assert.equal(web3.utils.toUtf8(item[2][1]),"super-size");
+			assert.equal(web3.utils.toUtf8(item[2][0]),"large");
+			assert.equal(item[3][1],500);
+			assert.equal(item[3][0],300);
+		});
+	});
+
+	it("Can Add Multiple Items", function(){
+		return menuInstance.addMultipleItems(
+			[0,0,2,3],
+			[web3.utils.fromAscii("Chili"),web3.utils.fromAscii("Lasagnia"),web3.utils.fromAscii("Nachos"),web3.utils.fromAscii("Milkshake")],
+			[web3.utils.fromAscii("the best chili in town"),web3.utils.fromAscii("Garfield would approve"),web3.utils.fromAscii("Cheese topped"),web3.utils.fromAscii("american styled Milkshake")],
+			[web3.utils.fromAscii(""),web3.utils.fromAscii(""),web3.utils.fromAscii("plain"),web3.utils.fromAscii("extra cheese"),web3.utils.fromAscii("vanila"),web3.utils.fromAscii("orio"),web3.utils.fromAscii("banana")],
+			[500,500,150,250,400,400,400],
+			[1,1,2,3]).then(function(){
+				return menuInstance.getEntry.call(0);
+			}).then(function(item) {
+				assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
+				assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
+				assert.equal(web3.utils.toUtf8(item[2][0]),"");
+				assert.equal(item[3][0],500);
+				return menuInstance.getEntry.call(1);
+			}).then(function(item) {
+				assert.equal(web3.utils.toUtf8(item[0]),"Chili");
+				assert.equal(web3.utils.toUtf8(item[1]),"the best chili in town");
+				assert.equal(web3.utils.toUtf8(item[2][0]),"");
+				assert.equal(item[3][0],500);
+				return menuInstance.getEntry.call(2);
+			}).then(function(item) {
+				assert.equal(web3.utils.toUtf8(item[0]),"Nachos");
+				assert.equal(web3.utils.toUtf8(item[1]),"Cheese topped");
+				assert.equal(web3.utils.toUtf8(item[2][1]),"plain");
+				assert.equal(web3.utils.toUtf8(item[2][0]),"extra cheese");
+				assert.equal(item[3][1],150);
+				assert.equal(item[3][0],250);
+				return menuInstance.getEntry.call(3);
+			}).then(function(item) {
+				assert.equal(web3.utils.toUtf8(item[0]),"Milkshake");
+				assert.equal(web3.utils.toUtf8(item[1]),"american styled Milkshake");
+				assert.equal(web3.utils.toUtf8(item[2][2]),"vanila");
+				assert.equal(web3.utils.toUtf8(item[2][1]),"orio");
+				assert.equal(web3.utils.toUtf8(item[2][0]),"banana");
+				assert.equal(item[3][2],400);
+				assert.equal(item[3][1],400);
+				assert.equal(item[3][0],400);
+			});
+	});
+
+	// lasagnia, chili, nachos, milkshake, beans, chips
+
+	it("Can add multiple options", function(){
+		return menuInstance.addMultipleOptions(
+			[3,3,3],
+			[0,0,2],
+			[web3.utils.fromAscii("chocolate"),web3.utils.fromAscii("strawbery"),web3.utils.fromAscii("peanut butter")],
+			[400,400,400]).then(function(){
+				return menuInstance.getEntry.call(3);
+			}).then(function(item){
+				assert.equal(web3.utils.toUtf8(item[0]),"Milkshake");
+				assert.equal(web3.utils.toUtf8(item[1]),"american styled Milkshake");
+				assert.equal(web3.utils.toUtf8(item[2][5]),"vanila");
+				assert.equal(web3.utils.toUtf8(item[2][4]),"peanut butter");
+				assert.equal(web3.utils.toUtf8(item[2][3]),"orio");
+				assert.equal(web3.utils.toUtf8(item[2][2]),"banana");
+				assert.equal(web3.utils.toUtf8(item[2][1]),"chocolate");
+				assert.equal(web3.utils.toUtf8(item[2][0]),"strawbery");
+				assert.equal(item[3][2],400);
+				assert.equal(item[3][1],400);
+				assert.equal(item[3][0],400);
+				assert.equal(item[3][3],400);
+				assert.equal(item[3][4],400);
+				return menuInstance.getEntry.call(4);
+			});
+	});
+
+
+
+
+	it("can remove multiple items", function(){
+		return menuInstance.removeMultipleItems([0,2,4]).then(function(){
+			return menuInstance.getEntry.call(0);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[0]),"Chili");
+			assert.equal(web3.utils.toUtf8(item[1]),"the best chili in town");
+			assert.equal(web3.utils.toUtf8(item[2][0]),"");
+			assert.equal(item[3][0],500);
+			return menuInstance.getEntry.call(1);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[0]),"Milkshake");
+			assert.equal(web3.utils.toUtf8(item[1]),"american styled Milkshake");
+			assert.equal(web3.utils.toUtf8(item[2][5]),"vanila");
+			assert.equal(web3.utils.toUtf8(item[2][4]),"peanut butter");
+			assert.equal(web3.utils.toUtf8(item[2][3]),"orio");
+			assert.equal(web3.utils.toUtf8(item[2][2]),"banana");
+			assert.equal(web3.utils.toUtf8(item[2][1]),"chocolate");
+			assert.equal(web3.utils.toUtf8(item[2][0]),"strawbery");
+			assert.equal(item[3][2],400);
+			assert.equal(item[3][1],400);
+			assert.equal(item[3][0],400);
+			assert.equal(item[3][3],400);
+			assert.equal(item[3][4],400);
+			return menuInstance.getEntry.call(2);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[0]),"beans");
+			assert.equal(web3.utils.toUtf8(item[1]),"way too gassy");
+			assert.equal(web3.utils.toUtf8(item[2][0]),"");
+			assert.equal(item[3][0],150);
+		});
+	});
+
+	// options for milkshake
+	// strawbery, chocolate, banana, orio, peanut butter, vanila
+
+	it("can remove an option", function(){
+		return menuInstance.removeOption(1,0).then(function(){
+			return menuInstance.getEntry.call(1);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[2][0]),"chocolate");
+			return menuInstance.removeOption(1,2);
+		}).then(function(){
+			return menuInstance.getEntry.call(1);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[2][2]),"peanut butter");
+		});
+	});
+
+	// chocolate, banana, peanut butter, vanila
+
+	it("can remove multiple options", function(){
+		return menuInstance.removeMultipleOptions([1],[0,2,3],[3]).then(function(){
+			return menuInstance.getEntry.call(1);
+		}).then(function(item){
+			assert.equal(web3.utils.toUtf8(item[2][0]),"banana");
+			assert.equal(typeof item[2][1],"undefined");
+		});
+	});
+
+	
 });
+
+// chili, milkshake, chips
 
 
 
@@ -153,5 +318,35 @@ function makeid(length) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return text;
+}
+
+function itemDump(item){
+	console.log(web3.utils.toUtf8(item[0]));
+	console.log(web3.utils.toUtf8(item[1]));
+	for(let i = 0; i < item[2].length; i++){
+		console.log(web3.utils.toUtf8(item[2][i]) + ": " + item[3][i]);
+	}
+}
+
+function dumpItems(menuInstance){
+	return menuInstance.getEntry.call(0).then(function(item){
+		itemDump(item);
+		return menuInstance.getEntry.call(1);
+	}).then(function(){
+		itemDump(item);
+		return menuInstance.getEntry.call(2);
+	}).then(function(){
+		itemDump(item);
+		return menuInstance.getEntry.call(3);
+	}).then(function(){
+		itemDump(item);
+		return menuInstance.getEntry.call(4);
+	}).then(function(){
+		itemDump(item);
+		return menuInstance.getEntry.call(5);
+	}).then(function(){
+		itemDump(item);
+		return menuInstance.getEntry.call(6);
+	});
 }
 

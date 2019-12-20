@@ -69,7 +69,7 @@ module.exports = function(deployer) {
   		}
   	);
   	
-  	deployer.deploy(Menu);
+  	//deployer.deploy(Menu);
 
 
 

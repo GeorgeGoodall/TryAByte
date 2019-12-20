@@ -40,10 +40,10 @@ async function makeRestaurant(restaurant){
 		      console.log("restaurant Made at: " + restaurant.contractAddress);
 		      
 		      console.log("commit Logo");
-		      restaurant.logoAddress = await commitLogo();
+		      restaurant.logoAddress = await commitLogo(restaurant);
 		      
 		      console.log("Making Manu");
-		      await makeMenu();
+		      await makeMenu(restaurant);
 		    });
 		}
 		else{
@@ -61,6 +61,7 @@ async function makeRestaurant(restaurant){
 
 async function makeMenu(restaurant){
 	// vars for adding items
+	var itemAddAtIndex = [];
 	var itemNames = [];
 	var itemDescriptions = [];
 	var optionNames = [];
@@ -82,6 +83,7 @@ async function makeMenu(restaurant){
 		if(typeof restaurant.menu[i] != "undefined"){
 			// get all items that have been added that are not onchain
 			if(restaurant.menu[i].name != "" && restaurant.menu[i].description != "" && !restaurant.menu[i].onChain && !restaurant.menu[i].toBeDeleted){
+				itemAddAtIndex.push(0);
 				itemNames.push(web3.fromAscii(restaurant.menu[i].name));
 				itemDescriptions.push(web3.fromAscii(restaurant.menu[i].description));
 				for(var j = 0; j < restaurant.menu[i].options.length; j++){
@@ -152,13 +154,19 @@ async function makeMenu(restaurant){
 	console.log(itemsToRemove, optionsToRemove, optionsToRemoveFlags);
 	console.log(itemsForNewOptionsIds, addOptionNames, addOptionPrices, addOptionFlags);
 
-	restaurant.restaurantInstance.updateMenu(itemNames,itemDescriptions,optionNames,optionPrices,optionFlags,
-											itemsToRemove,optionsToRemove,optionsToRemoveFlags,
-											itemsForNewOptionsIds, addOptionNames, addOptionPrices, addOptionFlags,
-											{from: App.account, gas: 4000000}).then(function(err,result){
-	      console.log(err);
-	      console.log(result);
-	})
+	restaurant.menuInstance.addMultipleItems(itemAddAtIndex, itemNames, itemDescriptions, optionNames, optionPrices, optionFlags,{from: App.account, gas: 4000000}).then(function(err,result){
+		console.log(err);
+		console.log(result);
+	});
+
+
+	// restaurant.restaurantInstance.updateMenu(itemNames,itemDescriptions,optionNames,optionPrices,optionFlags,
+	// 										itemsToRemove,optionsToRemove,optionsToRemoveFlags,
+	// 										itemsForNewOptionsIds, addOptionNames, addOptionPrices, addOptionFlags,
+	// 										{from: App.account, gas: 4000000}).then(function(err,result){
+	//       console.log(err);
+	//       console.log(result);
+	// })
 }
 
 // ToDo combine commit logo and upload logo together

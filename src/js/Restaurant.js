@@ -9,6 +9,7 @@ function ItemOption(_id,_name = "",_price = "",_onChain = false){
 
 // menuItemClass
 function MenuItem(){
+	this.id;
 	this.name = "";
 	this.description = "";
 	this.options = [];
@@ -39,6 +40,9 @@ class Restaurant{
 		this.contractAddress = null,
 		this.restaurantInstance = null,
 
+		this.menuAddress = null,
+		this.menuInstance = null,
+
 		this.menu = [];
 
 		this.onChain = false;
@@ -47,30 +51,40 @@ class Restaurant{
 	async getRestaurant(address = "0x0"){
 		console.log("getting restaurant at address: " + address);
 		// if an address was assigned, overwrite the default parameters
-		if(address != "0x0"){
+		if(address != "0x0000000000000000000000000000000000000000"){
 			this.onChain = true;
 			this.contractAddress = restaurantAddress;
 			this.restaurantInstance = await new App.contracts.Restaurant(address);
 
 			this.name = web3.toUtf8(await this.restaurantInstance.name());
 			this.address = web3.toUtf8(await this.restaurantInstance.location());
-			this.number = web3.toUtf8(await this.restaurantInstance.contactNumber());
+			this.number = web3.toAscii(await this.restaurantInstance.contactNumber());
 			this.logoHash = await this.restaurantInstance.logoHash();
 			this.logoAddress = web3.toUtf8(await this.restaurantInstance.logoURI());
 
-			var menuLength = await this.restaurantInstance.menuLength();
-			console.log("has a menu length of: " + menuLength);
+			this.menuAddress = await this.restaurantInstance.getMenuAddress();
+			console.log("got menu at address: " + this.menuAddress);
+			this.menuInstance = await new App.contracts.Menu(this.menuAddress);
 
-			for(var i = 0; i < menuLength; i++){
-				var menuItem = await this.restaurantInstance.getMenuItem(i);
+
+			let currentItem = await this.menuInstance.getEntry(0);
+			let i = 0;
+
+			// should come up with a better way of knowing when the menu has been traversed
+			while(currentItem[0] != "0x0000000000000000000000000000000000000000000000000000000000000000" && currentItem[1] != "0x0000000000000000000000000000000000000000000000000000000000000000"){
+				console.log(currentItem);
 				this.menu[i] = new MenuItem();
-				this.menu[i].name = web3.toUtf8(menuItem[0]);
-				this.menu[i].description = web3.toUtf8(menuItem[1]);
-				for(var j = 0; j < menuItem[4]; j++){
-					this.menu[i].options[j] = new ItemOption(j,web3.toUtf8(menuItem[2][j]),menuItem[3][j],true);
+				this.menu[i].id = i;
+				this.menu[i].name = web3.toUtf8(currentItem[0]);
+				this.menu[i].description = web3.toUtf8(currentItem[1]);
+				for(var j = 0; j < currentItem[2].length; j++){
+					this.menu[i].options[j] = new ItemOption(j,web3.toUtf8(currentItem[2][j]),currentItem[3][j],true);
 				}
 				this.menu[i].onChain = true;
 				this.menu[i].id = i;
+
+				i++;
+				currentItem = await this.menuInstance.getEntry(i);
 			}
 		}
 	}

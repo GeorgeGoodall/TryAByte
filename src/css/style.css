@@ -82,11 +82,12 @@ button {
 
 .deliveryRadio {
 	padding: 10px 20px 30px 20px;
-
 }
 
 .paymentArea {
-	border-top: 1px solid #aeaeae;	
+	border-top: 1px solid #aeaeae;
+	padding-top: 5px;
+	padding-left: 5px;
 }
 
 .isnt-wide {

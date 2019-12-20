@@ -18,7 +18,8 @@
 
 	<!-- Page Scripts -->
 	<script type="text/javascript" src="js/RestaurantSettingsPage.js"></script>
-	<script type="text/javascript" src="js/searchPage.js"></script>
+	<script type="text/javascript" src="js/SearchPage.js"></script>
+	<script type="text/javascript" src="js/ViewPage.js"></script>
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -83,11 +84,15 @@
 
 		<!-- ************* End Homepage ************************ -->
 
+		<!-- ************* Loading Page ************************ -->
+
 		<div class="page" id="loadingpage" style="display: none">
 			<div class="container box">
 				<h1 class="title">Loading...</h1>
 			</div>
 		</div>
+
+		<!-- ************* End Loading page ************************ -->
 
 		<!-- ************* restaurant query results page ************************ -->
 
@@ -109,26 +114,6 @@
 					</div>
 					<div class="column is-four-fiths">
 						<div class="container" id="restaurantOutput">
-
-							<div class="box">
-								<a href="/#view">
-									<div class="columns">
-										<div class="column is-1">
-											<figure class="image is-64x64" style="">
-												<img src="https://d30v2pzvrfyzpo.cloudfront.net/uk/images/restaurants/32681.gif">
-											</figure>
-										</div>
-										<div class="column is-4">
-											<h1 class="title">Wiwo</h1>
-											<p class="subtitle">chinese - noodles - halal</p>
-										</div> 
-										<div class="column is-4">
-											Open Now
-										</div> 
-									</div>
-								</a>
-							</div>
-
 							
 
 						</div>	
@@ -311,12 +296,12 @@
 						<div class="columns">
 							<div class="column is-3">
 								<figure class="image is-128x128" style="">
-									<img src="https://d30v2pzvrfyzpo.cloudfront.net/uk/images/restaurants/32681.gif">
+									<img id="view_logo" src="https://d30v2pzvrfyzpo.cloudfront.net/uk/images/restaurants/32681.gif">
 								</figure>
 							</div>
 							<div class="column is-4">
-								<h1 class="title">Wiwo</h1>
-								<p class="subtitle">208 City Road, Cardiff, CF24 3JG</p>
+								<h1 class="title" id="view_name">Wiwo</h1>
+								<p class="subtitle" id="view_address">208 City Road, Cardiff, CF24 3JG</p>
 							</div> 
 							<div class="column is-4">
 								Open Now
@@ -324,7 +309,7 @@
 						</div>	
 					</div>
 
-					<div class="container box" id="menu">
+					<div class="container box" id="view_menu">
 						<h1 class="title is-5">Popular</h1>
 						<h1 class="subtitle is-7">Some of the most popular offerings from this restaurant</h1>
 
@@ -387,46 +372,15 @@
 							</div>
 						</div>
 
-						<div class="trollyItem container columns">
-							<div class="column is-1">
-								-
-							</div>
-							<div class="column is-10">
-								<h1 class="title is-6">Cheese & Tomato, medium</h1>
-								<h1 class="title is-7">Crust options</h1>
-								<h1 class="subtitle is-7">Stuffed Crust</h1>
-								<h1 class="title is-7">Toppings options</h1>
-								<h1 class="subtitle is-7">Extra Cheese Crust<br>Extra Tomato</h1>
-							</div>
+						<div id="trollyItems">
+							
 						</div>
 
-						<div class="trollyItem container columns">
-							<div class="column is-1">
-								-
+						<div id="trollyPaymentArea" class="container paymentArea">
+							<div>
+								<h1 class="title is-6">Total:</h1>
+								<h1 class="subtitle is-6">ETH: 3000<br>USD: $12</h1>
 							</div>
-							<div class="column is-10">
-								<h1 class="title is-6">Cheese & Tomato, medium</h1>
-								<h1 class="title is-7">Crust options</h1>
-								<h1 class="subtitle is-7">Stuffed Crust</h1>
-								<h1 class="title is-7">Toppings options</h1>
-								<h1 class="subtitle is-7">Extra Cheese Crust<br>Extra Tomato</h1>
-							</div>
-						</div>
-
-						<div class="trollyItem container columns">
-							<div class="column is-1">
-								-
-							</div>
-							<div class="column is-10">
-								<h1 class="title is-6">Cheese & Tomato, medium</h1>
-								<h1 class="title is-7">Crust options</h1>
-								<h1 class="subtitle is-7">Stuffed Crust</h1>
-								<h1 class="title is-7">Toppings options</h1>
-								<h1 class="subtitle is-7">Extra Cheese Crust<br>Extra Tomato</h1>
-							</div>
-						</div>
-
-						<div class="container paymentArea">
 							<button class="button">Order and pay</button>
 						</div>
 					</div>

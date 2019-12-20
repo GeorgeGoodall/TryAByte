@@ -4,15 +4,19 @@ RestaurantSettingsPage = {
 	restaurant: null,
 	totalRows: 0, // stores the total items in the menu staging
 	totalOptions: [], // stores the total options for each item in the menu staging
+	initialised: false,
 
 	init: async function(){
 		if(typeof this.restaurant == "undefined" || this.restaurant == null){
 			this.restaurant = new Restaurant();
+			console.log("test");
+			console.log(this.restaurant);
 			let restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
 			await this.restaurant.getRestaurant(restaurantAddress);
 		}
 		this.updateDisplay();
 		this.updateMenuStagingDisplay();
+		this.initialised = true;
 		return true;
 	},
 	
@@ -97,8 +101,49 @@ RestaurantSettingsPage = {
 		this.updateMenuDisplay();
 	},
 
-	uploadLogo: function(){
+	uploadLogo: function(input) {
+		App.login();
 
+		// set image
+		var preview = document.getElementById("restaurantLogo");
+		var reader;
+
+		var logoInput = document.getElementById("logoInput");
+
+		if (logoInput.files && logoInput.files[0]) {
+		    // display the image
+		    readerPreview = new FileReader();
+		    readerPreview.onload = function(e) {
+		    	  preview.setAttribute('src', e.target.result);
+		    }
+		    
+		    // hash the image
+		    readerRaw = new FileReader();
+		    readerRaw.onload = async function(e) {
+		      	var arrayBuffer = e.target.result
+		      	var digestBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+		      	var byteArray = new Uint8Array(digestBuffer);
+		      	console.log(byteArray);
+		      	var hashString = "0x";
+		      	for(var i = 0; i < byteArray.length; i++){
+		      		var currentByte = byteArray[i].toString(16);
+		      		if(currentByte.length == 1)
+		      			currentByte = "0"+currentByte;
+		      		hashString+=currentByte;
+
+		      	}
+		      	RestaurantSettingsPage.restaurant.logoHash = hashString;
+		      	console.log("setting logo hash");
+		    }
+
+		    RestaurantSettingsPage.restaurant.logoFile = logoInput.files[0];
+
+
+		    readerPreview.readAsDataURL(logoInput.files[0]);
+		    readerRaw.readAsArrayBuffer(logoInput.files[0]);
+
+		    
+		}
 	},
 
 	//**********************************************************************************************//

@@ -13,8 +13,7 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function",
-      "signature": "0x3d939a49"
+      "type": "function"
     },
     {
       "constant": true,
@@ -37,8 +36,7 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function",
-      "signature": "0xcffb703c"
+      "type": "function"
     },
     {
       "anonymous": false,
@@ -50,8 +48,7 @@
         }
       ],
       "name": "testEvent",
-      "type": "event",
-      "signature": "0x4c2aaf95bd72b0b4730a09397fa14d7c339e8b90471d39e1ec89baed0628ed24"
+      "type": "event"
     },
     {
       "constant": true,
@@ -70,8 +67,7 @@
       ],
       "payable": false,
       "stateMutability": "view",
-      "type": "function",
-      "signature": "0x3cf5040a"
+      "type": "function"
     },
     {
       "constant": false,
@@ -80,8 +76,7 @@
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x7b0cb839"
+      "type": "function"
     },
     {
       "constant": false,
@@ -100,8 +95,7 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x9667c233"
+      "type": "function"
     },
     {
       "constant": false,
@@ -132,8 +126,7 @@
       ],
       "payable": false,
       "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0xb9fecf14"
+      "type": "function"
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[{\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"menuLength\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"emitEvent\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"a\",\"type\":\"bytes32\"}],\"name\":\"compareBytes32\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"itemNames\",\"type\":\"bytes32[]\"},{\"name\":\"itemDescriptions\",\"type\":\"bytes32[]\"},{\"name\":\"_optionNames\",\"type\":\"bytes32[]\"},{\"name\":\"_prices\",\"type\":\"uint256[]\"}],\"name\":\"menuAddItems\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"menu\",\"outputs\":[{\"name\":\"itemName\",\"type\":\"bytes32\"},{\"name\":\"description\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"eventString\",\"type\":\"string\"}],\"name\":\"testEvent\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Test.sol\":\"Test\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Test.sol\":{\"keccak256\":\"0xf773362acaa19f1faf7d9c552d6211d552464660807055b3b0dc6cd449113631\",\"urls\":[\"bzzr://e3dc500b37736d7de4e566a2c651d067f7220afe3d4c3072e1b0c9ca0c2cb700\"]}},\"version\":1}",
@@ -4939,14 +4932,69 @@
   },
   "networks": {
     "5777": {
-      "events": {},
+      "events": {
+        "0x4c2aaf95bd72b0b4730a09397fa14d7c339e8b90471d39e1ec89baed0628ed24": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "eventString",
+              "type": "string"
+            }
+          ],
+          "name": "testEvent",
+          "type": "event",
+          "signature": "0x4c2aaf95bd72b0b4730a09397fa14d7c339e8b90471d39e1ec89baed0628ed24"
+        }
+      },
       "links": {},
-      "address": "0xe9672Ff39b5cA0469BaB05807f7E455979300F23",
-      "transactionHash": "0x34198698923bffbdf5be555cf738d859af21ddff8cdf5f5f0ab4a27a35453fb8"
+      "address": "0x40CDB5e378D833d54af1DC5dBFD66D77f6A88523",
+      "transactionHash": "0xbf21797781ccc59e154eb86f0a58c5654b02d9ae3dcb62dd470058fc9aa8051e"
+    },
+    "1575639386920": {
+      "events": {
+        "0x4c2aaf95bd72b0b4730a09397fa14d7c339e8b90471d39e1ec89baed0628ed24": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "eventString",
+              "type": "string"
+            }
+          ],
+          "name": "testEvent",
+          "type": "event",
+          "signature": "0x4c2aaf95bd72b0b4730a09397fa14d7c339e8b90471d39e1ec89baed0628ed24"
+        }
+      },
+      "links": {},
+      "address": "0x89F99EE0deB1074bFfF83b4E976f807fd2cfb6f5",
+      "transactionHash": "0xd7c74f3be917e093e63449fd9ea10f6eadf933c214c099d8e26b34eaac3d7c48"
+    },
+    "1576049773355": {
+      "events": {
+        "0x4c2aaf95bd72b0b4730a09397fa14d7c339e8b90471d39e1ec89baed0628ed24": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "eventString",
+              "type": "string"
+            }
+          ],
+          "name": "testEvent",
+          "type": "event",
+          "signature": "0x4c2aaf95bd72b0b4730a09397fa14d7c339e8b90471d39e1ec89baed0628ed24"
+        }
+      },
+      "links": {},
+      "address": "0x7f579b05De5AEfcC3Cd9e7BA654B4967C55EC9EB",
+      "transactionHash": "0x3229f130acf80b7c6a8229038469cb1462846a4a13b106c6dceeb1a33c89c823"
     }
   },
-  "schemaVersion": "3.0.6",
-  "updatedAt": "2019-11-14T18:22:34.258Z",
+  "schemaVersion": "3.0.19",
+  "updatedAt": "2019-12-11T07:41:27.852Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },

@@ -5,13 +5,24 @@ var loadingPage;
 
 window.onload = function(){
 	loadingPage = document.getElementById("loadingpage");
-	render("#home");
-	window.location.hash = "home";
+	renderHome();
 }
 
 window.onhashchange = function(){
 	render(window.location.hash);
 };
+
+
+// start loading data in the background
+async function main_init(){
+	SearchPage.init();
+	RestaurantSettingsPage.init();
+}
+
+function renderHome(){
+	render("#home");
+	window.location.hash = "home";
+}
 
 async function render(hashKey){
 
@@ -22,21 +33,27 @@ async function render(hashKey){
 		pages[i].style.display = 'none';
 	}
 
-	switch(hashKey){
+	let url = hashKey.split("/");
+
+
+	switch(url[0]){
 		case "#search":
 			// display the loading page
 			// get the restaurants
 			// hide the loading page
 			// display the restaurants
-
-			var page = document.getElementById("searchpage");
-			if(typeof page != 'undefined'){
-				currentPage = "search";
-				page.style.display = 'block';
-			}
-			else{
-				currentPage.style.display = "block";
-			}
+			loadingPage.style.display = "block";
+			waitForInitialised(SearchPage,function(){
+				var page = document.getElementById("searchpage");
+				if(typeof page != 'undefined'){
+					currentPage = "search";
+					page.style.display = 'block';
+				}
+				else{
+					currentPage.style.display = "block";
+				}
+				loadingPage.style.display = "none";
+			});
 			break;
 		case "#settings":
 			// display the loading page
@@ -44,9 +61,27 @@ async function render(hashKey){
 			// hide the loading page
 			// display the settings page
 			loadingPage.style.display = "block";
-			await RestaurantSettingsPage.init();
-			document.getElementById("settingspage").style.display = 'block';
-			loadingPage.style.display = "none";
+			waitForInitialised(RestaurantSettingsPage,function(){
+				document.getElementById("settingspage").style.display = 'block';
+				loadingPage.style.display = "none";
+			});
+			break;
+		case "#view":
+			loadingPage.style.display = "block";
+			if(typeof url[1] == "undefined"){
+				renderHome();
+			}
+			else{
+				let index = parseInt(url[1]);
+				if(isNaN(index)){
+					renderHome();
+				}
+				else{
+					await ViewPage.populatePage(index);
+					document.getElementById("viewpage").style.display = 'block';
+					loadingPage.style.display = "none";
+				}
+			}
 			break;
 		default:
 			var page = document.getElementById(hashKey.substr(1) + "page");
@@ -58,10 +93,16 @@ async function render(hashKey){
 				currentPage.style.display = "block";
 			}
 	}
+}
 
-
-
-
-
-
+var waitForInitialised = function(object, callback){
+	console.log("waiting");
+	if(object.initialised){
+		callback();
+	}
+	else{
+		setTimeout(function(){
+			waitForInitialised(object,callback);
+		},100);
+	}
 }
