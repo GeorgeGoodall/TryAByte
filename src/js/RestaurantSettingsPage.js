@@ -2,17 +2,26 @@
 RestaurantSettingsPage = {
 	
 	restaurant: null,
+	restaurantAddress: null,
 	totalRows: 0, // stores the total items in the menu staging
 	totalOptions: [], // stores the total options for each item in the menu staging
 	initialised: false,
+
+	checkHasRestaurant: async function(){
+		this.restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
+		if(this.restaurantAddress != "0x0000000000000000000000000000000000000000")
+			return true;
+		return false;
+	},
 
 	init: async function(){
 		if(typeof this.restaurant == "undefined" || this.restaurant == null){
 			this.restaurant = new Restaurant();
 			console.log("test");
 			console.log(this.restaurant);
-			let restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
-			await this.restaurant.getRestaurant(restaurantAddress);
+			if(this.restaurantAddress == null || this.restaurantAddress == "0x0000000000000000000000000000000000000000")
+				this.restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
+			await this.restaurant.getRestaurant(this.restaurantAddress);
 		}
 		this.updateDisplay();
 		this.updateMenuStagingDisplay();

@@ -41,7 +41,7 @@
 					</a>
 				</div>
 				<div class="navbar-end navbar-menu">
-					<a href="/#becomeapartner" class="navbar-item">Become a partner</a>
+					<a href="/#becomeapartner" class="navbar-item" id="RestaurantSettingsNavItem">Become a partner</a>
 					<a class="navbar-item" onclick="App.login()">Log in</a>
 					<a href="" class="navbar-item">Help</a>
 				</div>
@@ -53,7 +53,7 @@
 
 		<!-- ************* HomePage ************************ -->
 
-		<div class="page" id="homepage" style="display: block">
+		<div class="page" id="homepage" style="display: none">
 
 			<div class="box container has-background-white" id="postCodeEnterArea">
 				<h1 class="title">Tuck into a takeaway today</h1>
@@ -86,7 +86,7 @@
 
 		<!-- ************* Loading Page ************************ -->
 
-		<div class="page" id="loadingpage" style="display: none">
+		<div class="page" id="loadingpage" style="display: block">
 			<div class="container box">
 				<h1 class="title">Loading...</h1>
 			</div>
@@ -272,6 +272,17 @@
 		</div>
 
 		<!-- ************* End make restaurant page ************************ -->
+
+		<!-- ************* customer page ************************** -->
+		<!--
+			show past orders
+		-->
+
+		<div class="page" id="viewpage" style="display: none">
+
+		</div>
+
+		<!-- ************* End customer page ********************** -->
 
 		<!-- ************* restaurant view ************************ -->
 

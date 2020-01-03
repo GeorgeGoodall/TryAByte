@@ -5,7 +5,7 @@ var loadingPage;
 
 window.onload = function(){
 	loadingPage = document.getElementById("loadingpage");
-	renderHome();
+
 }
 
 window.onhashchange = function(){
@@ -15,8 +15,35 @@ window.onhashchange = function(){
 
 // start loading data in the background
 async function main_init(){
+	
+	// if(){ // if they have a restaurant, prioritise loading the restaurant info and change the become a partner to restaurant settings
+			
+	// }
+
+	// RestaurantSettingsPage.init().then(function(){
+	// 	if(RestaurantSettingsPage.restaurantAddress != null && RestaurantSettingsPage.restaurantAddress != "0x0000000000000000000000000000000000000000"){
+	// 		let name = RestaurantSettingsPage.restaurant.name;
+	// 		document.getElementById("RestaurantSettingsNavItem").innerHTML = name + "'s Settings";
+	// 		document.getElementById("RestaurantSettingsNavItem").href = "#settings";
+	// 	}
+	// });
+	// SearchPage.init();
+
+	// renderHome();
+
 	SearchPage.init();
-	RestaurantSettingsPage.init();
+	var p1 = new Promise(async function(resolve,reject){await RestaurantSettingsPage.init();resolve();});
+	
+
+	Promise.all([p1]).then(function(){
+		if(RestaurantSettingsPage.restaurantAddress != null && RestaurantSettingsPage.restaurantAddress != "0x0000000000000000000000000000000000000000"){
+			let name = RestaurantSettingsPage.restaurant.name;
+			document.getElementById("RestaurantSettingsNavItem").innerHTML = name + "'s Settings";
+			document.getElementById("RestaurantSettingsNavItem").href = "#settings";
+		}
+		renderHome();	
+	})
+
 }
 
 function renderHome(){
