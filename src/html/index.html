@@ -148,127 +148,95 @@
 
 		<!-- ************* make restaurant page ************************ -->
 
-		<div class="page" id="settingspage" style="display: none; padding: 0px 20px 0px 20px">
-			<div class="columns">
-				<div class="middle column is-4">
-
-					<div class="box">
-						<div class="columns">
-							<div class="column is-3">
-								<figure class="image is-128x128" style="">
-									<img id="restaurantLogo" src="Images/index.png">
-								</figure>
-							</div>
-							<div class="column is-4">
-								<h1 class="title is-4" id="restaurantName">My Super Cool Restaurant</h1>
-								<p class="subtitle">Open Now</p>
-							</div> 
-							<div class="column is-4">
-								
-								<p class="content" id="restaurantAddress">208 City Road, Cardiff, CF24 3JG</p>
-								<p class="content" id="restaurantNumber">079850845</p>
-							</div> 
-						</div>	
+		<div class="page" id="settingspage" style="display: none; padding: 0px 20px 0px 20px">			
+			<div class="box">
+				<form action="" class="form">
+					<h1 class="title is-3">Restaurant Account Creation Form:</h1>
+					<div class="field">
+						<label class="label title is-4">Restaurant Name:</label>
+						<input type="text" class="input" id='name'onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 					</div>
-
-					<div class="container box" id="menu">
-						
-
+					<div class="field">
+						<label class="label title is-4">Restaurant Address:</label>
+						<label class="label" >Country</label>
+						<input type="text" id="country" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
+						<label class="label" >Address</label>
+						<input type="text" id="address" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
+						<label class="label" >Town/City</label>
+						<input type="text" id="town" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
+						<label class="label" >County/State</label>
+						<input type="text" id="county" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
+						<label class="label" >Postcode</label>
+						<input type="text" id="postcode" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
 					</div>
-
-				</div>
-				<div class="ToDo column is-8">
-					<div class="box">
-						<form action="" class="form">
-							<h1 class="title is-3">Restaurant Account Creation Form:</h1>
-							<div class="field">
-								<label class="label title is-4">Restaurant Name:</label>
-								<input type="text" class="input" id='name'onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
-							</div>
-							<div class="field">
-								<label class="label title is-4">Restaurant Address:</label>
-								<label class="label" >Country</label>
-								<input type="text" id="country" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
-								<label class="label" >Address</label>
-								<input type="text" id="address" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
-								<label class="label" >Town/City</label>
-								<input type="text" id="town" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
-								<label class="label" >County/State</label>
-								<input type="text" id="county" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
-								<label class="label" >Postcode</label>
-								<input type="text" id="postcode" class="input " onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
-							</div>
-							<div class="field">
-								<label class="label title is-4">Restaurant Contact Number:</label>
-								<input type="text" class="input" id="number" onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
-							</div>
-							</form>
-							<form id="logoForm" onchange="RestaurantSettingsPage.uploadLogo(this);return false;">
-								<div class="field">
-									<div class="file">
-										<label class="file-label">
-											<input class="file-input" type="file" id="logoInput" placeholder="Enter the URI of your logo, or upload a logo to our servers">
-											<span class="file-cta">
-			      								<span class="file-icon">
-			       									<i class="fas fa-upload"></i>
-			      								</span>
-			      								<span class="file-label">
-			        								upload a Restaurant Logo...
-			      								</span>
-			    							</span>
-										</label>
-		    						</div>
+					<div class="field">
+						<label class="label title is-4">Restaurant Contact Number:</label>
+						<input type="text" class="input" id="number" onkeyup="RestaurantSettingsPage.updateRestaurantObject(this.id,this.value)">
+					</div>
+					</form>
+					<form id="logoForm" onchange="RestaurantSettingsPage.uploadLogo(this);return false;">
+						<div class="field">
+							<div class="file">
+								<label class="file-label">
+									<input class="file-input" type="file" id="logoInput" placeholder="Enter the URI of your logo, or upload a logo to our servers">
+									<span class="file-cta">
+	      								<span class="file-icon">
+	       									<i class="fas fa-upload"></i>
+	      								</span>
+	      								<span class="file-label">
+	        								upload a Restaurant Logo...
+	      								</span>
+	    							</span>
+								</label>
+    						</div>
+							
+						</div>
+					</form>
+					<button class="button" onclick="RestaurantSettingsPage.makeRestaurant(); return false;">Create a new restaurant</button>
+					
+					<div class="field">
+						<label class="label title is-4">Menu:</label>
+						<div class="field">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Item name</th>
+										<th>Description</th>
+										<th>Options</th>
+										<th>Item/Option Price</th>
+									</tr>
+								</thead>
+								<tbody id="menuBody">
 									
-								</div>
-							</form>
-							<button class="button" onclick="RestaurantSettingsPage.makeRestaurant(); return false;">Create a new restaurant</button>
-							
-							<div class="field">
-								<label class="label title is-4">Menu:</label>
-								<div class="field">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Item name</th>
-												<th>Description</th>
-												<th>Options</th>
-												<th>Item/Option Price</th>
-											</tr>
-										</thead>
-										<tbody id="menuBody">
-											
-										</tbody>
-									</table>				
-								</div>
-								<button class="button" onclick="RestaurantSettingsPage.menuStagingAddRow(); return false;">Add Item</button>
-							</div>
-
-							<!-- not currently implemented
-							<div class="field">
-								<label class="label title is-4">ToDelete:</label>
-								<div class="field">
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Item name</th>
-												<th>Description</th>
-												<th>Options</th>
-												<th>Item/Option Price</th>
-											</tr>
-										</thead>
-										<tbody id="toDeleteList">
-											
-										</tbody>
-									</table>				
-								</div>
-								<button class="button" onclick="RestaurantSettingsPage.menuStagingAddRow(); return false;">Add Item</button>
-							</div>
-							-->
-							<button class="button" onclick="RestaurantSettingsPage.makeMenu(); return false;">update you restaurant menu</button>
-							
+								</tbody>
+							</table>				
+						</div>
+						<button class="button" onclick="RestaurantSettingsPage.menuStagingAddRow(); return false;">Add Item</button>
 					</div>
-				</div>
-			</div>
+
+					<!-- not currently implemented
+					<div class="field">
+						<label class="label title is-4">ToDelete:</label>
+						<div class="field">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Item name</th>
+										<th>Description</th>
+										<th>Options</th>
+										<th>Item/Option Price</th>
+									</tr>
+								</thead>
+								<tbody id="toDeleteList">
+									
+								</tbody>
+							</table>				
+						</div>
+						<button class="button" onclick="RestaurantSettingsPage.menuStagingAddRow(); return false;">Add Item</button>
+					</div>
+					-->
+					<button class="button" onclick="RestaurantSettingsPage.makeMenu(); return false;">update you restaurant menu</button>	
+			</div>		
 		</div>
 
 		<!-- ************* End make restaurant page ************************ -->

@@ -2,52 +2,11 @@
   "contractName": "Rider",
   "abi": [
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address payable",
-          "name": "_owner",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "_controller",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "orderAddress",
-          "type": "address"
-        }
-      ],
-      "name": "deliveryOfferedEvent",
-      "type": "event"
-    },
-    {
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "fallback"
-    },
-    {
       "constant": true,
       "inputs": [],
-      "name": "id",
+      "name": "totalOrders",
       "outputs": [
         {
-          "internalType": "uint256",
           "name": "",
           "type": "uint256"
         }
@@ -62,7 +21,6 @@
       "name": "owner",
       "outputs": [
         {
-          "internalType": "address payable",
           "name": "",
           "type": "address"
         }
@@ -74,10 +32,9 @@
     {
       "constant": true,
       "inputs": [],
-      "name": "totalOrders",
+      "name": "id",
       "outputs": [
         {
-          "internalType": "uint256",
           "name": "",
           "type": "uint256"
         }
@@ -87,15 +44,49 @@
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "name": "_id",
+          "type": "uint256"
+        },
+        {
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "name": "_controller",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "payable": true,
+      "stateMutability": "payable",
+      "type": "fallback"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "orderAddress",
+          "type": "address"
+        }
+      ],
+      "name": "deliveryOfferedEvent",
+      "type": "event"
+    },
+    {
       "constant": false,
       "inputs": [
         {
-          "internalType": "address",
           "name": "orderAddress",
           "type": "address"
         },
         {
-          "internalType": "bytes32",
           "name": "keyHash",
           "type": "bytes32"
         }
@@ -110,12 +101,10 @@
       "constant": false,
       "inputs": [
         {
-          "internalType": "address",
           "name": "orderAddress",
           "type": "address"
         },
         {
-          "internalType": "uint256",
           "name": "status",
           "type": "uint256"
         }
@@ -130,7 +119,6 @@
       "constant": true,
       "inputs": [
         {
-          "internalType": "uint256",
           "name": "_id",
           "type": "uint256"
         }
@@ -138,7 +126,6 @@
       "name": "getOrder",
       "outputs": [
         {
-          "internalType": "address",
           "name": "orderAddress",
           "type": "address"
         }
@@ -157,15 +144,15 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.12+commit.7709ece9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"},{\"internalType\":\"address payable\",\"name\":\"_owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_controller\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"orderAddress\",\"type\":\"address\"}],\"name\":\"deliveryOfferedEvent\",\"type\":\"event\"},{\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_id\",\"type\":\"uint256\"}],\"name\":\"getOrder\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"orderAddress\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"id\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"orderAddress\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"keyHash\",\"type\":\"bytes32\"}],\"name\":\"offerDelivery\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"pay\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"orderAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"status\",\"type\":\"uint256\"}],\"name\":\"setStatus\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"totalOrders\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol\":\"Rider\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":{\"keccak256\":\"0xa94cfffbe0cc465d742bfec204b1821b2367147829eae456b8a8589d077249f5\",\"urls\":[\"bzz-raw://2e1105f59f7e80d4dbe3864713eef2bea740d1fa7cfab26298a4e0e9fce9617f\",\"dweb:/ipfs/QmazEtnSPButVZYyYM2ZPwGAQuLPx7pf48UyfCij4LkwBi\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Customer.sol\":{\"keccak256\":\"0xa2c303994cc94be5c26641b10bc352b69b114042c72f44ff7e2aedda3d0a93b3\",\"urls\":[\"bzz-raw://40211731b70a7da35f73501005604fdea05d5ccf9ee11b7d040c0b57d2ddde14\",\"dweb:/ipfs/QmYZqh2bxhAHi5chD8Ssd4vvg4toG3QTVNJzdWSdHuScT7\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/CustomerFactory.sol\":{\"keccak256\":\"0x26a329b16a9e1a110e99d0ce77995da6d98273f25c5eb2422b36c3aac775478d\",\"urls\":[\"bzz-raw://aa4895300a34e45609d420e918723d014ca801bb8ac92a7d14b722e3f12b8d94\",\"dweb:/ipfs/QmZRoEY2w9n4hUhHLQk3qFTPTngyxRY3RWKDPfR9U2NxaL\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Menu.sol\":{\"keccak256\":\"0x98dd8356f62bd4a3a0631e1073dffff0c431e50b4fc11bb3e099e2a9b70cf383\",\"urls\":[\"bzz-raw://72e97278ca7fb206a3fab5f110d9fcd66e8010fb288e3bc74266c99ce92300eb\",\"dweb:/ipfs/QmXdr3zYC5riMk4H2DYuc2KdpHDJs21zegabiCKbk8WG3J\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Order.sol\":{\"keccak256\":\"0x38a425e72d4f69c4e6f1f624c54ab2fedd1cc6ab7d3027235ea27e5dd7e69af5\",\"urls\":[\"bzz-raw://af4bb933916b46c2770f682e4f0a36dc72e04141bda7ded00ab1ff0d1bb1e1d4\",\"dweb:/ipfs/QmT8sYzTM2f17DLqpsQMZz8feq2Usc9F6VYwkkouCS1Vat\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Restaurant.sol\":{\"keccak256\":\"0x66e17e6c940fb3faebb6cc13fa5eb63960b1d7a630963a8c5b6125fc3f4212c1\",\"urls\":[\"bzz-raw://2a442ec26cd8be7aa3c76402d22074ce7dca3a931116148fa7d7eb1077b1a5d1\",\"dweb:/ipfs/QmfYzku4jBV5XFpbrXzcEixX56MvkXWf21JmwNLP1hoMp6\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RestaurantFactory.sol\":{\"keccak256\":\"0xafa6d13a53ccdd4a635737d7c5d58d309500167ec7fbe0a79aad8978fd04a6aa\",\"urls\":[\"bzz-raw://a9b99399d3bc8d355004133474e8dfdf97deb83e4b4136c7e85a36718bdac68d\",\"dweb:/ipfs/QmbCJkBZzfEpPubWjeSkMMX7UZr52Hq5pGD4YNd3LXvCg6\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol\":{\"keccak256\":\"0x29fc074e85b0e7425a4966918f5930536d6bd3fa4f22aac3131f5d2870dfaef5\",\"urls\":[\"bzz-raw://0fd891c3648d1555d3d6cbd222a6955bc47ee039e4e1df1bce66a54e892f8d61\",\"dweb:/ipfs/Qmeu5QPYRKGW6ZH4oeUUxV7UB9YfhiD5vZXw6KR4qUgdhs\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RiderFactory.sol\":{\"keccak256\":\"0xa831081ba7c49daa02a159fe8cda34c9d34e79f9986077c1249043af7671b487\",\"urls\":[\"bzz-raw://1de1cf6d0765f01f119590bd3e171e563a61fdb7401afd46830cc160cb23f643\",\"dweb:/ipfs/QmUvqodsQMfuzypTiCqwGfCN4bTbcspABAdBotqF1uychV\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b506040516105333803806105338339818101604052606081101561003357600080fd5b5080516020820151604090920151600291909155600080546001600160a01b039384166001600160a01b0319918216178255600180549490931693169290921790556003556104ac806100876000396000f3fe6080604052600436106100705760003560e01c80637e55d59c1161004e5780637e55d59c146100cd5780638da5cb5b14610106578063af640d0f14610137578063d09ef2411461014c57610070565b80631b9265b8146100725780631d8344091461007a578063761b5bd2146100a1575b005b610070610176565b34801561008657600080fd5b5061008f6101be565b60408051918252519081900360200190f35b610070600480360360408110156100b757600080fd5b506001600160a01b0381351690602001356101c4565b3480156100d957600080fd5b50610070600480360360408110156100f057600080fd5b506001600160a01b0381351690602001356103b5565b34801561011257600080fd5b5061011b61042e565b604080516001600160a01b039092168252519081900360200190f35b34801561014357600080fd5b5061008f61043d565b34801561015857600080fd5b5061011b6004803603602081101561016f57600080fd5b5035610443565b6005805434908101909155600080546040516001600160a01b039091169280156108fc0292909190818181858888f193505050501580156101bb573d6000803e3d6000fd5b50565b60035481565b6000546001600160a01b031633146101db57600080fd5b60008290506000816001600160a01b031663bd3e19d46040518163ffffffff1660e01b815260040160206040518083038186803b15801561021b57600080fd5b505afa15801561022f573d6000803e3d6000fd5b505050506040513d602081101561024557600080fd5b505190503481111561029e576040805162461bcd60e51b815260206004820152601d60248201527f6465706f7369742076616c7565206e6f74206869676820656e6f756768000000604482015290519081900360640190fd5b803411156102e557600080546040516001600160a01b03909116913484900380156108fc02929091818181858888f193505050501580156102e3573d6000803e3d6000fd5b505b816001600160a01b031663f90a92e382856040518363ffffffff1660e01b8152600401808281526020019150506000604051808303818588803b15801561032b57600080fd5b505af115801561033f573d6000803e3d6000fd5b505060035460009081526004602090815260409182902080546001600160a01b0319166001600160a01b038b16908117909155825190815291517faca812ac98be09141c2d6de4091ef0635d51c00ecd65eb8753b772be89a978dc9550918290030192509050a150506003805460010190555050565b6000546001600160a01b031633146103cc57600080fd5b816001600160a01b031663e9132c42826040518263ffffffff1660e01b815260040180828152602001915050600060405180830381600087803b15801561041257600080fd5b505af1158015610426573d6000803e3d6000fd5b505050505050565b6000546001600160a01b031681565b60025481565b600080546001600160a01b0316331461045b57600080fd5b506000908152600460205260409020546001600160a01b03169056fea265627a7a72315820e6b620eba6cb4fe76a206f3b2e8903275e47be487775e4e23c950740d0e2039164736f6c634300050c0032",
-  "deployedBytecode": "0x6080604052600436106100705760003560e01c80637e55d59c1161004e5780637e55d59c146100cd5780638da5cb5b14610106578063af640d0f14610137578063d09ef2411461014c57610070565b80631b9265b8146100725780631d8344091461007a578063761b5bd2146100a1575b005b610070610176565b34801561008657600080fd5b5061008f6101be565b60408051918252519081900360200190f35b610070600480360360408110156100b757600080fd5b506001600160a01b0381351690602001356101c4565b3480156100d957600080fd5b50610070600480360360408110156100f057600080fd5b506001600160a01b0381351690602001356103b5565b34801561011257600080fd5b5061011b61042e565b604080516001600160a01b039092168252519081900360200190f35b34801561014357600080fd5b5061008f61043d565b34801561015857600080fd5b5061011b6004803603602081101561016f57600080fd5b5035610443565b6005805434908101909155600080546040516001600160a01b039091169280156108fc0292909190818181858888f193505050501580156101bb573d6000803e3d6000fd5b50565b60035481565b6000546001600160a01b031633146101db57600080fd5b60008290506000816001600160a01b031663bd3e19d46040518163ffffffff1660e01b815260040160206040518083038186803b15801561021b57600080fd5b505afa15801561022f573d6000803e3d6000fd5b505050506040513d602081101561024557600080fd5b505190503481111561029e576040805162461bcd60e51b815260206004820152601d60248201527f6465706f7369742076616c7565206e6f74206869676820656e6f756768000000604482015290519081900360640190fd5b803411156102e557600080546040516001600160a01b03909116913484900380156108fc02929091818181858888f193505050501580156102e3573d6000803e3d6000fd5b505b816001600160a01b031663f90a92e382856040518363ffffffff1660e01b8152600401808281526020019150506000604051808303818588803b15801561032b57600080fd5b505af115801561033f573d6000803e3d6000fd5b505060035460009081526004602090815260409182902080546001600160a01b0319166001600160a01b038b16908117909155825190815291517faca812ac98be09141c2d6de4091ef0635d51c00ecd65eb8753b772be89a978dc9550918290030192509050a150506003805460010190555050565b6000546001600160a01b031633146103cc57600080fd5b816001600160a01b031663e9132c42826040518263ffffffff1660e01b815260040180828152602001915050600060405180830381600087803b15801561041257600080fd5b505af1158015610426573d6000803e3d6000fd5b505050505050565b6000546001600160a01b031681565b60025481565b600080546001600160a01b0316331461045b57600080fd5b506000908152600460205260409020546001600160a01b03169056fea265627a7a72315820e6b620eba6cb4fe76a206f3b2e8903275e47be487775e4e23c950740d0e2039164736f6c634300050c0032",
-  "sourceMap": "118:1832:8:-;;;521:241;8:9:-1;5:2;;;30:1;27;20:12;5:2;521:241:8;;;;;;;;;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;521:241:8;;;;;;;;;;;611:2;:8;;;;630:5;:14;;-1:-1:-1;;;;;630:14:8;;;-1:-1:-1;;;;;;630:14:8;;;;;;-1:-1:-1;704:24:8;;;;;;;;;;;;;;739:11;:15;;;-1:-1:-1;;;;118:1832:8;;;;",
-  "deployedSourceMap": "118:1832:8:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1793:108;;;:::i;257:23::-;;8:9:-1;5:2;;;30:1;27;20:12;5:2;257:23:8;;;:::i;:::-;;;;;;;;;;;;;;;;814:568;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;814:568:8;;-1:-1:-1;;;;;814:568:8;;;;;;:::i;1472:160::-;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1472:160:8;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1472:160:8;;-1:-1:-1;;;;;1472:160:8;;;;;;:::i;146:28::-;;8:9:-1;5:2;;;30:1;27;20:12;5:2;146:28:8;;;:::i;:::-;;;;-1:-1:-1;;;;;146:28:8;;;;;;;;;;;;;;234:14;;8:9:-1;5:2;;;30:1;27;20:12;5:2;234:14:8;;;:::i;1640:145::-;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1640:145:8;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1640:145:8;;:::i;1793:108::-;1836:8;:21;;1848:9;1836:21;;;;;;-1:-1:-1;1868:5:8;;:25;;-1:-1:-1;;;;;1868:5:8;;;;:25;;;;;1848:9;;1868:25;;-1:-1:-1;1868:25:8;1848:9;1868:5;:25;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1868:25:8;1793:108::o;257:23::-;;;;:::o;814:568::-;922:5;;-1:-1:-1;;;;;922:5:8;908:10;:19;900:28;;;;;;939:19;967:12;939:41;;991:9;1003:13;-1:-1:-1;;;;;1003:21:8;;:23;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1003:23:8;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1003:23:8;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1003:23:8;;-1:-1:-1;1045:9:8;:17;-1:-1:-1;1045:17:8;1037:59;;;;;-1:-1:-1;;;1037:59:8;;;;;;;;;;;;;;;;;;;;;;;;;;;;1122:4;1110:9;:16;1107:79;;;1142:5;;;:32;;-1:-1:-1;;;;;1142:5:8;;;;1157:9;:16;;;1142:32;;;;;1157:16;;1142:32;:5;:32;1157:16;1142:5;:32;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1142:32:8;1107:79;1198:13;-1:-1:-1;;;;;1198:32:8;;1237:4;1243:7;1198:53;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1198:53:8;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;-1:-1;;1269:11:8;;1262:19;;;;:6;:19;;;;;;;;;:34;;-1:-1:-1;;;;;;1262:34:8;-1:-1:-1;;;;;1262:34:8;;;;;;;;1314;;;;;;;;;-1:-1:-1;1314:34:8;;;;;;-1:-1:-1;1314:34:8;-1:-1:-1;1314:34:8;-1:-1:-1;;1361:11:8;:13;;;;;;-1:-1:-1;;814:568:8:o;1472:160::-;1565:5;;-1:-1:-1;;;;;1565:5:8;1551:10;:19;1543:28;;;;;;1582:42;;;-1:-1:-1;;;1582:42:8;;;;;;;;;;-1:-1:-1;;;;;1582:34:8;;;;;:42;;;;;-1:-1:-1;;1582:42:8;;;;;;;-1:-1:-1;1582:34:8;:42;;;5:2:-1;;;;30:1;27;20:12;5:2;1582:42:8;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1582:42:8;;;;1472:160;;:::o;146:28::-;;;-1:-1:-1;;;;;146:28:8;;:::o;234:14::-;;;;:::o;1640:145::-;1688:20;1742:5;;-1:-1:-1;;;;;1742:5:8;1728:10;:19;1720:28;;;;;;-1:-1:-1;1766:11:8;;;;:6;:11;;;;;;-1:-1:-1;;;;;1766:11:8;;1640:145::o",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.0+commit.1d4f565a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[],\"name\":\"pay\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"totalOrders\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"orderAddress\",\"type\":\"address\"},{\"name\":\"keyHash\",\"type\":\"bytes32\"}],\"name\":\"offerDelivery\",\"outputs\":[],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"orderAddress\",\"type\":\"address\"},{\"name\":\"status\",\"type\":\"uint256\"}],\"name\":\"setStatus\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"id\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_id\",\"type\":\"uint256\"}],\"name\":\"getOrder\",\"outputs\":[{\"name\":\"orderAddress\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"name\":\"_id\",\"type\":\"uint256\"},{\"name\":\"_owner\",\"type\":\"address\"},{\"name\":\"_controller\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"fallback\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"orderAddress\",\"type\":\"address\"}],\"name\":\"deliveryOfferedEvent\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/workspace/TryAByte/contracts/Rider.sol\":\"Rider\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/workspace/TryAByte/contracts/Controller.sol\":{\"keccak256\":\"0xa94cfffbe0cc465d742bfec204b1821b2367147829eae456b8a8589d077249f5\",\"urls\":[\"bzzr://c06d4e8d059d5c4bace88469dc2cdaf8f02a69aa8264dd34db63dd9c5c0d1ac5\"]},\"/home/george/Documents/workspace/TryAByte/contracts/Customer.sol\":{\"keccak256\":\"0xa2c303994cc94be5c26641b10bc352b69b114042c72f44ff7e2aedda3d0a93b3\",\"urls\":[\"bzzr://c55c656686e5e4873f0e7cd032951d09322d8214c4d717e039cb143bd28915ba\"]},\"/home/george/Documents/workspace/TryAByte/contracts/CustomerFactory.sol\":{\"keccak256\":\"0x26a329b16a9e1a110e99d0ce77995da6d98273f25c5eb2422b36c3aac775478d\",\"urls\":[\"bzzr://fd3daacea202eef27c0ddf078f30be8b6c12305597b32b3d03c8f1e52867aa83\"]},\"/home/george/Documents/workspace/TryAByte/contracts/Menu.sol\":{\"keccak256\":\"0x98dd8356f62bd4a3a0631e1073dffff0c431e50b4fc11bb3e099e2a9b70cf383\",\"urls\":[\"bzzr://841b7cb5b5ba481e3a5831fbc6169a70e3a80ae836e70287396fbb5a3b1ec0f2\"]},\"/home/george/Documents/workspace/TryAByte/contracts/Order.sol\":{\"keccak256\":\"0x38a425e72d4f69c4e6f1f624c54ab2fedd1cc6ab7d3027235ea27e5dd7e69af5\",\"urls\":[\"bzzr://d69df6407b34e5eb0286dc938bf890d5236afc000a4bd595be71f20bceee72dc\"]},\"/home/george/Documents/workspace/TryAByte/contracts/Restaurant.sol\":{\"keccak256\":\"0x66e17e6c940fb3faebb6cc13fa5eb63960b1d7a630963a8c5b6125fc3f4212c1\",\"urls\":[\"bzzr://d6ed4373d93ee237ac047d4fa919f21d35170844c19e6bb2c0bb70199b39456e\"]},\"/home/george/Documents/workspace/TryAByte/contracts/RestaurantFactory.sol\":{\"keccak256\":\"0xafa6d13a53ccdd4a635737d7c5d58d309500167ec7fbe0a79aad8978fd04a6aa\",\"urls\":[\"bzzr://f8704720efd452029ba6f6ae4da0e2dc4b3fe4101ccdea1cc87c08b99c3f8e13\"]},\"/home/george/Documents/workspace/TryAByte/contracts/Rider.sol\":{\"keccak256\":\"0x29fc074e85b0e7425a4966918f5930536d6bd3fa4f22aac3131f5d2870dfaef5\",\"urls\":[\"bzzr://8a5fc6a610d6b1a6f4906ac68fd689e003ed53ac17f8cf1a46e20e6fe43d6681\"]},\"/home/george/Documents/workspace/TryAByte/contracts/RiderFactory.sol\":{\"keccak256\":\"0xa831081ba7c49daa02a159fe8cda34c9d34e79f9986077c1249043af7671b487\",\"urls\":[\"bzzr://7b69aa4d4c72fbd7dae35316896919c3c02e7cb8a7a26f18955444d08c8c2a35\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b506040516060806105508339810180604052606081101561003057600080fd5b508051602082015160409092015160029190915560008054600160a060020a03938416600160a060020a0319918216178255600180549490931693169290921790556003556104cc806100846000396000f3fe6080604052600436106100695763ffffffff60e060020a6000350416631b9265b8811461006b5780631d83440914610073578063761b5bd21461009a5780637e55d59c146100c65780638da5cb5b146100ff578063af640d0f14610130578063d09ef24114610145575b005b61006961016f565b34801561007f57600080fd5b506100886101b7565b60408051918252519081900360200190f35b610069600480360360408110156100b057600080fd5b50600160a060020a0381351690602001356101bd565b3480156100d257600080fd5b50610069600480360360408110156100e957600080fd5b50600160a060020a0381351690602001356103db565b34801561010b57600080fd5b50610114610457565b60408051600160a060020a039092168252519081900360200190f35b34801561013c57600080fd5b50610088610466565b34801561015157600080fd5b506101146004803603602081101561016857600080fd5b503561046c565b600580543490810190915560008054604051600160a060020a039091169280156108fc0292909190818181858888f193505050501580156101b4573d6000803e3d6000fd5b50565b60035481565b600054600160a060020a031633146101d457600080fd5b6000829050600081600160a060020a031663bd3e19d46040518163ffffffff1660e060020a02815260040160206040518083038186803b15801561021757600080fd5b505afa15801561022b573d6000803e3d6000fd5b505050506040513d602081101561024157600080fd5b50519050348111156102b457604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601d60248201527f6465706f7369742076616c7565206e6f74206869676820656e6f756768000000604482015290519081900360640190fd5b803411156102fb5760008054604051600160a060020a03909116913484900380156108fc02929091818181858888f193505050501580156102f9573d6000803e3d6000fd5b505b81600160a060020a031663f90a92e382856040518363ffffffff1660e060020a028152600401808281526020019150506000604051808303818588803b15801561034457600080fd5b505af1158015610358573d6000803e3d6000fd5b5050600354600090815260046020908152604091829020805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a038b16908117909155825190815291517faca812ac98be09141c2d6de4091ef0635d51c00ecd65eb8753b772be89a978dc9550918290030192509050a150506003805460010190555050565b600054600160a060020a031633146103f257600080fd5b81600160a060020a031663e9132c42826040518263ffffffff1660e060020a02815260040180828152602001915050600060405180830381600087803b15801561043b57600080fd5b505af115801561044f573d6000803e3d6000fd5b505050505050565b600054600160a060020a031681565b60025481565b60008054600160a060020a0316331461048457600080fd5b50600090815260046020526040902054600160a060020a03169056fea165627a7a72305820ccca0d3de2ff247acfb59da2259fe6f23a2b763fb7d8f288944e28ef0d7bab180029",
+  "deployedBytecode": "0x6080604052600436106100695763ffffffff60e060020a6000350416631b9265b8811461006b5780631d83440914610073578063761b5bd21461009a5780637e55d59c146100c65780638da5cb5b146100ff578063af640d0f14610130578063d09ef24114610145575b005b61006961016f565b34801561007f57600080fd5b506100886101b7565b60408051918252519081900360200190f35b610069600480360360408110156100b057600080fd5b50600160a060020a0381351690602001356101bd565b3480156100d257600080fd5b50610069600480360360408110156100e957600080fd5b50600160a060020a0381351690602001356103db565b34801561010b57600080fd5b50610114610457565b60408051600160a060020a039092168252519081900360200190f35b34801561013c57600080fd5b50610088610466565b34801561015157600080fd5b506101146004803603602081101561016857600080fd5b503561046c565b600580543490810190915560008054604051600160a060020a039091169280156108fc0292909190818181858888f193505050501580156101b4573d6000803e3d6000fd5b50565b60035481565b600054600160a060020a031633146101d457600080fd5b6000829050600081600160a060020a031663bd3e19d46040518163ffffffff1660e060020a02815260040160206040518083038186803b15801561021757600080fd5b505afa15801561022b573d6000803e3d6000fd5b505050506040513d602081101561024157600080fd5b50519050348111156102b457604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601d60248201527f6465706f7369742076616c7565206e6f74206869676820656e6f756768000000604482015290519081900360640190fd5b803411156102fb5760008054604051600160a060020a03909116913484900380156108fc02929091818181858888f193505050501580156102f9573d6000803e3d6000fd5b505b81600160a060020a031663f90a92e382856040518363ffffffff1660e060020a028152600401808281526020019150506000604051808303818588803b15801561034457600080fd5b505af1158015610358573d6000803e3d6000fd5b5050600354600090815260046020908152604091829020805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a038b16908117909155825190815291517faca812ac98be09141c2d6de4091ef0635d51c00ecd65eb8753b772be89a978dc9550918290030192509050a150506003805460010190555050565b600054600160a060020a031633146103f257600080fd5b81600160a060020a031663e9132c42826040518263ffffffff1660e060020a02815260040180828152602001915050600060405180830381600087803b15801561043b57600080fd5b505af115801561044f573d6000803e3d6000fd5b505050505050565b600054600160a060020a031681565b60025481565b60008054600160a060020a0316331461048457600080fd5b50600090815260046020526040902054600160a060020a03169056fea165627a7a72305820ccca0d3de2ff247acfb59da2259fe6f23a2b763fb7d8f288944e28ef0d7bab180029",
+  "sourceMap": "118:1832:8:-;;;521:241;8:9:-1;5:2;;;30:1;27;20:12;5:2;521:241:8;;;;;;;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;521:241:8;;;;;;;;;;;611:2;:8;;;;630:5;:14;;-1:-1:-1;;;;;630:14:8;;;-1:-1:-1;;;;;;630:14:8;;;;;;;704:24;;;;;;;;;;;;;;739:11;:15;118:1832;;;;;;",
+  "deployedSourceMap": "118:1832:8:-;;;;;;;;-1:-1:-1;118:1832:8;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1793:108;;;;257:23;;8:9:-1;5:2;;;30:1;27;20:12;5:2;257:23:8;;;;;;;;;;;;;;;;;;;;814:568;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;814:568:8;;-1:-1:-1;;;;;814:568:8;;;;;;;1472:160;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1472:160:8;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1472:160:8;;-1:-1:-1;;;;;1472:160:8;;;;;;;146:28;;8:9:-1;5:2;;;30:1;27;20:12;5:2;146:28:8;;;;;;;;-1:-1:-1;;;;;146:28:8;;;;;;;;;;;;;;234:14;;8:9:-1;5:2;;;30:1;27;20:12;5:2;234:14:8;;;;1640:145;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1640:145:8;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1640:145:8;;;1793:108;1836:8;:21;;1848:9;1836:21;;;;;;-1:-1:-1;1868:5:8;;:25;;-1:-1:-1;;;;;1868:5:8;;;;:25;;;;;1848:9;;1868:25;;-1:-1:-1;1868:25:8;1848:9;1868:5;:25;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1868:25:8;1793:108::o;257:23::-;;;;:::o;814:568::-;922:5;;-1:-1:-1;;;;;922:5:8;908:10;:19;900:28;;;;;;1003:23;;;;;;;;967:12;;939:19;;-1:-1:-1;;;;;1003:21:8;;;;;:23;;;;;;;;;;;;;;:21;:23;;;5:2:-1;;;;30:1;27;20:12;5:2;1003:23:8;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1003:23:8;;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;1003:23:8;;-1:-1:-1;1045:9:8;:17;-1:-1:-1;1045:17:8;1037:59;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;1122:4;1110:9;:16;1107:79;;;1142:5;;;:32;;-1:-1:-1;;;;;1142:5:8;;;;1157:9;:16;;;1142:32;;;;;1157:16;;1142:32;:5;:32;1157:16;1142:5;:32;;;;;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1142:32:8;1107:79;1198:53;;;;;;;;;;;;;;-1:-1:-1;;;;;1198:32:8;;;;;1237:4;;1198:53;;;;;-1:-1:-1;;1198:53:8;;;;;;;;1237:4;1198:32;:53;;;5:2:-1;;;;30:1;27;20:12;5:2;1198:53:8;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;-1:-1;;1269:11:8;;1262:19;;;;:6;:19;;;;;;;;;:34;;-1:-1:-1;;1262:34:8;-1:-1:-1;;;;;1262:34:8;;;;;;;;1314;;;;;;;;;-1:-1:-1;1314:34:8;;;;;;-1:-1:-1;1314:34:8;-1:-1:-1;1314:34:8;-1:-1:-1;;1361:11:8;:13;;;;;;-1:-1:-1;;814:568:8:o;1472:160::-;1565:5;;-1:-1:-1;;;;;1565:5:8;1551:10;:19;1543:28;;;;;;1582:42;;;;;;;;;;;;;;-1:-1:-1;;;;;1582:34:8;;;;;:42;;;;;-1:-1:-1;;1582:42:8;;;;;;;-1:-1:-1;1582:34:8;:42;;;5:2:-1;;;;30:1;27;20:12;5:2;1582:42:8;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1582:42:8;;;;1472:160;;:::o;146:28::-;;;-1:-1:-1;;;;;146:28:8;;:::o;234:14::-;;;;:::o;1640:145::-;1688:20;1742:5;;-1:-1:-1;;;;;1742:5:8;1728:10;:19;1720:28;;;;;;-1:-1:-1;1766:11:8;;;;:6;:11;;;;;;-1:-1:-1;;;;;1766:11:8;;1640:145::o",
   "source": "pragma solidity ^0.5.0;\r\n\r\nimport \"./Order.sol\";\r\n\r\n// this should be done with inheritance for riders and customers\r\ncontract Rider {\r\n    \r\n    address payable public owner;\r\n    address controller; // do you even need this?\r\n\r\n    uint public id;\r\n\r\n    uint public totalOrders;\r\n    mapping(uint => address) orders; // maybe change this to store order states??\r\n\r\n    uint totalPay;\r\n\r\n    enum riderState{unassigned, accepted, hasCargo, Delivered}\r\n\r\n    event deliveryOfferedEvent(address orderAddress);\r\n    \r\n    constructor(uint _id, address payable _owner, address _controller) public\r\n    {\r\n        id = _id;\r\n        owner = _owner; // this needs changing to the origin of the call\r\n        controller = _controller;\r\n        totalOrders = 0;\r\n    }\r\n    \r\n    // this function should be payable\r\n    function offerDelivery(address orderAddress,bytes32 keyHash) public payable{\r\n        require(msg.sender == owner);\r\n        Order orderInstance = Order(orderAddress);\r\n        uint cost = orderInstance.getCost();\r\n        require(msg.value >= cost, \"deposit value not high enough\");\r\n        if(msg.value > cost){\r\n            owner.transfer(msg.value - cost);\r\n        }\r\n\r\n        orderInstance.riderOfferDelivery.value(cost)(keyHash);\r\n        orders[totalOrders] = orderAddress;\r\n\r\n        emit deliveryOfferedEvent(orderAddress);\r\n\r\n        totalOrders++;\r\n    }\r\n\r\n    // could modify to send restaurant id + order id to reduce gas cost, maybe??\r\n    function setStatus(address orderAddress,uint status) public {\r\n        require(msg.sender == owner);\r\n        Order(orderAddress).setOrderStatus(status);\r\n    }\r\n\r\n    function getOrder(uint _id) public view returns(address orderAddress){\r\n        require(msg.sender == owner);\r\n        return orders[_id];\r\n    }\r\n\r\n    function pay() external payable {\r\n        totalPay += msg.value;\r\n        owner.transfer(msg.value);\r\n    } \r\n\r\n    function() external payable {\r\n    } \r\n}",
-  "sourcePath": "/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol",
+  "sourcePath": "/home/george/Documents/workspace/TryAByte/contracts/Rider.sol",
   "ast": {
-    "absolutePath": "/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol",
+    "absolutePath": "/home/george/Documents/workspace/TryAByte/contracts/Rider.sol",
     "exportedSymbols": {
       "Rider": [
         3351
@@ -186,7 +173,7 @@
         "src": "0:23:8"
       },
       {
-        "absolutePath": "/home/george/Documents/WorkSpace/TryAByte/contracts/Order.sol",
+        "absolutePath": "/home/george/Documents/workspace/TryAByte/contracts/Order.sol",
         "file": "./Order.sol",
         "id": 3167,
         "nodeType": "ImportDirective",
@@ -1451,8 +1438,8 @@
                         "referencedDeclaration": null,
                         "src": "1198:38:8",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_function_setvalue_pure$_t_uint256_$returns$_t_function_external_payable$_t_bytes32_$returns$__$value_$",
-                          "typeString": "function (uint256) pure returns (function (bytes32) payable external)"
+                          "typeIdentifier": "t_function_setvalue_nonpayable$_t_uint256_$returns$_t_function_external_payable$_t_bytes32_$returns$__$value_$",
+                          "typeString": "function (uint256) returns (function (bytes32) payable external)"
                         }
                       },
                       "id": 3271,
@@ -2487,7 +2474,7 @@
     "src": "0:1950:8"
   },
   "legacyAST": {
-    "absolutePath": "/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol",
+    "absolutePath": "/home/george/Documents/workspace/TryAByte/contracts/Rider.sol",
     "exportedSymbols": {
       "Rider": [
         3351
@@ -2508,7 +2495,7 @@
         "src": "0:23:8"
       },
       {
-        "absolutePath": "/home/george/Documents/WorkSpace/TryAByte/contracts/Order.sol",
+        "absolutePath": "/home/george/Documents/workspace/TryAByte/contracts/Order.sol",
         "file": "./Order.sol",
         "id": 3167,
         "nodeType": "ImportDirective",
@@ -3773,8 +3760,8 @@
                         "referencedDeclaration": null,
                         "src": "1198:38:8",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_function_setvalue_pure$_t_uint256_$returns$_t_function_external_payable$_t_bytes32_$returns$__$value_$",
-                          "typeString": "function (uint256) pure returns (function (bytes32) payable external)"
+                          "typeIdentifier": "t_function_setvalue_nonpayable$_t_uint256_$returns$_t_function_external_payable$_t_bytes32_$returns$__$value_$",
+                          "typeString": "function (uint256) returns (function (bytes32) payable external)"
                         }
                       },
                       "id": 3271,
@@ -4810,12 +4797,11 @@
   },
   "compiler": {
     "name": "solc",
-    "version": "0.5.12+commit.7709ece9.Emscripten.clang"
+    "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.0.19",
-  "updatedAt": "2019-12-20T15:38:34.699Z",
-  "networkType": "ethereum",
+  "schemaVersion": "3.0.6",
+  "updatedAt": "2020-01-03T15:43:43.992Z",
   "devdoc": {
     "methods": {}
   },

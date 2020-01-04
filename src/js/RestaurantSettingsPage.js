@@ -75,7 +75,7 @@ RestaurantSettingsPage = {
 			this.restaurant.number = value;
 		}
 
-		this.updateRestaurantDeetailsDisplay();
+		//this.updateRestaurantDeetailsDisplay();
 	},
 
 	updateRestaurantMenu: function(_variable, value){
@@ -107,7 +107,7 @@ RestaurantSettingsPage = {
 		}else if(variable[0] == 'onChain'){
 			this.restaurant.menu[variable[1]].onChain = value;
 		}
-		this.updateMenuDisplay();
+		//this.updateMenuDisplay();
 	},
 
 	uploadLogo: function(input) {
@@ -159,8 +159,8 @@ RestaurantSettingsPage = {
 	// 			Display controls 
 	//**********************************************************************************************//
 	updateDisplay: function(){
-		this.updateRestaurantDeetailsDisplay();
-		this.updateMenuDisplay();
+		//this.updateRestaurantDeetailsDisplay();
+		//this.updateMenuDisplay();
 	},
 
 

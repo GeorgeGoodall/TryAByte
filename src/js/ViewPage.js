@@ -20,6 +20,16 @@ ViewPage = {
 		return true;
 	},
 
+	populatePageWithNew: async function(){
+		this.insertRestaurantInformation(RestaurantSettingsPage.restaurant);
+		document.getElementById("view_menu").innerHTML = "";
+		for(let i = 0; i < restaurant.menu.length; i++)
+			this.printMenuItem(restaurant.menu[i]);
+		this.restaurant = restaurant;
+
+		return true;
+	},
+
 	insertRestaurantInformation: function(restaurant){
 		document.getElementById("view_logo").src = restaurant.logoAddress;
 		document.getElementById("view_name").innerHTML = restaurant.name;

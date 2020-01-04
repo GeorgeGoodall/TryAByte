@@ -88,10 +88,17 @@ async function render(hashKey){
 			// hide the loading page
 			// display the settings page
 			loadingPage.style.display = "block";
-			waitForInitialised(RestaurantSettingsPage,function(){
-				document.getElementById("settingspage").style.display = 'block';
+			if(url[1] == "preview"){
+				await ViewPage.populatePageWithNew();
+				document.getElementById("viewpage").style.display = 'block';
 				loadingPage.style.display = "none";
-			});
+			}
+			else{
+				waitForInitialised(RestaurantSettingsPage,function(){
+					document.getElementById("settingspage").style.display = 'block';
+					loadingPage.style.display = "none";
+				});
+			}
 			break;
 		case "#view":
 			loadingPage.style.display = "block";
