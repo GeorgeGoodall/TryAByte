@@ -5,6 +5,7 @@ RestaurantSettingsPage = {
 	restaurantAddress: null,
 	totalRows: 0, // stores the total items in the menu staging
 	totalOptions: [], // stores the total options for each item in the menu staging
+	optionCounters: [], // stores the highest id of an option
 	initialised: false,
 
 	checkHasRestaurant: async function(){
@@ -238,7 +239,15 @@ RestaurantSettingsPage = {
 
 
 	menuStagingAddRow: function(item = new MenuItem()){
+		if(typeof(this.restaurant.menu[this.totalRows]) == 'undefined'){
+			this.restaurant.menu[this.totalRows] = item;
+		}
 		var html = '<tr id="menuStagingRow'+this.totalRows+'">'+
+					'<th>';
+		if(!item.toBeDeleted){
+			html += 	'<div style="height: 54px"><a class="delete is-medium" onclick="RestaurantSettingsPage.menuStagingRemoveRow('+this.totalRows+');"></a></div>';
+		}
+		html +=		'</th>'+
 					'<th><input onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" style="min-width: 300px" type="text" class="input is-small" id="itemName,'+this.totalRows+'" value="'+item.name+'"></th>'+
 					'<th><textarea onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" style="min-width: 400px" name="" id="itemDescription,'+this.totalRows+'" cols="30" rows="3" class="textarea is-small" value="">'+item.description+'</textarea></th>'+
 					'<th style="min-width: 100px; max-width: 300px" id="itemOptions'+this.totalRows+'">';
@@ -246,36 +255,78 @@ RestaurantSettingsPage = {
 			for(var i = 0; i < item.options.length; i++)
 				html +=	'<input onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" id="itemOption,'+this.totalRows+','+i+'" type="text" class="input is-small" placeholder="leave empty if no options" value="'+item.options[i].name+'">';
 		html += 	'</th>'+
-					'<th style="min-width: 100px; max-width: 200px" id="itemPrices'+this.totalRows+'">';
+					'<th style="min-width: 100px; max-width: 200px">'+
+						'<div id="itemPrices'+this.totalRows+'">';
 		if(item.options.length == 0){
-			html +=		'<input onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" id="itemPrice,'+this.totalRows+'" type="text" class="input is-small" value="">';
+			html +=			'<input onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" id="itemPrice,'+this.totalRows+'" type="text" class="input is-small" value="">';
 		}
 		for(var i = 0; i < item.options.length; i++){
-			html +=		'<input onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" id="itemPrice,'+this.totalRows+','+i+'" type="text" class="input is-small" value="'+item.options[i].price+'">';
+			html +=			'<input onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" id="itemPrice,'+this.totalRows+','+i+'" type="text" class="input is-small" value="'+item.options[i].price+'">';
 		}
-		html += 	'</th>'+
+		html += 		'</div>'+
+						'<button id="addOption_But" class="button" onclick="RestaurantSettingsPage.menuStagingAddOption('+this.totalRows+'); return false;">Add Option</button>'+
+				 	'</th>'+
 					'<th style="width: 20px" id="itemDeletes'+this.totalRows+'">';
 		if(item.options.length != 1)
 			for(var i = 0; i < item.options.length; i++)
 				html +=		'<div id="itemDelete,'+this.totalRows+','+i+'" style="height: 27px"><a class="delete" onclick="RestaurantSettingsPage.menuStagingRemoveOption('+this.totalRows+','+i+')"></a></div>';
-		html += 	'</th>';
-		if(!item.toBeDeleted){
-			html += '<th style="width: 150px"><button class="button" onclick="RestaurantSettingsPage.menuStagingRemoveRow('+this.totalRows+'); return false;">Remove Item</button><button class="button" onclick="RestaurantSettingsPage.menuStagingAddOption('+this.totalRows+'); return false;">Add Option</button></th>';
-		}
-		html += '</tr>';
 
+		html += '<th>'+
+				'<div id="itemExtras'+this.totalRows+'">'+
+				'</div>'+
+				'<form autocomplete="off" action="#">'+
+					'<div class="autocomplete" style="width:300px;">'+
+						'<input id="autofill'+this.totalRows+'" type="text" name="myCountry" placeholder="Extra:Price (i.e. \'Extra Cheese:  100\')">'+
+					'</div>'+
+				'</form>';
 
 		if(!item.toBeDeleted){
 			this.totalOptions[this.totalRows] = item.options.length;
+			this.optionCounters[this.totalRows] = item.options.length;
 			console.log("Printing menu staging with id: " + this.totalRows);
 			this.totalRows++;
 			document.getElementById('menuBody').insertAdjacentHTML('beforeend',html);
+			
+			autocomplete(document.getElementById("autofill"+(this.totalRows-1)),RestaurantSettingsPage.restaurant.getExtrasList(),function(val,itemId){
+				// this is the function that occurs when a new item is added
+				// check the item is written in the correct form
+	        	let regex = RegExp('.+\\s*:\\s*\\d');
+	        	let match = regex.test(val);
+	        	if(!match){
+	        		alert("incorrect format entered, please add the item in the format \"Item Name: Price i.e. (Extra Cheese: 100)\"");
+	        	}
+	        	else{
+	        		// add the extra to the list of extras,
+	        		let extra = val.split(":");
+	        		extra[0] = extra[0].trim();
+	        		extra[1] = extra[1].trim();
+	        		if(RestaurantSettingsPage.restaurant.addMenuExtra(extra[0], extra[1],false)){
+	        			console.log("added " + val + " to extras and to box " + "itemExtras"+itemId);
+	        			autocompleteAddToArray(extra[0] + " : " + extra[1]);
+	        		}
+	        		var extraObject = RestaurantSettingsPage.restaurant.getExtraFromNameAndPrice(extra[0],extra[1]);
+	        		// add this extra to the current item
+	        		if(extraObject != null && RestaurantSettingsPage.restaurant.addExtraToItem(itemId,extraObject.id)){
+	        			document.getElementById("itemExtras"+itemId).insertAdjacentHTML("beforeend",'<div id="itemExtra,'+itemId+','+extraObject.id+'" class="box" style="padding: 2px; margin: 2px;"> <div style="padding-right: 20px; float:left;">'+extra[0] + " : " + extra[1]+'</div><a class="delete" onclick="RestaurantSettingsPage.menuStagingUnassignExtra('+itemId+','+extraObject.id+')"></a></div>');
+	        		}else{
+	        			alert("This extra is allready assigned to this item");
+	        		}
+
+	        	}
+			});
 		}
 		else{
 			document.getElementById('menuToDelete').insertAdjacentHTML('beforeend',html);
 		}
 		
 		return false; // to avoid page reload
+	},
+
+	menuStagingUnassignExtra: function(_itemId, _extraId){
+		if(RestaurantSettingsPage.restaurant.unassignExtra(_itemId,_extraId)){
+			let node = document.getElementById("itemExtra,"+_itemId+","+_extraId);
+			node.parentNode.removeChild(node);
+		}
 	},
 
 	menuStagingRemoveRow: function(id){
@@ -290,11 +341,13 @@ RestaurantSettingsPage = {
 	},
 
 	menuStagingAddOption: function(id){
-		optionsCount = this.totalOptions[id];
+		optionsCount = this.optionCounters[id];
 
-		if(optionsCount == 1){ // if you are adding the first option, add the option name and delete button to the item price
-			optionHtml = '<input id="itemOption,'+id+','+(optionsCount-1)+'" type="text" class="input is-small" placeholder="leave empty if no options" onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" value="">'
-			deleteButton = '<div id="itemDelete,'+id+','+(optionsCount-1)+'" style="height: 27px"><a class="delete" onclick="menuStagingRemoveOption('+id+','+(optionsCount-1)+')"></a></div>';
+		if(this.totalOptions[id] == 1){ // if you are adding the first option, add the option name and delete button to the item price
+			let element = document.getElementById("itemPrices"+id).childNodes[0];
+			let optionId = element.id.split(",")[2];
+			optionHtml = '<input id="itemOption,'+id+','+(optionId)+'" type="text" class="input is-small" placeholder="leave empty if no options" onkeyup="RestaurantSettingsPage.updateRestaurantMenu(this.id,this.value)" value="">'
+			deleteButton = '<div id="itemDelete,'+id+','+(optionId)+'" style="height: 27px"><a class="delete" onclick="RestaurantSettingsPage.menuStagingRemoveOption('+id+','+(optionId)+')"></a></div>';
 			document.getElementById("itemOptions"+id).insertAdjacentHTML('beforeend',optionHtml);
 			document.getElementById("itemDeletes"+id).insertAdjacentHTML('beforeend',deleteButton);
 		}
@@ -309,6 +362,7 @@ RestaurantSettingsPage = {
 		document.getElementById("itemDeletes"+id).insertAdjacentHTML('beforeend',deleteButton);
 
 		this.totalOptions[id]++;
+		this.optionCounters[id]++;
 	},
 
 	menuStagingRemoveOption: function(itemId,optionId){
@@ -325,9 +379,9 @@ RestaurantSettingsPage = {
 
 		this.totalOptions[itemId]--;
 		if(this.totalOptions[itemId] == 1){
-			element = document.getElementById("itemOption,"+itemId+',0');
+			element = document.getElementById("itemOptions"+itemId).childNodes[0];
 			element.parentNode.removeChild(element);
-			element = document.getElementById("itemDelete,"+itemId+',0');
+			element = document.getElementById("itemDeletes"+itemId).childNodes[0];
 			element.parentNode.removeChild(element);
 		}
 		this.updateDisplay();

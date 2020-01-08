@@ -15,6 +15,7 @@ contract Menu {
     bytes32 itemName;
     bytes32 description;
     uint optionsHead;
+    uint[] extrasIds;
   }
 
   struct Option{
@@ -23,10 +24,18 @@ contract Menu {
     uint optionPrice;
   }
 
+  struct Extra{
+    bytes32 extraName;
+    uint extraPrice;
+    bool active;
+  }
+
   uint public itemHead = 0;
   uint public optionsHead = 0;
+  uint public extraHead = 0;
   mapping (uint => Option) public options;
   mapping (uint => Item) public items;
+  mapping (uint => Extra) public extras;
 
   constructor(address _owner) public{
     owner = _owner;
@@ -45,7 +54,7 @@ contract Menu {
   }
 
   //needed for external contract access to struct
-  function getEntry(uint _id) public view returns (bytes32,bytes32,bytes32[] memory,uint[] memory){
+  function getEntry(uint _id) public view returns (bytes32,bytes32,bytes32[] memory,uint[] memory, uint[] memory){
     uint itemIndex = itemHead;
     
     for(uint i = 0; i < _id; i++){
@@ -74,11 +83,13 @@ contract Menu {
       counter++;
       index = options[index].nextOption;
     }
-    return (itemToReturn.itemName,itemToReturn.description,optionNamesToReturn,optionPricesToReturn);
+
+
+    return (itemToReturn.itemName,itemToReturn.description,optionNamesToReturn,optionPricesToReturn, itemToReturn.extrasIds);
   }
 
   // add item at index needs doing
-  function addEntry(uint addAtIndex, bytes32 _itemName,bytes32 _itemDescription, bytes32[] memory _optionNames, uint[] memory _optionPrices) public returns (bool){
+  function addEntry(uint addAtIndex, bytes32 _itemName,bytes32 _itemDescription, bytes32[] memory _optionNames, uint[] memory _optionPrices, uint[] memory extraIds) public returns (bool){
     require(msg.sender == owner, "you are not the owner of this menu"); // 270
     require(_optionNames.length == _optionPrices.length, "the number of options does not match the number of prices"); // 28
 
@@ -99,7 +110,7 @@ contract Menu {
 
     Item memory item; // 137
     if(addAtIndex == 0){ //26
-      item = Item(itemHead,_itemName,_itemDescription,optionsHead);
+      item = Item(itemHead,_itemName,_itemDescription,optionsHead, extraIds);
       length++;
       items[length] = item;
       itemHead = length;
@@ -112,7 +123,7 @@ contract Menu {
           break; // if you hit the end of the list, just add it to the end
         insertAfter = index; // 69
       }
-      item = Item(items[insertAfter].nextItem,_itemName,_itemDescription,optionsHead); // 582
+      item = Item(items[insertAfter].nextItem,_itemName,_itemDescription,optionsHead,extraIds); // 582
 
       length++; // 5237
       items[length] = item; // 80375
@@ -205,6 +216,84 @@ contract Menu {
     options[optionToUpdate].nextOption = options[optionToDelete].nextOption;
     delete options[optionToDelete];
     return true;
+  }
+
+
+  function addExtras(bytes32[] memory extraNames, uint[] memory extraPrice) public {
+    require(extraNames.length == extraPrice.length, "the count of the params dont match");
+    for(uint i = 0; i < extraNames.length; i++){
+      extras[extraHead] = Extra(extraNames[i],extraPrice[i],true);
+      extraHead++;
+    }
+  }
+
+  function setExtrasInactive(uint[] memory _ids) public {
+    for(uint i = 0; i < _ids.length; i++){
+       extras[_ids[i]].active = false;
+    }
+  }
+
+
+  // todo
+  // should do some checks to ensure an extra can only be assigned once
+  // could also sort this list to allow fast removal and finding??
+  function assignExtras(uint[] memory _itemIds, uint[] memory _extrasIds, uint[] memory flags) public {
+    require(flags.length == _itemIds.length, "inconsistent number of flags and item ids");
+    uint flagSum = 0;
+    for(uint i = 0; i < flags.length; i++){
+      flagSum += flags[i];
+    }
+    require(flagSum == _extrasIds.length, "the flags are inconsistent with the extras passed in");
+    
+    uint itemIndex = itemHead;
+    
+    uint extrasIndex = 0;
+    for(uint i = 0; i < flags.length; i++){
+
+      // get the item
+      for(uint j = 0; j < _itemIds[i]; j++){
+        itemIndex = items[itemIndex].nextItem;
+      }
+
+      for(uint j = 0; j < flags[i]; j++){
+        // add extra j to item i
+        items[itemIndex].extrasIds.push(_extrasIds[extrasIndex]);
+        extrasIndex++;
+      }
+    }
+  }
+
+  // ToDo, change extras to a list structure so propper deletion can be done
+  function unassignExtras(uint[] memory _itemIds, uint[] memory _extrasIds, uint[] memory flags) public {
+    require(flags.length == _itemIds.length, "inconsistent number of flags and item ids");
+    uint flagSum = 0;
+    for(uint i = 0; i < flags.length; i++){
+      flagSum += flags[i];
+    }
+    require(flagSum == _extrasIds.length, "the flags are inconsistent with the extras passed in");
+
+    uint itemIndex = itemHead;
+    
+    uint extrasIndex = 0;
+    for(uint i = 0; i < flags.length; i++){
+
+      // get the item
+      //
+      for(uint j = 0; j < _itemIds[i]; j++){
+        itemIndex = items[itemIndex].nextItem;
+      }
+
+      // for each extra id
+      for(uint j = 0; j < flags[i]; j++){
+        // for each extra in the item
+        for(uint k = 0; k < items[itemIndex].extrasIds.length; k++){
+          if(items[itemIndex].extrasIds[k] == _extrasIds[extrasIndex]){
+            delete items[itemIndex].extrasIds[k]; // TODO: this will leave empty spaces
+            extrasIndex++;
+          }
+        }
+      }
+    }
   }
 
   function swapItems(uint index1, uint index2) public {
@@ -302,12 +391,13 @@ contract Menu {
 
 
   // toDo
-  function addMultipleItems(uint[] memory addAtIndex, bytes32[] memory itemNames, bytes32[] memory itemDescriptions, bytes32[] memory _optionNames, uint[] memory _prices, uint[] memory optionFlags) public {
+  function addMultipleItems(uint[] memory addAtIndex, bytes32[] memory itemNames, bytes32[] memory itemDescriptions, bytes32[] memory _optionNames, uint[] memory _prices, uint[] memory optionFlags, uint[] memory _extrasIds, uint[] memory extrasFlags) public {
     require(msg.sender == owner, "you are not the owner");
     require(addAtIndex.length == itemNames.length, "the number of item indexes and item names do not match");
     require(itemNames.length == itemDescriptions.length, "the number of descriptions and item names do not match");
     require(_optionNames.length == _prices.length, "the number of options and prices do not match");
     require(itemNames.length == optionFlags.length, "the number of item names and option flags do not match");
+    require(itemNames.length == extrasFlags.length, "the number of item names and extras flags do not match");
     uint optionFlagsSum = 0;
     for(uint i = 0; i < optionFlags.length; i++){
         optionFlagsSum += optionFlags[i];
@@ -318,6 +408,9 @@ contract Menu {
     uint optionIndex = 0;
     bytes32[] memory optionNames;
     uint[] memory prices;
+
+    uint extrasIndex = 0;
+    uint[] memory extraIds;
 
     for(uint i = 0; i < optionFlags.length; i++){
 
@@ -332,7 +425,16 @@ contract Menu {
             optionIndex++;
         }
 
-        addEntry(addAtIndex[i], itemNames[i], itemDescriptions[i], optionNames, prices);
+        extraIds = new uint[](extrasFlags[i]);
+
+        for(uint j = 0; j < extrasFlags[i]; j++){
+          extraIds[j] = _extrasIds[extrasIndex];
+          extrasIndex++;
+        }
+
+
+
+        addEntry(addAtIndex[i], itemNames[i], itemDescriptions[i], optionNames, prices, extraIds);
     }
 
   }

@@ -10,7 +10,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="js/app.js"></script>
 
+	<!-- style sheets -->
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/autofill.css">
 
 	
 	<script type="text/javascript" src="js/EthereumInterface.js"></script>
@@ -20,9 +22,11 @@
 	<script type="text/javascript" src="js/RestaurantSettingsPage.js"></script>
 	<script type="text/javascript" src="js/SearchPage.js"></script>
 	<script type="text/javascript" src="js/ViewPage.js"></script>
+	<script type="text/javascript" src="js/Components/autofill.js"></script>
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css"> -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css">
 </head>
 <body>
@@ -148,7 +152,8 @@
 
 		<!-- ************* make restaurant page ************************ -->
 
-		<div class="page" id="settingspage" style="display: none; padding: 0px 20px 0px 20px">			
+		<div class="page" id="settingspage" style="display: none; padding: 0px 20px 0px 20px">
+			<a class="button box" href="/#settings/preview">Priview Restaurant</a>		
 			<div class="box">
 				<form action="" class="form">
 					<h1 class="title is-3">Restaurant Account Creation Form:</h1>
@@ -200,10 +205,13 @@
 							<table class="table">
 								<thead>
 									<tr>
+										<th></th><!-- this is for the item delete button -->
 										<th>Item name</th>
 										<th>Description</th>
 										<th>Options</th>
 										<th>Item/Option Price</th>
+										<th></th><!-- this is for the option delete buttons -->
+										<th>Optional Extras</th>
 									</tr>
 								</thead>
 								<tbody id="menuBody">
@@ -246,7 +254,7 @@
 			show past orders
 		-->
 
-		<div class="page" id="viewpage" style="display: none">
+		<div class="page" id="customerPage" style="display: none">
 
 		</div>
 
@@ -257,6 +265,7 @@
 		<div class="page" id="viewpage" style="display: none">
 			<div class="columns">
 				<div class="column is-2">
+					<a id="backToForm_But" class="button box" href="/#settings" style="display: none">Back to form</a>	
 					<div class="box">
 						<h1 class="title is-7">Popular</h1>
 						<h1 class="title is-7">Popular</h1>

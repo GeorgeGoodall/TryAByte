@@ -62,6 +62,8 @@ async function render(hashKey){
 
 	let url = hashKey.split("/");
 
+	window.scrollTo(0,0);
+
 
 	switch(url[0]){
 		case "#search":
@@ -89,6 +91,7 @@ async function render(hashKey){
 			// display the settings page
 			loadingPage.style.display = "block";
 			if(url[1] == "preview"){
+
 				await ViewPage.populatePageWithNew();
 				document.getElementById("viewpage").style.display = 'block';
 				loadingPage.style.display = "none";

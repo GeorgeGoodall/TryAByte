@@ -16,18 +16,24 @@ ViewPage = {
 		for(let i = 0; i < restaurant.menu.length; i++)
 			this.printMenuItem(restaurant.menu[i]);
 		this.restaurant = restaurant;
+		document.getElementById("backToForm_But").style.display = 'none'
 
 		return true;
 	},
 
 	populatePageWithNew: async function(){
-		this.insertRestaurantInformation(RestaurantSettingsPage.restaurant);
-		document.getElementById("view_menu").innerHTML = "";
-		for(let i = 0; i < restaurant.menu.length; i++)
-			this.printMenuItem(restaurant.menu[i]);
-		this.restaurant = restaurant;
+		if(RestaurantSettingsPage.restaurant != null){	
+			// add a button to go back to the restaurant form
+			this.insertRestaurantInformation(RestaurantSettingsPage.restaurant);
+			document.getElementById("view_menu").innerHTML = "";
+			for(let i = 0; i < RestaurantSettingsPage.restaurant.menu.length; i++)
+				this.printMenuItem(RestaurantSettingsPage.restaurant.menu[i]);
+			this.restaurant = RestaurantSettingsPage.restaurant;		
+			document.getElementById("backToForm_But").style.display = 'block';
 
-		return true;
+			return true;
+		}
+		return false
 	},
 
 	insertRestaurantInformation: function(restaurant){

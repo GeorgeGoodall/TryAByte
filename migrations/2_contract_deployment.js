@@ -70,13 +70,6 @@ module.exports = function(deployer) {
   	);
   	
   	//deployer.deploy(Menu);
-
-
-
-
-
-
-
-	deployer.deploy(test);
+	//deployer.deploy(test);
 
 };

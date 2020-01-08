@@ -1,4 +1,12 @@
 // menuItemClass
+function ItemExtra(_id,_name = "",_price = "",_onChain = false){
+	this.id = _id;
+	this.name = _name;
+	this.price = _price;
+	this.onChain = _onChain;
+	this.toBeDeleted = false;
+}
+
 function ItemOption(_id,_name = "",_price = "",_onChain = false){
 	this.id = _id;
 	this.name = _name;
@@ -13,6 +21,7 @@ function MenuItem(){
 	this.name = "";
 	this.description = "";
 	this.options = [];
+	this.itemExtras = []; // int array pointing to extras IDs
 	this.options[0] = new ItemOption();
 	this.onChain = false;
 }
@@ -44,6 +53,8 @@ class Restaurant{
 		this.menuInstance = null,
 
 		this.menu = [];
+		this.extrasIdCap = 0;
+		this.extras = [];
 
 		this.onChain = false;
 	}
@@ -89,10 +100,64 @@ class Restaurant{
 		}
 	}
 
-	
+	getExtrasList(){
+		let extras = [];
+		for(let i = 0; i < this.extras.length; i++){
+			extras.push(this.extras[i].name + " : " + this.extras[i].price);
+		}
+		return extras;
+	}
 
 	async setRestaurant(){
 		makeRestaurant(this);
+	}
+
+	getExtraFromNameAndPrice(name,price){
+		for(let i = 0; i < this.extras.length; i++){
+			if(this.extras[i].name == name.trim() && this.extras[i].price == price.trim()){
+				return this.extras[i];
+			}
+		}
+		return false;
+	}
+
+	addExtraToItem(_itemId, _extraId){
+		if(!this.menu[_itemId].itemExtras.includes(_extraId)){
+			this.menu[_itemId].itemExtras.push(_extraId);
+			this.menu[_itemId].onChain = false;
+			return true;
+		}
+		return false;
+	}
+
+	unassignExtra(_itemId,_extraId){
+		let index = this.menu[_itemId].itemExtras.indexOf(_extraId);
+		if(index != null){
+			this.menu[_itemId].itemExtras.splice(index,1);
+			return true;
+		}
+		return false;
+	}
+
+	addMenuExtra(_name = "",_price = "",_onChain = false){
+
+		_name = _name.trim();
+		_price = _price.trim();
+
+		let extraExists = false;
+		for(let i = 0; i < this.extras.length; i++){
+			if(this.extras[i].name == _name && this.extras[i].price == _price){
+				extraExists = true;
+				break;
+			}
+		}
+
+		if(!extraExists){
+			this.extras.push(new ItemExtra(this.extrasIdCap,_name,_price,_onChain));
+			this.extrasIdCap++;
+			return true;
+		}
+		return false;
 	}
 
 

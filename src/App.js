@@ -113,6 +113,7 @@ app.use(bodyParser.json());
 app.locals.points = "test";
 
 app.use('/js',express.static(__dirname+'/js'));
+app.use('/js/Components',express.static(__dirname+'/js/Components'));
 app.use('/css',express.static(__dirname+'/css'));
 app.use('/Contracts',express.static(__dirname+'/Contracts'));
 app.use('/Images',express.static(__dirname+'/Images'));
@@ -143,6 +144,10 @@ console.log("**listening on port: " + port);
 
 app.get(['/'], function(req,res){
   res.sendFile(__dirname+'/html/index.html');
+});
+
+app.get(['/test'], function(req,res){
+  res.sendFile(__dirname+'/html/test.html');
 });
 
 app.get(["/restaurants"], function(req,res){

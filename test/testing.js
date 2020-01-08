@@ -29,7 +29,20 @@ var theAccounts;
 
 var menuInstance;
 
-contract('Menu', function(accounts){
+
+
+contract('Restaurant', function(accounts){
+	
+	it("can depoly a restaurant", function(){
+		return RestaurantFactory.deployed(function(_restaurantFactoryInstance){
+			restaurantFactoryInstance = _restaurantFactoryInstance;
+			console.log("==========================================");
+			console.log(restaurantFactoryInstance);
+		});
+	});
+
+	console.log(restaurantFactoryInstance);
+
 	it("can depoly a menu",function(){
 		return Menu.deployed().then(function(_menuInstance){
 			menuInstance = _menuInstance;

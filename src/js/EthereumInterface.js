@@ -139,12 +139,11 @@ async function makeMenu(restaurant){
 					addOptionPrices.push(optionsToAddTemp[k].price);
 				}
 				addOptionFlags.push(optionsToAddTemp.length);
-
-
-
 			}
 			
-			// get options to add to the items
+			// get new extras and add them
+
+			// get new item extra links and add them
 
 
 		}
