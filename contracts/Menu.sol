@@ -218,7 +218,7 @@ contract Menu {
     return true;
   }
 
-
+  // should improve this storage method
   function addExtras(bytes32[] memory extraNames, uint[] memory extraPrice) public {
     require(extraNames.length == extraPrice.length, "the count of the params dont match");
     for(uint i = 0; i < extraNames.length; i++){
@@ -250,10 +250,13 @@ contract Menu {
     uint extrasIndex = 0;
     for(uint i = 0; i < flags.length; i++){
 
+
       // get the item
+      itemIndex = itemHead;
       for(uint j = 0; j < _itemIds[i]; j++){
         itemIndex = items[itemIndex].nextItem;
       }
+
 
       for(uint j = 0; j < flags[i]; j++){
         // add extra j to item i
@@ -278,7 +281,7 @@ contract Menu {
     for(uint i = 0; i < flags.length; i++){
 
       // get the item
-      //
+      itemIndex = itemHead;
       for(uint j = 0; j < _itemIds[i]; j++){
         itemIndex = items[itemIndex].nextItem;
       }
@@ -288,8 +291,9 @@ contract Menu {
         // for each extra in the item
         for(uint k = 0; k < items[itemIndex].extrasIds.length; k++){
           if(items[itemIndex].extrasIds[k] == _extrasIds[extrasIndex]){
-            delete items[itemIndex].extrasIds[k]; // TODO: this will leave empty spaces
+            items[itemIndex].extrasIds[k] = 9999; // TODO: should remove element instead of putting in a placholder
             extrasIndex++;
+            break;
           }
         }
       }
