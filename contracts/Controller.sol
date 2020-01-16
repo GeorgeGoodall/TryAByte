@@ -44,4 +44,20 @@ contract Controller {
 		CustomerFactory(customerFactoryAddress).reset();
 		RiderFactory(riderFactoryAddress).reset();
 	}
+
+	function getPartitionOfIntArray(uint startIndex,uint size,uint[] memory intArray) public pure returns (uint[] memory){
+	    uint[] memory toReturn = new uint[](size);
+	    for(uint i = 0; i < (size); i++){
+	      toReturn[i] = intArray[startIndex+i];
+	    }
+	    return toReturn;
+	  }
+
+  	function getPartitionOfBytesArray(uint startIndex,uint size, bytes32[] memory strArray) public pure returns (bytes32[] memory){
+	    bytes32[] memory toReturn = new bytes32[](size);
+	    for(uint i = 0; i < (size); i++){
+	      toReturn[i] = strArray[startIndex+i];
+	    }
+	    return toReturn;
+	}
 }

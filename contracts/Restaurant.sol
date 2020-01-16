@@ -78,49 +78,27 @@ contract Restaurant {
         logoHash = imageHash;
     }
     
-    // menuIndex
-    // itemType
-    // uint new prices
-    // byte32 new text
 
-
-
-    // // todo: fix this
-    // function getOrderPrice(uint[] memory itemIds) public view returns (uint){
-    //     uint price = 0;
-    //     for(uint i = 0; i < itemIds.length; i++){
-    //         price += menu[itemIds[i]].optionsCost[0];
-    //     }
-    //     return price;
-    // }
+    function getOrderPrice(uint[] memory integers, uint itemCount) public view returns (uint){
+        return menu.getOrderPrice(integers, itemCount);
+    }
     
+    // uint[] calldata itemIds, uint[] calldata optionIds, uint[] calldata extraIds, uint[] calldata extraFlags, uint deliveryFee, uint price
+    function makeOrder(uint[] calldata _integers, uint itemCount, bytes32 riderKeyHash) external payable returns (address orderAddress) {
+        //require this comes from a customer smart contract, maybe worth moving this to the order smart contract
+        require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender), "Customer doesnt exist");
 
-  //   function makeOrder(uint[] calldata itemIds, uint deliveryFee, bytes32 riderKeyHash) external payable returns (address orderAddress) {
-  //       //require this comes from a customer smart contract, maybe worth moving this to the order smart contract
-  //       require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender), "Customer doesnt exist");
-
-  //       uint[] memory prices = new uint[](itemIds.length);
-  //       bytes32[] memory items = new bytes32[](itemIds.length);
-  //       for(uint i = 0; i < itemIds.length; i++)
-  //       {
-  //           if (itemIds[i] >= 0 && itemIds[i] < menuLength){
-  //               // could consider sending itemID and price to reduce gas cost
-  //               items[i] = menu[uint(itemIds[i])].itemName; 
-  //               prices[i] = menu[uint(itemIds[i])].optionsCost[0];
-  //           }
-  //           else{
-  //               revert("Invalid Items");
-  //           }
-  //       }
+        uint[] memory integers = _integers;
+        integers[0] = totalOrders;
         
-		// Order newOrder = (new Order).value(msg.value)(totalOrders,items,prices,deliveryFee, controllerAddress, msg.sender, riderKeyHash);
-		// orders[totalOrders] = order(true,address(newOrder));
-  //       totalOrders ++;
+		Order newOrder = (new Order).value(msg.value)(integers, itemCount, controllerAddress, msg.sender, riderKeyHash);
+		orders[totalOrders] = order(true,address(newOrder));
+        totalOrders ++;
 
-  //       emit OrderMadeEvent(orders[totalOrders - 1].orderAddress);
+        emit OrderMadeEvent(orders[totalOrders - 1].orderAddress);
 
-		// return orders[totalOrders - 1].orderAddress;       
-  //   }
+		return orders[totalOrders - 1].orderAddress;       
+    }
 
     function setStatus(address orderAddress, uint status) public{
         require(msg.sender == owner, "you are not the owner");

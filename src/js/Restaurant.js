@@ -22,6 +22,8 @@ function MenuItem(){
 	this.description = "";
 	this.options = [];
 	this.itemExtras = []; // int array pointing to extras IDs
+	this.itemExtrasOnchain = [];
+	this.itemExtrasToDelete = []; // int array of extra ID's to remove from the blockchain
 	this.options[0] = new ItemOption();
 	this.onChain = false;
 }
@@ -64,12 +66,12 @@ class Restaurant{
 		// if an address was assigned, overwrite the default parameters
 		if(address != "0x0000000000000000000000000000000000000000"){
 			this.onChain = true;
-			this.contractAddress = restaurantAddress;
+			this.contractAddress = address;
 			this.restaurantInstance = await new App.contracts.Restaurant(address);
 
 			this.name = web3.toUtf8(await this.restaurantInstance.name());
 			this.address = web3.toUtf8(await this.restaurantInstance.location());
-			this.number = web3.toAscii(await this.restaurantInstance.contactNumber());
+			this.number = await this.restaurantInstance.contactNumber();
 			this.logoHash = await this.restaurantInstance.logoHash();
 			this.logoAddress = web3.toUtf8(await this.restaurantInstance.logoURI());
 
@@ -77,6 +79,7 @@ class Restaurant{
 			console.log("got menu at address: " + this.menuAddress);
 			this.menuInstance = await new App.contracts.Menu(this.menuAddress);
 
+			await this.getRestaurantExtras();
 
 			let currentItem = await this.menuInstance.getEntry(0);
 			let i = 0;
@@ -91,6 +94,12 @@ class Restaurant{
 				for(var j = 0; j < currentItem[2].length; j++){
 					this.menu[i].options[j] = new ItemOption(j,web3.toUtf8(currentItem[2][j]),currentItem[3][j],true);
 				}
+				for(var j = 0; j < currentItem[4].length; j++){
+					if(currentItem[4][j]["c"][0] != 9999){
+						this.menu[i].itemExtras[j] = currentItem[4][j]["c"][0];
+						this.menu[i].itemExtrasOnchain[j] = true;
+					}
+				}
 				this.menu[i].onChain = true;
 				this.menu[i].id = i;
 
@@ -100,10 +109,22 @@ class Restaurant{
 		}
 	}
 
+	async getRestaurantExtras(){
+		this.extrasIdCap = await this.menuInstance.extraHead.call();
+		this.extrasIdCap = this.extrasIdCap["c"][0];
+		for(let i = 0 ; i < this.extrasIdCap; i++){
+			let currentExtra = await this.menuInstance.extras(i);
+			if(currentExtra[2] == true){// if extra is active
+				this.addMenuExtra(web3.toUtf8(currentExtra[0]),currentExtra[1]["c"][0],i,true);
+			}
+		}
+	}
+
 	getExtrasList(){
 		let extras = [];
 		for(let i = 0; i < this.extras.length; i++){
-			extras.push(this.extras[i].name + " : " + this.extras[i].price);
+			if(typeof this.extras[i] != "undefined")
+				extras.push(this.extras[i].name + " : " + this.extras[i].price);
 		}
 		return extras;
 	}
@@ -122,9 +143,26 @@ class Restaurant{
 	}
 
 	addExtraToItem(_itemId, _extraId){
-		if(!this.menu[_itemId].itemExtras.includes(_extraId)){
+		if(this.menu[_itemId].itemExtrasToDelete.includes(_extraId)){
+			// delete from to delete array
+			let index = this.menu[_itemId].itemExtrasToDelete.indexOf(_extraId);
+			this.menu[_itemId].itemExtrasToDelete.splice(index,1);
+			// add back in with onchain
+			if(!this.menu[_itemId].itemExtras.includes(_extraId)){
+				this.menu[_itemId].itemExtras.push(_extraId);
+				this.menu[_itemId].itemExtrasOnchain.push(true); // maybe should check here
+				return true;
+			}
+			else{
+				index = this.menu[_itemId].itemExtras.indexOf(_extraId);
+				this.menu[_itemId].itemExtrasOnchain[index] = true;
+				return true;
+			}
+
+		}
+		else if(!this.menu[_itemId].itemExtras.includes(_extraId)){
 			this.menu[_itemId].itemExtras.push(_extraId);
-			this.menu[_itemId].onChain = false;
+			this.menu[_itemId].itemExtrasOnchain.push(false);
 			return true;
 		}
 		return false;
@@ -133,16 +171,26 @@ class Restaurant{
 	unassignExtra(_itemId,_extraId){
 		let index = this.menu[_itemId].itemExtras.indexOf(_extraId);
 		if(index != null){
+
+			if(this.menu[_itemId].itemExtrasOnchain[index]){
+				this.menu[_itemId].itemExtrasToDelete.push(_extraId);
+			}
+
 			this.menu[_itemId].itemExtras.splice(index,1);
+			this.menu[_itemId].itemExtrasOnchain.splice(index,1);
 			return true;
 		}
 		return false;
 	}
 
-	addMenuExtra(_name = "",_price = "",_onChain = false){
+	addMenuExtra(_name = "",_price = "",_id=null,_onChain = false){
 
 		_name = _name.trim();
-		_price = _price.trim();
+		if(typeof _price == 'string'){
+			_price = _price.trim();
+			_price = parseInt(_price);
+		}
+
 
 		let extraExists = false;
 		for(let i = 0; i < this.extras.length; i++){
@@ -153,8 +201,16 @@ class Restaurant{
 		}
 
 		if(!extraExists){
-			this.extras.push(new ItemExtra(this.extrasIdCap,_name,_price,_onChain));
-			this.extrasIdCap++;
+			if(_id == null){
+				_id = this.extrasIdCap
+			}
+			if(_id >= this.extrasIdCap){
+				console.log("===============");
+				console.log(typeof _id, _id);
+				console.log(typeof this.extrasIdCap, this.extrasIdCap);
+				this.extrasIdCap = _id + 1;
+			}
+			this.extras[_id] = new ItemExtra(_id,_name,_price,_onChain);
 			return true;
 		}
 		return false;

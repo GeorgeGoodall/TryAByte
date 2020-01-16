@@ -25,6 +25,13 @@ ViewPage = {
 		if(RestaurantSettingsPage.restaurant != null){	
 			// add a button to go back to the restaurant form
 			this.insertRestaurantInformation(RestaurantSettingsPage.restaurant);
+			readerPreview = new FileReader();
+		    readerPreview.onload = function(e) {
+		    	console.log("setting logo preview");
+		    	console.log(RestaurantSettingsPage.restaurant.logoFile);
+		    	document.getElementById("view_logo").setAttribute('src', e.target.result);
+		    }
+		    readerPreview.readAsDataURL(RestaurantSettingsPage.restaurant.logoFile);
 			document.getElementById("view_menu").innerHTML = "";
 			for(let i = 0; i < RestaurantSettingsPage.restaurant.menu.length; i++)
 				this.printMenuItem(RestaurantSettingsPage.restaurant.menu[i]);

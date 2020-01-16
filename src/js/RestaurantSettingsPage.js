@@ -18,8 +18,6 @@ RestaurantSettingsPage = {
 	init: async function(){
 		if(typeof this.restaurant == "undefined" || this.restaurant == null){
 			this.restaurant = new Restaurant();
-			console.log("test");
-			console.log(this.restaurant);
 			if(this.restaurantAddress == null || this.restaurantAddress == "0x0000000000000000000000000000000000000000")
 				this.restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
 			await this.restaurant.getRestaurant(this.restaurantAddress);
@@ -104,7 +102,7 @@ RestaurantSettingsPage = {
 			if(this.restaurant.initialised)
 				this.restaurant.menu[variable[1]].options[optionIndex].onChain = false;
 		}else if(variable[0] == 'itemPrice'){
-			this.restaurant.menu[variable[1]].options[optionIndex].price = value;
+			this.restaurant.menu[variable[1]].options[optionIndex].price = parseInt(value);
 		}else if(variable[0] == 'onChain'){
 			this.restaurant.menu[variable[1]].onChain = value;
 		}
@@ -121,12 +119,6 @@ RestaurantSettingsPage = {
 		var logoInput = document.getElementById("logoInput");
 
 		if (logoInput.files && logoInput.files[0]) {
-		    // display the image
-		    readerPreview = new FileReader();
-		    readerPreview.onload = function(e) {
-		    	  preview.setAttribute('src', e.target.result);
-		    }
-		    
 		    // hash the image
 		    readerRaw = new FileReader();
 		    readerRaw.onload = async function(e) {
@@ -149,7 +141,7 @@ RestaurantSettingsPage = {
 		    RestaurantSettingsPage.restaurant.logoFile = logoInput.files[0];
 
 
-		    readerPreview.readAsDataURL(logoInput.files[0]);
+		    
 		    readerRaw.readAsArrayBuffer(logoInput.files[0]);
 
 		    
@@ -160,18 +152,21 @@ RestaurantSettingsPage = {
 	// 			Display controls 
 	//**********************************************************************************************//
 	updateDisplay: function(){
-		//this.updateRestaurantDeetailsDisplay();
+		this.updateRestaurantDeetailsDisplay();
 		//this.updateMenuDisplay();
 	},
 
 
 	updateRestaurantDeetailsDisplay: function(){
 
-		document.getElementById('restaurantName').innerHTML = this.restaurant.name;
-		addressString = this.restaurant.address + ', ' + this.restaurant.town + ', ' + this.restaurant.postcode;
-		document.getElementById('restaurantAddress').innerHTML = addressString;
-		document.getElementById('restaurantNumber').innerHTML = this.restaurant.number;
-		document.getElementById('restaurantLogo').src = this.restaurant.logoAddress;
+		document.getElementById('name').value = this.restaurant.name;
+		document.getElementById('country').value = this.restaurant.country;
+		document.getElementById('address').value = this.restaurant.address;
+		document.getElementById('town').value = this.restaurant.town;
+		document.getElementById('county').value = this.restaurant.county;
+		document.getElementById('postcode').value = this.restaurant.postcode;
+		document.getElementById('number').value = this.restaurant.number;
+		//document.getElementById('restaurantLogo').src = this.restaurant.logoAddress;
 	},
 
 
@@ -192,6 +187,7 @@ RestaurantSettingsPage = {
 			item = this.restaurant.menu[i];
 			if(typeof item != "undefined"){
 				this.menuStagingAddRow(item);
+
 			}
 		}
 	},
@@ -272,8 +268,14 @@ RestaurantSettingsPage = {
 				html +=		'<div id="itemDelete,'+this.totalRows+','+i+'" style="height: 27px"><a class="delete" onclick="RestaurantSettingsPage.menuStagingRemoveOption('+this.totalRows+','+i+')"></a></div>';
 
 		html += '<th>'+
-				'<div id="itemExtras'+this.totalRows+'">'+
-				'</div>'+
+				'<div id="itemExtras'+this.totalRows+'">';
+				
+		for(let i = 0; i < item.itemExtras.length; i++){
+			let extra = this.restaurant.extras[item.itemExtras[i]];
+			html += '<div id="itemExtra,'+this.totalRows+','+extra.id+'" class="box" style="padding: 2px; margin: 2px;"> <div style="padding-right: 20px; float:left;">'+extra.name + " : " + extra.price+'</div><a class="delete" onclick="RestaurantSettingsPage.menuStagingUnassignExtra('+this.totalRows+','+extra.id+')"></a></div>';
+		}
+
+		html += '</div>'+
 				'<form autocomplete="off" action="#">'+
 					'<div class="autocomplete" style="width:300px;">'+
 						'<input id="autofill'+this.totalRows+'" type="text" name="myCountry" placeholder="Extra:Price (i.e. \'Extra Cheese:  100\')">'+
@@ -300,7 +302,7 @@ RestaurantSettingsPage = {
 	        		let extra = val.split(":");
 	        		extra[0] = extra[0].trim();
 	        		extra[1] = extra[1].trim();
-	        		if(RestaurantSettingsPage.restaurant.addMenuExtra(extra[0], extra[1],false)){
+	        		if(RestaurantSettingsPage.restaurant.addMenuExtra(extra[0], extra[1],null,false)){
 	        			console.log("added " + val + " to extras and to box " + "itemExtras"+itemId);
 	        			autocompleteAddToArray(extra[0] + " : " + extra[1]);
 	        		}

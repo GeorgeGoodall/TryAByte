@@ -38,42 +38,43 @@ contract Order{
 	bool public keyRestaurantSet = false;
 
 	uint public totalItems;
-	mapping(uint=>Item) public items; // this should be encrypted
+	mapping(uint=>uint) public itemIds;
+	mapping(uint=>uint) public optionIds;
+	mapping(uint=>uint) public extraIds;
+	mapping(uint=>uint) public extraIdFlags;
 
 	event statusUpdated();
 
-	struct Item{
-		bytes32 itemName;
-		uint itemCost; // in wei (10^-18 Eth)
-	}
-
-
-	constructor(uint _id, bytes32[] memory itemNames, uint[] memory prices, uint _deliveryFee, address _controller, address payable _customer, bytes32 keyHash) public payable {
+	//uint _id, uint price, uint _deliveryFee, uint[] memory itemIds, uint[] memory optionIds, uint[] memory extraFlags, uint[] memory extraIds
+	constructor(uint[] memory integers, uint _itemCount, address _controller, address payable _customer, bytes32 keyHash) public payable {
 	    // require sent from a restaurant contract
 	    require(RestaurantFactory(Controller(_controller).restaurantFactoryAddress()).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");
-	    require(itemNames.length == prices.length, "invalid matching of items to prices");
+
+	    // deconstruct integer array
+	    id = integers[0];
+	    deliveryFee = integers[1];
+	    cost = integers[2];
+
+		require(msg.value >= cost + deliveryFee,"not enough ether sent to the order");
+
+	    totalItems = _itemCount;
+	    for(uint i = 0; i < _itemCount; i++){
+	    	itemIds[i] = integers[i+3];
+	    	optionIds[i] = integers[i+_itemCount+3];
+	    	extraIdFlags[i] = integers[i+(_itemCount*2)+3];
+	    }
+
+	    uint extraIndex = 0;
+	    for(uint i = (_itemCount*3)+3; i < integers.length; i++){
+	    	extraIds[extraIndex] = integers[i];
+	    	extraIndex++;
+	    }
 		
 		// set contract infomation
-		id = _id;
 		restaurant = msg.sender;
-		customer = _customer; // this needs changing as is vunrability
+		customer = _customer;
 		orderTime = block.timestamp;
-
 		controller = _controller;
-		
-		cost = 0;
-
-		// set items
-		totalItems = 0;
-		for(uint i = 0; i < itemNames.length; i++){
-		    items[totalItems] = Item(itemNames[i],prices[i]);
-		    cost += prices[i];
-		    totalItems++;
-		}
-
-		deliveryFee = _deliveryFee;
-
-		require(msg.value >= cost + deliveryFee,"not enough ether sent to the order ");
 		
 		customerStatus = uint(customerState.payed);
 		riderStatus = uint(riderState.unassigned);
@@ -83,9 +84,10 @@ contract Order{
 		keyRiderSet = true;
 	}
 
+	// needs fixing
 	function getItem(uint _id) public view returns(bytes32 itemName, uint itemCost){
 		//require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender); // removed as asking for contract address where as should be owner addresses
-		return (items[_id].itemName,items[_id].itemCost);
+		//return (items[_id].itemName,items[_id].itemCost);
 	}  
 
 
@@ -154,7 +156,7 @@ contract Order{
 		return true;
 	}
 
-	function getHash(bytes32 data) public view returns(bytes32){
+	function getHash(bytes32 data) public pure returns(bytes32){
 		return keccak256(abi.encodePacked(data));
 	}
 }
