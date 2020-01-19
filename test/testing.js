@@ -492,7 +492,7 @@ describe('Contract: Restaurant', function(){
 
 
 
-
+	// ToDo write better tests for this
 	it("Can run the batch menu update", function(){
 		return menuInstance.methods.updateMenu(integerArray,integerFlags,stringArray, stringFlags).send({from: theAccounts[2], gas: 6000000}).then(function(){
 			return menuInstance.methods.extras(0).call();
@@ -536,16 +536,33 @@ describe('Contract: Restaurant', function(){
 		});
 	});
 
-	let testintegerFlags = [0,3,0,2,4,4,2,0,0,0,0,0,0,0,0,0,0,0,0];
-	let testintegerArray = [10,10,10,0,0,300,50,700,450,0,1,2,0,3,1];
-	let teststringFlags = [3,2,2,4,0];
-	let teststringArray = ["0x636865657365","0x70657070657273","0x636869636b656e","0x70697a7a61","0x6368697073","0x74657374","0x74657374","0x736d616c6c","0x6d656469756d","0x6c61726765","0x"];
+	// let testintegerFlags = [0,3,0,2,4,4,2,0,0,0,0,0,0,0,0,0,0,0,0];
+	// let testintegerArray = [10,10,10,0,0,300,50,700,450,0,1,2,0,3,1];
+	// let teststringFlags = [3,2,2,4,0];
+	// let teststringArray = ["0x636865657365","0x70657070657273","0x636869636b656e","0x70697a7a61","0x6368697073","0x74657374","0x74657374","0x736d616c6c","0x6d656469756d","0x6c61726765","0x"];
 
-	it("can run batch update with sparse params", function(){
-		return menuInstance.methods.updateMenu(testintegerArray,testintegerFlags,teststringArray, teststringFlags).send({from: theAccounts[2], gas: 6000000});
+	// it("can run batch update with sparse params", function(){
+	// 	return menuInstance.methods.updateMenu(testintegerArray,testintegerFlags,teststringArray, teststringFlags).send({from: theAccounts[2], gas: 6000000});
+	// })
+
+
+});
+
+describe("contract: CustomerFactory", function(){
+
+	it("Initialises with no customers", function(){
+		customerFactoryInstance.methods.customerCount().call().then(function(count){
+			assert.equal(count,0);
+		})
 	})
 
-
+	it("can create a customer account",function(){
+		customerFactoryInstance.methods.makeCustomer().send({from: theAccounts[3], gas: 6000000}).then(function(){
+			customerFactoryInstance.methods.customerCount().call();
+		}).then(function(count){
+			assert.equal(count,0);
+		});
+	});
 });
 
 function makeid(length) {

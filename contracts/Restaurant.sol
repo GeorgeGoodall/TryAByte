@@ -2,7 +2,7 @@ pragma solidity ^0.5.0;
 
  //import "./lib.sol";
  import "./Order.sol";
- import "./RestaurantFactory.sol";
+ //import "./RestaurantFactory.sol";
  import "./CustomerFactory.sol";
  import "./Controller.sol";
  import "./Menu.sol";
@@ -24,7 +24,7 @@ contract Restaurant {
 
 	bytes32 public contactNumber; 
 
-	address payable public owner; 
+	address payable public owner;  
     address public controllerAddress;
 	address public restaurantFactoryAddress;
 
