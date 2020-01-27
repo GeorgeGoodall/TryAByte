@@ -4,6 +4,7 @@ import './RestaurantFactory.sol';
 import './RiderFactory.sol';
 import './Controller.sol';
 import './Restaurant.sol';
+import './Menu.sol';
 import './Rider.sol';
 
 contract Order{
@@ -38,10 +39,14 @@ contract Order{
 	bool public keyRestaurantSet = false;
 
 	uint public totalItems;
-	mapping(uint=>uint) public itemIds;
-	mapping(uint=>uint) public optionIds;
-	mapping(uint=>uint) public extraIds;
-	mapping(uint=>uint) public extraIdFlags;
+
+	struct Item {
+		uint itemId;
+		uint optionId;
+		uint[] extraIds;
+	}
+
+	mapping(uint=>Item) public items;
 
 	event statusUpdated();
 
@@ -51,23 +56,21 @@ contract Order{
 	    require(RestaurantFactory(Controller(_controller).restaurantFactoryAddress()).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");
 
 	    // deconstruct integer array
-	    id = integers[0];
 	    deliveryFee = integers[1];
-	    cost = integers[2];
+	    cost = integers[0];
 
 		require(msg.value >= cost + deliveryFee,"not enough ether sent to the order");
 
-	    totalItems = _itemCount;
-	    for(uint i = 0; i < _itemCount; i++){
-	    	itemIds[i] = integers[i+3];
-	    	optionIds[i] = integers[i+_itemCount+3];
-	    	extraIdFlags[i] = integers[i+(_itemCount*2)+3];
-	    }
-
 	    uint extraIndex = 0;
-	    for(uint i = (_itemCount*3)+3; i < integers.length; i++){
-	    	extraIds[extraIndex] = integers[i];
-	    	extraIndex++;
+	    totalItems = _itemCount;
+	    Item memory currentItem;
+	    for(uint i = 0; i < _itemCount; i++){
+	    	currentItem = Item(integers[i+2],integers[i+_itemCount+2], new uint[](integers[i+(_itemCount*2)+2]));
+	    	for(uint j = 0; j < integers[i+(_itemCount*2)+2]; j++){
+	    		currentItem.extraIds[j] = integers[extraIndex+(_itemCount*3)+2];
+	    		extraIndex++;
+	    	}
+	    	items[i] = currentItem;	
 	    }
 		
 		// set contract infomation
@@ -84,11 +87,10 @@ contract Order{
 		keyRiderSet = true;
 	}
 
-	// needs fixing
-	function getItem(uint _id) public view returns(bytes32 itemName, uint itemCost){
-		//require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender); // removed as asking for contract address where as should be owner addresses
-		//return (items[_id].itemName,items[_id].itemCost);
-	}  
+	function getItemRaw(uint _id) public view returns(uint, uint, uint[] memory){
+		require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender, "you dont have permission to view this order"); // removed as asking for contract address where as should be owner addresses
+		return (items[_id].itemId,items[_id].optionId,items[_id].extraIds);
+	}
 
 
 	function riderOfferDelivery(bytes32 keyHash) public payable{

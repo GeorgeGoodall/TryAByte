@@ -57,40 +57,62 @@ library menuHelper {
 
 
 
-  function getEntry(menuStruct storage self, uint _id) public view returns (bytes32,bytes32,bytes32[] memory,uint[] memory, uint[] memory){
-    (uint itemIndex, bool found) = getItemMappingIndex(self,_id);
-    require(found == true, "index out of range");
-
+  function getEntry(menuStruct storage self, uint itemId) public view returns (bytes32,bytes32,uint[] memory, uint[] memory){
+    (uint itemIndex, bool found) = getItemMappingIndex(self,itemId);
+    require(found == true);
     menuHelper.Item storage itemToReturn = self.items[itemIndex];
 
-    uint optionsCount = itemToReturn.optionsIds.sizeOf();
+    uint count = itemToReturn.optionsIds.sizeOf();
+    uint[] memory optionIds = new uint[](count);
 
-    bytes32[] memory optionNamesToReturn = new bytes32[](optionsCount);
-    uint[] memory optionPricesToReturn = new uint[](optionsCount);
+    count = itemToReturn.extrasIds.sizeOf();
+    uint[] memory extraIds = new uint[](count);
 
     uint index;
     uint i;
     bool exists;
     (exists, i) = itemToReturn.optionsIds.getAdjacent(0, true);
     while (i != 0 && exists) {
-        optionNamesToReturn[index] = self.options[i].optionName;
-        optionPricesToReturn[index] = self.options[i].optionPrice;
+        optionIds[index] = i;
         index++;
         (exists, i) = itemToReturn.optionsIds.getAdjacent(i, true);
     }
 
-    uint256[] memory extrasIds = itemToReturn.extrasIds.getListValues();
+    index = 0;
+    (exists, i) = itemToReturn.extrasIds.getAdjacent(0, true);
+    while (i != 0 && exists) {
+        extraIds[index] = i;
+        index++;
+        (exists, i) = itemToReturn.extrasIds.getAdjacent(i, true);
+    }
 
-    return (itemToReturn.itemName,itemToReturn.description,optionNamesToReturn,optionPricesToReturn, extrasIds);
+    return (itemToReturn.itemName,itemToReturn.description,optionIds,extraIds);
   }
 
-  function getEntryIndexingInfo(menuStruct storage self, uint _id) public view returns (uint){
-    return self.items[_id].nextItem;
+  function getOrderItem(menuStruct storage self, uint itemIndex, uint optionId, uint[] memory extraIds) public view returns (bytes32, bytes32, bytes32, uint, bytes32[] memory, uint[] memory){
+    menuHelper.Item memory itemToReturn = self.items[itemIndex];
+    menuHelper.Option memory optionToReturn = self.options[optionId];
+
+    bytes32[] memory extraNamesToReturn = new bytes32[](extraIds.length);
+    uint[] memory extraPricesToReturn = new uint[](extraIds.length);
+
+    menuHelper.Extra memory currentExtra;
+    for(uint i = 0; i < extraIds.length; i++){
+    	currentExtra = self.extras[extraIds[i]];
+    	extraNamesToReturn[i] = currentExtra.extraName;
+    	extraPricesToReturn[i] = currentExtra.extraPrice;
+    }
+
+    return (itemToReturn.itemName, itemToReturn.description, optionToReturn.optionName, optionToReturn.optionPrice, extraNamesToReturn, extraPricesToReturn);
   }
 
-  function getItemHead(menuStruct storage self) public view returns (uint nextitem){
-    return self.itemHead;
-  }
+	function getEntryIndexingInfo(menuStruct storage self, uint _id) public view returns (uint){
+		return self.items[_id].nextItem;
+	}
+
+	function getItemHead(menuStruct storage self) public view returns (uint nextitem){
+		return self.itemHead;
+	}
 
 	function getItemMappingIndex(menuStruct storage self, uint _id) internal view returns (uint, bool){
 	    uint itemIndex = self.itemHead;
@@ -144,30 +166,30 @@ library menuHelper {
   	}
 
   	function addEntry(menuStruct storage self, uint addAtIndex, bytes32 _itemName,bytes32 _itemDescription) public returns (bool){
-	 
-	    menuHelper.Item memory item; 
+	    
+	    menuHelper.Item memory item; // 137
 	    StructuredLinkedList.List memory list;
-	    if(addAtIndex == 0){ 
-	      item = menuHelper.Item(self.itemHead,_itemName,_itemDescription, list, list);
+	    if(addAtIndex == 0){ //26
+	      item = menuHelper.Item(self.itemHead,_itemName,_itemDescription,list, list);
 	      self.itemTop++;
 	      self.items[self.itemTop] = item;
 	      self.itemHead = self.itemTop;
 	    }
 	    else{
-	      uint insertAfter = self.itemHead; 
+	      uint insertAfter = self.itemHead; // 237
 	      for(uint i = 1;i < addAtIndex; i++){
-	        uint index = self.items[insertAfter].nextItem; 
-	        if(index == 0) 
+	        uint index = self.items[insertAfter].nextItem; // 295
+	        if(index == 0) // 26
 	          break; // if you hit the end of the list, just add it to the end
 	        insertAfter = index; // 69
 	      }
-	      item = menuHelper.Item(self.items[insertAfter].nextItem,_itemName,_itemDescription,list, list); // 582
+	      item = menuHelper.Item(self.items[insertAfter].nextItem,_itemName,_itemDescription,list,list); // 582
 
 	      self.itemTop++; // 5237
 	      self.items[self.itemTop] = item; // 80375
 	      self.items[insertAfter].nextItem = self.itemTop; //5394
 	    }
-  	}
+	}
 
 // ================================ Options ============================================
 
@@ -298,8 +320,6 @@ library menuHelper {
 	    uint integerIndex;
 	    uint stringIndex;
 
-
-
 	    // remove menu.extras
 	    setExtrasInactive(self, integers.getPartition(integerIndex,integersFlags[0]));
 	    integerIndex += integersFlags[0];
@@ -323,7 +343,7 @@ library menuHelper {
 	    removeItems(self, integers.getPartition(integerIndex,integersFlags[4]));
 	    integerIndex += integersFlags[4];
 	    
-	    // addAtIndex, itemnames, itemDescriptions
+	    //addAtIndex, itemnames, itemDescriptions
 	    addMultipleItems(self, 
 	    	integers.getPartition(integerIndex,integersFlags[5]),
 	    	strings.getPartition(stringIndex,stringsFlags[2]),

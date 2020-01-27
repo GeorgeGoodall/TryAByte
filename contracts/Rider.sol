@@ -24,7 +24,6 @@ contract Rider {
         id = _id;
         owner = _owner; // this needs changing to the origin of the call
         controller = _controller;
-        totalOrders = 0;
     }
     
     // this function should be payable

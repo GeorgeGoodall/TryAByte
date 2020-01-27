@@ -83,15 +83,14 @@ contract Restaurant {
         return menu.getOrderPrice(integers, itemCount);
     }
     
-    // uint[] calldata itemIds, uint[] calldata optionIds, uint[] calldata extraIds, uint[] calldata extraFlags, uint deliveryFee, uint price
-    function makeOrder(uint[] calldata _integers, uint itemCount, bytes32 riderKeyHash) external payable returns (address orderAddress) {
+    // uint[] calldata itemIds, uint[] calldata optionIds, uint[] calldata extraFlags, uint[] calldata extraIds, uint deliveryFee, uint price
+    function makeOrder(uint[] calldata _integers, uint itemCount, bytes32 riderKeyHash, address payable customer) external payable returns (address orderAddress) {
         //require this comes from a customer smart contract, maybe worth moving this to the order smart contract
         require(CustomerFactory(Controller(controllerAddress).customerFactoryAddress()).customerExists(msg.sender), "Customer doesnt exist");
 
         uint[] memory integers = _integers;
-        integers[0] = totalOrders;
         
-		Order newOrder = (new Order).value(msg.value)(integers, itemCount, controllerAddress, msg.sender, riderKeyHash);
+		Order newOrder = (new Order).value(msg.value)(integers, itemCount, controllerAddress, customer, riderKeyHash);
 		orders[totalOrders] = order(true,address(newOrder));
         totalOrders ++;
 
@@ -100,6 +99,7 @@ contract Restaurant {
 		return orders[totalOrders - 1].orderAddress;       
     }
 
+    // the order should keep a reference to the owner and not the restaurant contract to avoid needing this function
     function setStatus(address orderAddress, uint status) public{
         require(msg.sender == owner, "you are not the owner");
         Order(orderAddress).setOrderStatus(status);

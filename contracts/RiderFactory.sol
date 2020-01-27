@@ -21,7 +21,7 @@ contract RiderFactory {
     }
     
     function makeRider() external returns(address customer){
-        require(riders2[msg.sender] == address(0x0)); // the rider must not already be signed up
+        require(riders2[msg.sender] == address(0x0), "the account already has a rider assosicated with it"); // the rider must not already be signed up
         Rider newRider = new Rider(riderCount, msg.sender, controller);
         riders1[address(newRider)] = msg.sender;
         riders2[msg.sender] = address(newRider);

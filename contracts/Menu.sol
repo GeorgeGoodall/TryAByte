@@ -42,8 +42,13 @@ contract Menu {
   }
 
   //needed for external contract access to struct
-  function getEntry(uint _id) public view returns (bytes32,bytes32,bytes32[] memory,uint[] memory, uint[] memory){
+  function getEntry(uint _id) public view returns (bytes32,bytes32,uint[] memory, uint[] memory){
     return menu.getEntry(_id);
+  }
+
+  //needed for external contract access to struct
+  function getOrderItem(uint itemId, uint optionId, uint[] memory extraIds) public view returns (bytes32, bytes32, bytes32, uint, bytes32[] memory, uint[] memory){
+    return menu.getOrderItem(itemId,optionId,extraIds);
   }
 
   //needed for external contract access to struct
