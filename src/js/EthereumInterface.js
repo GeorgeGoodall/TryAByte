@@ -36,12 +36,12 @@ async function makeRestaurant(restaurant){
 			console.log("making restaurant");
 			App.restaurantFactoryInstance.createRestaurant(web3.fromAscii(restaurant.name),web3.fromAscii(restaurant.address),10,10,restaurant.number,{from: App.account, gas: 6000000}).then(async function(err,result){
 		      restaurant.contractAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
-		      restaurant.getRestaurant(App.account);
+		      await restaurant.getRestaurant(restaurant.contractAddress);
 		      
 		      restaurant.logoAddress = await commitLogo(restaurant);
 		      
-		      console.log("Making Manu");
-		      await makeMenu(restaurant);
+		      // console.log("Making Manu");
+		      // await makeMenu(restaurant);
 		    });
 		}
 		else{
@@ -65,56 +65,77 @@ async function makeMenu(restaurant){
 	// vars for removing extras
 	let extrasToDelete = [];
 
-	// vars for adding items
-	var itemAddAtIndex = [];
-	var itemNames = [];
-	var itemDescriptions = [];
-	var optionNames = [];
-	var optionPrices = [];
-	var optionFlags = []; // this will store the lengths of each grouping of options in the 1D array
-	var extrasIdsForNewItem = [];
-	var extrasFlagsForNewItem = [];
+	// vars for adding extras
+	let optionsToCommit_names = [];
+	let optionsToCommit_prices = [];
+
+	// vars for removing extras
+	let optionsToDelete = [];
 
 	// vars for removing items
 	var itemsToRemove = [];
 
-	// vars for removing options
-	var itemIdsForOptionRemoval = [];
-	var optionsToRemove = [];
-	var optionsToRemoveFlags = [];
+	// vars for adding items
+	var itemToAdd_Index = [];
+	var itemToAdd_Names = [];
+	var itemToAdd_Descriptions = [];
 
-	// vars for adding options 
-	var itemsForNewOptionIds = [];
-	var insertOptionAtIndex = [];
-	var addOptionNames = [];
-	var addOptionPrices = [];
 
-	// vars for assigning extras
-	var itemIdsForNewExtra = [];
-	var newExtraIds = [];
-	var newExtraFlags = [];
+	// vars for unassigning options
+	var optionsToUnassign_itemId = [];
+	var optionsToUnassign_optionId = [];
+	var optionsToUnassign_flags = [];
+	
+	// vars for assigning options
+	var optionsToAssign_itemId = [];
+	var optionsToAssign_optionId = [];
+	var optionsToAssign_flags = [];
 
 	// vars for unassigning extras
-	var itemIdsForExtraRemoval = [];
-	var extraIdsToRemove = [];
-	var removeExtraFlags = [];
+	var extrasToUnassign_itemId = [];
+	var extrasToUnassign_optionId = [];
+	var extrasToUnassign_flags = [];
+
+	// vars for assigning extras
+	var extrasToAssign_itemId = [];
+	var extrasToAssign_optionId = [];
+	var extrasToAssign_flags = [];
+
 
 	let extrasIdsUsed = []; // temp array
 	for(let i = 0; i < restaurant.menu.length; i++){
 		for(let j = 0; j < restaurant.menu[i].itemExtras.length; j++){
-			if(restaurant.menu[i].onChain)
-				extrasIdsUsed[restaurant.menu[i].itemExtras[j]] = true;
+			if(restaurant.menu[i].onChain && !restaurant.menu[i].toBeDeleted || !restaurant.menu[i].onChain && !restaurant.menu[i].toBeDeleted)
+				extrasIdsUsed[restaurant.menu[i].itemExtras[j]-1] = true;
 		}
 	}
 
 	for(let i = 0; i < extrasIdsUsed.length; i++){
-		if(extrasIdsUsed[i] == true && !restaurant.extras[i].onChain){
-			console.log(restaurant.extras[i].name);
-			extrasToCommit_names.push(web3.fromAscii(restaurant.extras[i].name));
-			extrasToCommit_prices.push(restaurant.extras[i].price);
+		if(extrasIdsUsed[i] == true && !restaurant.extras.values[i].onChain){
+			extrasToCommit_names.push(web3.fromAscii(restaurant.extras.values[i].name));
+			extrasToCommit_prices.push(restaurant.extras.values[i].price);
 		}
-		else if(extrasIdsUsed[i] != true && restaurant.extras[i].onChain){
+		else if(extrasIdsUsed[i] != true && restaurant.extras.values[i].onChain){
 			extrasToDelete.push(i);
+		}
+		
+	}
+
+	let optionsIdsUsed = []; // temp array
+	for(let i = 0; i < restaurant.menu.length; i++){
+		for(let j = 0; j < restaurant.menu[i].itemOptions.length; j++){
+			if(restaurant.menu[i].onChain && !restaurant.menu[i].toBeDeleted || !restaurant.menu[i].onChain && !restaurant.menu[i].toBeDeleted)
+				optionsIdsUsed[restaurant.menu[i].itemOptions[j]-1] = true;
+		}
+	}
+
+	for(let i = 0; i < optionsIdsUsed.length; i++){
+		if(optionsIdsUsed[i] == true && !restaurant.options.values[i].onChain){
+			optionsToCommit_names.push(web3.fromAscii(restaurant.options.values[i].name));
+			optionsToCommit_prices.push(restaurant.options.values[i].price);
+		}
+		else if(optionsIdsUsed[i] != true && restaurant.options.values[i].onChain){
+			optionsToDelete.push(i);
 		}
 		
 	}
@@ -125,82 +146,59 @@ async function makeMenu(restaurant){
 			// get all items that have to been deleted and are on chain
 			if(restaurant.menu[i].name != "" && restaurant.menu[i].description != "" && restaurant.menu[i].onChain && restaurant.menu[i].toBeDeleted){
 				itemsToRemove.push(restaurant.menu[i].id);
+				break;
 			}
 
 			// get all items that have been added that are not onchain
 			if(restaurant.menu[i].name != "" && restaurant.menu[i].description != "" && !restaurant.menu[i].onChain && !restaurant.menu[i].toBeDeleted){
-				itemAddAtIndex.push(0);
-				itemNames.push(web3.fromAscii(restaurant.menu[i].name));
-				itemDescriptions.push(web3.fromAscii(restaurant.menu[i].description));
-				for(var j = 0; j < restaurant.menu[i].options.length; j++){
-					optionNames.push(web3.fromAscii(restaurant.menu[i].options[j].name));
-					optionPrices.push(restaurant.menu[i].options[j].price);
-				}
-				optionFlags.push(restaurant.menu[i].options.length);
+				itemToAdd_Index.push(i);
+				itemToAdd_Names.push(web3.fromAscii(restaurant.menu[i].name));
+				itemToAdd_Descriptions.push(web3.fromAscii(restaurant.menu[i].description));
 			}
 
-			
-			// options to remove and add
-			var optionsToDeleteTemp = [];
-			var optionsToAddTemp = [];
+			// if the item is onchain or to be put on chain loop through its options and extras
+			if(!restaurant.menu[i].toBeDeleted){
+				let optionsToUnassign = 0;
+				let optionsToAssign = 0;
+				for(var j = 0; j < restaurant.menu[i].itemOptions.length; j++){
+					if(restaurant.menu[i].itemOptionToDelete[j] && restaurant.menu[i].itemOptionsOnChain[j]){
+						optionsToUnassign_optionId.push(restaurant.menu[i].itemOptions[j]);
+						optionsToUnassign++;
+					}
+					else if(!restaurant.menu[i].itemOptionToDelete[j] && !restaurant.menu[i].itemOptionsOnChain[j]){
+						optionsToAssign_optionId.push(restaurant.menu[i].itemOptions[j]);
+						optionsToAssign++;
+					}
+				}
+				if(optionsToUnassign > 0){
+					optionsToUnassign_itemId.push(i);
+					optionsToUnassign_flags.push(optionsToUnassign);
+				}
+				if(optionsToAssign > 0){
+					optionsToAssign_itemId.push(i);
+					optionsToAssign_flags.push(optionsToAssign);
+				}
 
-			for(var j = 0; j < restaurant.menu[i].options.length; j++){
-				var option = restaurant.menu[i].options[j];
-				
-				// gets all options that have to be deleted that are on chain
-				if(restaurant.menu[i].onChain && option.toBeDeleted && option.onChain){
-					optionsToDeleteTemp.push(option.id);
+				let extrasToUnassign = 0;
+				let extrasToAssign = 0;
+				for(var j = 0; j < restaurant.menu[i].itemExtras.length; j++){
+					if(restaurant.menu[i].itemExtrasToDelete[j] && restaurant.menu[i].itemExtrasOnchain[j]){
+						extrasToUnassign_optionId.push(restaurant.menu[i].itemExtras[j]);
+						extrasToUnassign++;
+					}
+					else if(!restaurant.menu[i].itemExtrasToDelete[j] && !restaurant.menu[i].itemExtrasOnchain[j]){
+						extrasToAssign_optionId.push(restaurant.menu[i].itemExtras[j]);
+						extrasToAssign++;
+					}
 				}
-				// if the option is a new option
-				if(restaurant.menu[i].onChain && !option.toBeDeleted && !option.onChain){
-					itemsForNewOptionIds.push(i);
-					insertOptionAtIndex.push(0); // ToDo
-					addOptionNames.push(web3.fromAscii(option.name));
-					addOptionPrices.push(option.price);
+				if(extrasToUnassign > 0){
+					extrasToUnassign_itemId.push(i);
+					extrasToUnassign_flags.push(extrasToUnassign);
 				}
-
-
-				// hack solution for now, ideally this would be resolved by instead of simply deleting, the option name would be updated
-				var deleteFirstOption = true;
-				if(restaurant.menu[i].onChain && option.onChain || !restaurant.menu[i].onChain){
-					deleteFirstOption = false;
+				if(extrasToAssign > 0){
+					extrasToAssign_itemId.push(i);
+					extrasToAssign_flags.push(extrasToAssign);
 				}
-			}
-			if(deleteFirstOption){
-				optionsToDeleteTemp = [0].concat(optionsToDeleteTemp);
-			}
-			if(optionsToDeleteTemp.length > 0){
-				itemIdsForOptionRemoval.push(restaurant.menu[i].id);
-				optionsToRemove = optionsToRemove.concat(optionsToDeleteTemp);
-				optionsToRemoveFlags.push(optionsToDeleteTemp.length);
-			}
-			
-			// extras
-			let extrasFlagValue = 0;
-			let newExtrasTmp = [];
-			for(let j = 0; j < restaurant.menu[i].itemExtras.length; j++){
-				// for new items
-				if(!restaurant.menu[i].itemExtrasOnchain[j] && !restaurant.menu[i].onChain){
-					extrasIdsForNewItem.push(restaurant.menu[i].itemExtras[j]);
-					extrasFlagValue++;
-				}
-				else if(!restaurant.menu[i].itemExtrasOnchain[j] && restaurant.menu[i].onChain){
-					newExtrasTmp.push(restaurant.menu[i].itemExtras[j]);
-				}
-			}
-			if(!restaurant.menu[i].onChain)
-				extrasFlagsForNewItem.push(extrasFlagValue);
-			if(newExtrasTmp.length > 0){
-				itemIdsForNewExtra.push(i);
-				newExtraIds = newExtraIds.concat(newExtrasTmp);
-				newExtraFlags.push(newExtrasTmp.length);
-			}
-
-			// unassigning extras 
-			if(restaurant.menu[i].itemExtrasToDelete.length > 0){
-				itemIdsForExtraRemoval.push(i);
-				extraIdsToRemove = extraIdsToRemove.concat(restaurant.menu[i].itemExtrasToDelete);
-				removeExtraFlags.push(restaurant.menu[i].itemExtrasToDelete.length);
 			}
 		}
 	}
@@ -211,33 +209,43 @@ async function makeMenu(restaurant){
 	var strArray = [];
 	var strFlags = [];
 
-	intArray = intArray.concat(extrasToDelete,extrasToCommit_prices,itemsToRemove,
-					itemAddAtIndex,optionPrices,optionFlags,extrasIdsForNewItem,extrasFlagsForNewItem,
-					itemIdsForOptionRemoval,optionsToRemove,optionsToRemoveFlags,
-					itemsForNewOptionIds,insertOptionAtIndex,addOptionPrices,
-					itemIdsForExtraRemoval,extraIdsToRemove,removeExtraFlags,
-					itemIdsForNewExtra,newExtraIds,newExtraFlags);
-	intFlags.push(extrasToDelete.length,extrasToCommit_prices.length,itemsToRemove.length,
-					itemAddAtIndex.length,optionPrices.length,optionFlags.length,extrasIdsForNewItem.length,extrasFlagsForNewItem.length,
-					itemIdsForOptionRemoval.length,optionsToRemove.length,optionsToRemoveFlags.length,
-					itemsForNewOptionIds.length,insertOptionAtIndex.length,addOptionPrices.length,
-					itemIdsForExtraRemoval.length,extraIdsToRemove.length,removeExtraFlags.length,
-					itemIdsForNewExtra.length,newExtraIds.length,newExtraFlags.length);
+	intArray = intArray.concat(
+		extrasToDelete,extrasToCommit_prices,
+		optionsToDelete, optionsToCommit_prices,
+		itemsToRemove,
+		itemToAdd_Index,
+		optionsToUnassign_itemId,optionsToUnassign_optionId,optionsToUnassign_flags,
+		optionsToAssign_itemId,optionsToAssign_optionId,optionsToAssign_flags,
+		extrasToUnassign_itemId,extrasToUnassign_optionId,extrasToUnassign_flags,
+		extrasToAssign_itemId,extrasToAssign_optionId,extrasToAssign_flags,
+	);
 
-	strArray = strArray.concat(extrasToCommit_names,itemNames,itemDescriptions,optionNames,addOptionNames);
-	strFlags.push(extrasToCommit_names.length,itemNames.length,itemDescriptions.length,optionNames.length,addOptionNames.length);
+	intFlags.push(
+		extrasToDelete.length,extrasToCommit_prices.length,
+		optionsToDelete.length, optionsToCommit_prices.length,
+		itemsToRemove.length,
+		itemToAdd_Index.length,
+		optionsToUnassign_itemId.length,optionsToUnassign_optionId.length,optionsToUnassign_flags.length,
+		optionsToAssign_itemId.length,optionsToAssign_optionId.length,optionsToAssign_flags.length,
+		extrasToUnassign_itemId.length,extrasToUnassign_optionId.length,extrasToUnassign_flags.length,
+		extrasToAssign_itemId.length,extrasToAssign_optionId.length,extrasToAssign_flags.length
+	);
 
-	console.log(extrasToDelete,extrasToCommit_prices,itemsToRemove,itemAddAtIndex,optionPrices,extrasIdsForNewItem,
-					extrasFlagsForNewItem,itemIdsForOptionRemoval,optionsToRemove,optionsToRemoveFlags,
-					itemsForNewOptionIds,insertOptionAtIndex,addOptionPrices,
-					itemIdsForExtraRemoval,extraIdsToRemove,removeExtraFlags,
-					itemIdsForNewExtra,newExtraIds,newExtraFlags);
-	console.log(extrasToCommit_names,itemNames,itemDescriptions,optionNames,addOptionNames);
-	
-	console.log(intArray);	
-	console.log(intFlags);
-	console.log(strArray);
-	console.log(strFlags);
+	strArray = strArray.concat(
+		extrasToCommit_names,
+		optionsToCommit_names,
+		itemToAdd_Names,itemToAdd_Descriptions
+	);
+	strFlags.push(
+		extrasToCommit_names.length,
+		optionsToCommit_names.length,
+		itemToAdd_Names.length,itemToAdd_Descriptions.length
+	);
+
+	console.log(extrasToCommit_names, extrasToCommit_prices);
+	console.log(optionsToCommit_names, optionsToCommit_prices);
+
+	console.log(intArray, intFlags, strArray, strFlags);
 
 	restaurant.menuInstance.updateMenu(intArray,intFlags,strArray,strFlags).then(function(err,res){
 		console.log(err);

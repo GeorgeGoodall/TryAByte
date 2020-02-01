@@ -209,8 +209,7 @@
 										<th>Item name</th>
 										<th>Description</th>
 										<th>Options</th>
-										<th>Item/Option Price</th>
-										<th></th><!-- this is for the option delete buttons -->
+										<!--<th></th><!-- this is for the option delete buttons -->
 										<th>Optional Extras</th>
 									</tr>
 								</thead>
@@ -371,6 +370,23 @@
 							</div>
 							<button class="button">Order and pay</button>
 						</div>
+					</div>
+				</div>
+			</div>
+			<div id="popup" style="display: none">
+				<div id="popupGrey"></div>
+				<div class="box popup" id="popupContent">
+
+					<h1 class="title is-4" id="extra_popup_item_name"></h1>
+					<h1 class="subtitle is-4">Any extras with that?</h1>
+
+					<div class="list is-hoverable" id="extra_popup_extra_list">
+					  
+					</div>
+
+					<div id="buttons">
+						<button class="button" onclick="ViewPage.closePopup()">Cancel</button>
+						<button class="button" onclick="ViewPage.submitPopup()">Submit</button>
 					</div>
 				</div>
 			</div>

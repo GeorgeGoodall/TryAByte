@@ -33,6 +33,14 @@ contract Menu {
     return (menu.options[_id].optionName,menu.options[_id].optionPrice,menu.options[_id].active);
   }
 
+  function getExtraHead() public view returns (uint){
+    return menu.extraHead;
+  }
+
+  function getOptionHead() public view returns (uint){
+    return menu.optionsHead;
+  }
+
   function length() public view returns (uint){
     return menu.itemTop;
   }

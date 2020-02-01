@@ -1,5 +1,5 @@
-var controllerAddressRemote = "0x76C43fE7858493f76426B31F4D884F137ec5532E";
-var controllerAddressLocal = "0x76C43fE7858493f76426B31F4D884F137ec5532E";
+var controllerAddressRemote = "0x35240ff547B59f1308DCFC07d9438EDeB5722838";
+var controllerAddressLocal = "0x35240ff547B59f1308DCFC07d9438EDeB5722838";
 
 
 

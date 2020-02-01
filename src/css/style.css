@@ -1,6 +1,7 @@
 html{
 	min-height: 100%;
 	background-color: #aeccc8 !important;
+	height: 100%;
 }
 
 body{
@@ -18,6 +19,7 @@ button {
   background-color: #00d1b2;
   height: 200px;
   width: 100%;
+  z-index: 0;
 }
 
 #header {
@@ -116,4 +118,29 @@ button {
 
 .table tr {
 	border-bottom: solid darkgrey;
+}
+
+.popup {
+	position: absolute;
+	top: 10%;
+	left: 30%;
+	width: 40%;
+	height: 700px;
+	
+	text-align: center;
+	z-index: 32;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}
+
+#popupGrey {
+	background: rgba(0,0,0,0.6);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 31;
 }

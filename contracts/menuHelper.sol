@@ -128,7 +128,6 @@ library menuHelper {
 
 	function removeItems(menuStruct storage self, uint[] memory itemIds) public returns (bool){
 		uint lastId = 9999999999;
-		require(itemIds.length > 0, "no its sent");
 	    for(uint i = itemIds.length; i > 0; i--){
 	      require(lastId > itemIds[i-1], "itemIds not in assending order");
 	      if(!removeItem(self,itemIds[i-1]))
@@ -319,6 +318,8 @@ library menuHelper {
 	function updateMenu(menuStruct storage self, uint[] memory integers, uint[] memory integersFlags, bytes32[] memory strings, uint[] memory stringsFlags) public returns (bool){
 	    uint integerIndex;
 	    uint stringIndex;
+
+	    
 
 	    // remove menu.extras
 	    setExtrasInactive(self, integers.getPartition(integerIndex,integersFlags[0]));

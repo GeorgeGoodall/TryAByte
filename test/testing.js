@@ -122,227 +122,227 @@ describe('Contract: Restaurant', function(){
 		});
 	});
 
-	it("Can Add Multiple Items", function(){
-		return menuInstance.methods.addMultipleItems(
-			[0,0,2,3,4],
-			[web3.utils.fromAscii("Chili"),web3.utils.fromAscii("Lasagnia"),web3.utils.fromAscii("Nachos"),web3.utils.fromAscii("Milkshake"),web3.utils.fromAscii("ice cream")],
-			[web3.utils.fromAscii("the best chili in town"),web3.utils.fromAscii("Garfield would approve"),web3.utils.fromAscii("Cheese topped"),web3.utils.fromAscii("american styled Milkshake"),web3.utils.fromAscii("refreshing ice cream")]
-			).send({from: theAccounts[2], gas: 6000000}).then(function(){
-				return menuInstance.methods.getEntry(0).call();
-			}).then(function(item) {
-				assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
-				assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
-				return menuInstance.methods.getEntry(1).call();
-			}).then(function(item) {
-				assert.equal(web3.utils.toUtf8(item[0]),"Chili");
-				assert.equal(web3.utils.toUtf8(item[1]),"the best chili in town");
-				return menuInstance.methods.getEntry(2).call();
-			}).then(function(item) {
-				assert.equal(web3.utils.toUtf8(item[0]),"Nachos");
-				assert.equal(web3.utils.toUtf8(item[1]),"Cheese topped");
-				return menuInstance.methods.getEntry(3).call();
-			}).then(function(item) {
-				assert.equal(web3.utils.toUtf8(item[0]),"Milkshake");
-				assert.equal(web3.utils.toUtf8(item[1]),"american styled Milkshake");
-				return menuInstance.methods.getEntry(4).call();
-			}).then(function(item) {
-				assert.equal(web3.utils.toUtf8(item[0]),"ice cream");
-				assert.equal(web3.utils.toUtf8(item[1]),"refreshing ice cream");
-			});
-	});
-	// Items : lasagnia, chili, Nachos, Milkshake
+	// it("Can Add Multiple Items", function(){
+	// 	return menuInstance.methods.addMultipleItems(
+	// 		[0,0,2,3,4],
+	// 		[web3.utils.fromAscii("Chili"),web3.utils.fromAscii("Lasagnia"),web3.utils.fromAscii("Nachos"),web3.utils.fromAscii("Milkshake"),web3.utils.fromAscii("ice cream")],
+	// 		[web3.utils.fromAscii("the best chili in town"),web3.utils.fromAscii("Garfield would approve"),web3.utils.fromAscii("Cheese topped"),web3.utils.fromAscii("american styled Milkshake"),web3.utils.fromAscii("refreshing ice cream")]
+	// 		).send({from: theAccounts[2], gas: 6000000}).then(function(){
+	// 			return menuInstance.methods.getEntry(0).call();
+	// 		}).then(function(item) {
+	// 			assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
+	// 			assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
+	// 			return menuInstance.methods.getEntry(1).call();
+	// 		}).then(function(item) {
+	// 			assert.equal(web3.utils.toUtf8(item[0]),"Chili");
+	// 			assert.equal(web3.utils.toUtf8(item[1]),"the best chili in town");
+	// 			return menuInstance.methods.getEntry(2).call();
+	// 		}).then(function(item) {
+	// 			assert.equal(web3.utils.toUtf8(item[0]),"Nachos");
+	// 			assert.equal(web3.utils.toUtf8(item[1]),"Cheese topped");
+	// 			return menuInstance.methods.getEntry(3).call();
+	// 		}).then(function(item) {
+	// 			assert.equal(web3.utils.toUtf8(item[0]),"Milkshake");
+	// 			assert.equal(web3.utils.toUtf8(item[1]),"american styled Milkshake");
+	// 			return menuInstance.methods.getEntry(4).call();
+	// 		}).then(function(item) {
+	// 			assert.equal(web3.utils.toUtf8(item[0]),"ice cream");
+	// 			assert.equal(web3.utils.toUtf8(item[1]),"refreshing ice cream");
+	// 		});
+	// });
+	// // Items : lasagnia, chili, Nachos, Milkshake
 
-	it("can swap item indexes", function(){
-		return menuInstance.methods.swapItems(0,1).send({from: theAccounts[2], gas: 6000000}).then(function(){
-			return menuInstance.methods.getEntry(0).call();
-		}).then(function(item){
-			assert.equal(web3.utils.toUtf8(item[0]),"Chili");
-			assert.equal(web3.utils.toUtf8(item[1]),"the best chili in town");
-			return menuInstance.methods.getEntry(1).call();
-		}).then(function(item){
-			assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
-			assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
-		});
-	});
+	// it("can swap item indexes", function(){
+	// 	return menuInstance.methods.swapItems(0,1).send({from: theAccounts[2], gas: 6000000}).then(function(){
+	// 		return menuInstance.methods.getEntry(0).call();
+	// 	}).then(function(item){
+	// 		assert.equal(web3.utils.toUtf8(item[0]),"Chili");
+	// 		assert.equal(web3.utils.toUtf8(item[1]),"the best chili in town");
+	// 		return menuInstance.methods.getEntry(1).call();
+	// 	}).then(function(item){
+	// 		assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
+	// 		assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
+	// 	});
+	// });
 
-	// Items : chili, lasagnia, Nachos, Milkshake
+	// // Items : chili, lasagnia, Nachos, Milkshake
 
-	it("can add extras to the menu", function(){
-		return menuInstance.methods.addExtras([web3.utils.fromAscii("extra cheese"),web3.utils.fromAscii("extra spicy"),web3.utils.fromAscii("loaded"),web3.utils.fromAscii("cream"),web3.utils.fromAscii("caramel")],[100,200,300,150,250]).send({from: theAccounts[2], gas: 6721975}).then(function(res){
-			return menuInstance.methods.getExtra(1).call();
-		}).then(function(extra){
-			assert.equal(web3.utils.hexToUtf8(extra[0]),"extra cheese");
-			assert.equal(extra[1],100);
-			return menuInstance.methods.getExtra(2).call();
-		}).then(function(extra){
-			assert.equal(web3.utils.hexToUtf8(extra[0]),"extra spicy");
-			assert.equal(extra[1],200);
-			return menuInstance.methods.getExtra(3).call();
-		}).then(function(extra){
-			assert.equal(web3.utils.hexToUtf8(extra[0]),"loaded");
-			assert.equal(extra[1],300);
-		});
-	});
+	// it("can add extras to the menu", function(){
+	// 	return menuInstance.methods.addExtras([web3.utils.fromAscii("extra cheese"),web3.utils.fromAscii("extra spicy"),web3.utils.fromAscii("loaded"),web3.utils.fromAscii("cream"),web3.utils.fromAscii("caramel")],[100,200,300,150,250]).send({from: theAccounts[2], gas: 6721975}).then(function(res){
+	// 		return menuInstance.methods.getExtra(1).call();
+	// 	}).then(function(extra){
+	// 		assert.equal(web3.utils.hexToUtf8(extra[0]),"extra cheese");
+	// 		assert.equal(extra[1],100);
+	// 		return menuInstance.methods.getExtra(2).call();
+	// 	}).then(function(extra){
+	// 		assert.equal(web3.utils.hexToUtf8(extra[0]),"extra spicy");
+	// 		assert.equal(extra[1],200);
+	// 		return menuInstance.methods.getExtra(3).call();
+	// 	}).then(function(extra){
+	// 		assert.equal(web3.utils.hexToUtf8(extra[0]),"loaded");
+	// 		assert.equal(extra[1],300);
+	// 	});
+	// });
 
-	// Items : chili, lasagnia, Nachos, Milkshake
-	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
+	// // Items : chili, lasagnia, Nachos, Milkshake
+	// // Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
 
-	it("can assign extras to an item", function(){
-		return menuInstance.methods.assignExtras([0,1,2],[4,3,4,2,3,4],[1,3,2]).send({from: theAccounts[2], gas: 6000000}).then(function(res){
-			return menuInstance.methods.getEntry(0).call();
-		}).then(function(item){
-			//assert.equal(web3.utils.toUtf8(item[0]),"Nachos");
-			assert.equal(item[3][0],4);
-			return menuInstance.methods.getEntry(1).call();
-		}).then(function(item){
-			//assert.equal(web3.utils.toUtf8(item[0]),"Milkshake");
-			assert.equal(item[3][0],3);
-			assert.equal(item[3][1],4);
-		});
-	});
+	// it("can assign extras to an item", function(){
+	// 	return menuInstance.methods.assignExtras([0,1,2],[4,3,4,2,3,4],[1,3,2]).send({from: theAccounts[2], gas: 6000000}).then(function(res){
+	// 		return menuInstance.methods.getEntry(0).call();
+	// 	}).then(function(item){
+	// 		//assert.equal(web3.utils.toUtf8(item[0]),"Nachos");
+	// 		assert.equal(item[3][0],4);
+	// 		return menuInstance.methods.getEntry(1).call();
+	// 	}).then(function(item){
+	// 		//assert.equal(web3.utils.toUtf8(item[0]),"Milkshake");
+	// 		assert.equal(item[3][0],3);
+	// 		assert.equal(item[3][1],4);
+	// 	});
+	// });
 
-	// Items : chili () (4), lasagnia () (3,4,2), Nachos () (3,4), Milkshake
-	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
+	// // Items : chili () (4), lasagnia () (3,4,2), Nachos () (3,4), Milkshake
+	// // Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
 
 
-	it("can unassign extras", function(){
-		return menuInstance.methods.unassignExtras([1,2],[2,3,3],[2,1]).send({from: theAccounts[2], gas: 6000000}).then(function(){
-			return menuInstance.methods.getEntry(1).call();
-		}).then(function(item){
-			assert.equal(typeof item[3][2],"undefined");
-			return menuInstance.methods.getEntry(2).call();
-		}).then(function(item){
-			assert.equal(typeof item[3][3],"undefined");
-			assert.equal(typeof item[3][4],"undefined");
-		});
-	});
+	// it("can unassign extras", function(){
+	// 	return menuInstance.methods.unassignExtras([1,2],[2,3,3],[2,1]).send({from: theAccounts[2], gas: 6000000}).then(function(){
+	// 		return menuInstance.methods.getEntry(1).call();
+	// 	}).then(function(item){
+	// 		assert.equal(typeof item[3][2],"undefined");
+	// 		return menuInstance.methods.getEntry(2).call();
+	// 	}).then(function(item){
+	// 		assert.equal(typeof item[3][3],"undefined");
+	// 		assert.equal(typeof item[3][4],"undefined");
+	// 	});
+	// });
 
-	// Items : chili () (4), lasagnia () (4), Nachos () (4), Milkshake
-	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
+	// // Items : chili () (4), lasagnia () (4), Nachos () (4), Milkshake
+	// // Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
 
-	it("Can add multiple options", function(){
-		return menuInstance.methods.addOptions(
-			[web3.utils.fromAscii("chocolate"),web3.utils.fromAscii("strawbery"),web3.utils.fromAscii("peanut butter"),web3.utils.fromAscii("extraSpicy"),web3.utils.fromAscii("Large"),web3.utils.fromAscii("small")],
-			[400,400,400,500,700,500]).send({from: theAccounts[2], gas: 6000000}).then(function(){
-				return menuInstance.methods.getOption(1).call();
-			}).then(function(option){
-				assert.equal(web3.utils.hexToUtf8(option[0]),"chocolate");
-				assert.equal(option[1],400);
-				return menuInstance.methods.getOption(2).call();
-			}).then(function(option){
-				assert.equal(web3.utils.hexToUtf8(option[0]),"strawbery");
-				assert.equal(option[1],400);
-				return menuInstance.methods.getOption(3).call();
-			}).then(function(option){
-				assert.equal(web3.utils.hexToUtf8(option[0]),"peanut butter");
-				assert.equal(option[1],400);
-				return menuInstance.methods.getOption(4).call();
-			}).then(function(option){
-				assert.equal(web3.utils.hexToUtf8(option[0]),"extraSpicy");
-				assert.equal(option[1],500);
-				return menuInstance.methods.getOption(5).call();
-			}).then(function(option){
-				assert.equal(web3.utils.hexToUtf8(option[0]),"Large");
-				assert.equal(option[1],700);
-				return menuInstance.methods.getOption(6).call();
-			}).then(function(option){
-				assert.equal(web3.utils.hexToUtf8(option[0]),"small");
-				assert.equal(option[1],500);
-			});
-	});
+	// it("Can add multiple options", function(){
+	// 	return menuInstance.methods.addOptions(
+	// 		[web3.utils.fromAscii("chocolate"),web3.utils.fromAscii("strawbery"),web3.utils.fromAscii("peanut butter"),web3.utils.fromAscii("extraSpicy"),web3.utils.fromAscii("Large"),web3.utils.fromAscii("small")],
+	// 		[400,400,400,500,700,500]).send({from: theAccounts[2], gas: 6000000}).then(function(){
+	// 			return menuInstance.methods.getOption(1).call();
+	// 		}).then(function(option){
+	// 			assert.equal(web3.utils.hexToUtf8(option[0]),"chocolate");
+	// 			assert.equal(option[1],400);
+	// 			return menuInstance.methods.getOption(2).call();
+	// 		}).then(function(option){
+	// 			assert.equal(web3.utils.hexToUtf8(option[0]),"strawbery");
+	// 			assert.equal(option[1],400);
+	// 			return menuInstance.methods.getOption(3).call();
+	// 		}).then(function(option){
+	// 			assert.equal(web3.utils.hexToUtf8(option[0]),"peanut butter");
+	// 			assert.equal(option[1],400);
+	// 			return menuInstance.methods.getOption(4).call();
+	// 		}).then(function(option){
+	// 			assert.equal(web3.utils.hexToUtf8(option[0]),"extraSpicy");
+	// 			assert.equal(option[1],500);
+	// 			return menuInstance.methods.getOption(5).call();
+	// 		}).then(function(option){
+	// 			assert.equal(web3.utils.hexToUtf8(option[0]),"Large");
+	// 			assert.equal(option[1],700);
+	// 			return menuInstance.methods.getOption(6).call();
+	// 		}).then(function(option){
+	// 			assert.equal(web3.utils.hexToUtf8(option[0]),"small");
+	// 			assert.equal(option[1],500);
+	// 		});
+	// });
 
-	// Items : chili () (4), lasagnia () (4), Nachos () (4), Milkshake
+	// // Items : chili () (4), lasagnia () (4), Nachos () (4), Milkshake
+	// // options : chocolate, strawbery, penut butter, extraSpicey, large, small
+	// // Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
+
+	// it("can assign options to an item", function(){
+	// 	return menuInstance.methods.assignOptions([0,1,2],[5,4,5,3,4,5],[1,3,2]).send({from: theAccounts[2], gas: 6000000}).then(function(res){
+	// 		return menuInstance.methods.getEntry(0).call();
+	// 	}).then(function(item){
+	// 		assert.equal(item[2][0],5);
+	// 		return menuInstance.methods.getEntry(1).call();
+	// 	}).then(function(item){
+	// 		assert.equal(item[2][0],4);
+	// 		assert.equal(item[2][1],5);
+	// 		assert.equal(item[2][2],3);
+	// 		return menuInstance.methods.getEntry(2).call();
+	// 	}).then(function(item){
+	// 		assert.equal(item[2][0],4);
+	// 		assert.equal(item[2][1],5);
+	// 	});
+	// });
+
+	// // Items : chili (5) (4), lasagnia (4,5,3) (4), Nachos (4,5) (4), Milkshake
+	// // options : chocolate, strawbery, penut butter, extraSpicey, large, small
+	// // Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
+
+	// it("can swap option indexes", function(){
+	// 	return menuInstance.methods.getEntry(1).call().then(function(item){
+	// 		return menuInstance.methods.swapOptions(1,4,5).send({from: theAccounts[2], gas: 6000000});
+	// 	}).then(function(res){
+	// 		return menuInstance.methods.getEntry(1).call();
+	// 	}).then(function(item){
+	// 		assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
+	// 		assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
+	// 		assert.equal(item[2][0],5);
+	// 		assert.equal(item[2][1],4);
+	// 		assert.equal(item[2][2],3);
+	// 	});
+	// });
+
+	// // Items : chili (5) (4), lasagnia (5,4,3) (4), Nachos (4,5) (4), Milkshake
+	// // options : chocolate, strawbery, penut butter, extraSpicey, large, small
+	// // Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
+
+	// it("can unassign options", function(){
+	// 	return menuInstance.methods.unassignOptions([1,2],[4,3,5],[2,1]).send({from: theAccounts[2], gas: 6000000}).then(function(){
+	// 		return menuInstance.methods.getEntry(1).call();
+	// 	}).then(function(item){
+	// 		assert.equal(typeof item[2][1],"undefined");
+	// 		assert.equal(typeof item[2][2],"undefined");
+	// 		return menuInstance.methods.getEntry(2).call();
+	// 	}).then(function(item){
+	// 		assert.equal(typeof item[2][1],"undefined");
+	// 	});
+	// });
+
+	// // Items : chili (5) (4), lasagnia (5) (4), Nachos (4) (4), Milkshake
+	// // options : chocolate, strawbery, penut butter, extraSpicey, large, small
+	// // Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
+
+	// it("can remove multiple items", function(){
+	// 	return menuInstance.methods.removeMultipleItems([0,3]).send({from: theAccounts[2], gas: 6000000}).then(function(){
+	// 		return menuInstance.methods.getEntry(0).call();
+	// 	}).then(function(item){
+	// 		assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
+	// 		assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
+	// 		return menuInstance.methods.getEntry(1).call();
+	// 	}).then(function(item){
+	// 		assert.equal(web3.utils.toUtf8(item[0]),"Nachos");
+	// 		assert.equal(web3.utils.toUtf8(item[1]),"Cheese topped");
+	// 	});
+	// });
+
+	// // Items : lasagnia (5) (4), Nachos (4) (4)
+	// // options : chocolate, strawbery, penut butter, extraSpicey, large, small
+	// // Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
+
+	// it("can remove multiple options", function(){
+	// 	return menuInstance.methods.setOptionsInactive([0,1]).send({from: theAccounts[2], gas: 6000000}).then(function(){
+	// 		return menuInstance.methods.getOption(0).call();
+	// 	}).then(function(option){
+	// 		assert.equal(option[2],false);
+	// 		return menuInstance.methods.getOption(1).call();
+	// 	}).then(function(option){
+	// 		assert.equal(option[2],false);
+	// 	});
+	// });
+
+	// Items : lasagnia (5) (4), Nachos (4) (4)
 	// options : chocolate, strawbery, penut butter, extraSpicey, large, small
 	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
 
-	it("can assign options to an item", function(){
-		return menuInstance.methods.assignOptions([0,1,2],[5,4,5,3,4,5],[1,3,2]).send({from: theAccounts[2], gas: 6000000}).then(function(res){
-			return menuInstance.methods.getEntry(0).call();
-		}).then(function(item){
-			assert.equal(item[2][0],5);
-			return menuInstance.methods.getEntry(1).call();
-		}).then(function(item){
-			assert.equal(item[2][0],4);
-			assert.equal(item[2][1],5);
-			assert.equal(item[2][2],3);
-			return menuInstance.methods.getEntry(2).call();
-		}).then(function(item){
-			assert.equal(item[2][0],4);
-			assert.equal(item[2][1],5);
-		});
-	});
-
-	// Items : chili (5) (4), lasagnia (4,5,3) (4), Nachos (4,5) (4), Milkshake
-	// options : chocolate, strawbery, penut butter, extraSpicey, large, small
-	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
-
-	it("can swap option indexes", function(){
-		return menuInstance.methods.getEntry(1).call().then(function(item){
-			return menuInstance.methods.swapOptions(1,4,5).send({from: theAccounts[2], gas: 6000000});
-		}).then(function(res){
-			return menuInstance.methods.getEntry(1).call();
-		}).then(function(item){
-			assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
-			assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
-			assert.equal(item[2][0],5);
-			assert.equal(item[2][1],4);
-			assert.equal(item[2][2],3);
-		});
-	});
-
-	// Items : chili (5) (4), lasagnia (5,4,3) (4), Nachos (4,5) (4), Milkshake
-	// options : chocolate, strawbery, penut butter, extraSpicey, large, small
-	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
-
-	it("can unassign options", function(){
-		return menuInstance.methods.unassignOptions([1,2],[4,3,5],[2,1]).send({from: theAccounts[2], gas: 6000000}).then(function(){
-			return menuInstance.methods.getEntry(1).call();
-		}).then(function(item){
-			assert.equal(typeof item[2][1],"undefined");
-			assert.equal(typeof item[2][2],"undefined");
-			return menuInstance.methods.getEntry(2).call();
-		}).then(function(item){
-			assert.equal(typeof item[2][1],"undefined");
-		});
-	});
-
-	// Items : chili (5) (4), lasagnia (5,4,3) (4), Nachos (4,5) (4), Milkshake
-	// options : chocolate, strawbery, penut butter, extraSpicey, large, small
-	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
-
-	it("can remove multiple items", function(){
-		return menuInstance.methods.removeMultipleItems([0,3]).send({from: theAccounts[2], gas: 6000000}).then(function(){
-			return menuInstance.methods.getEntry(0).call();
-		}).then(function(item){
-			assert.equal(web3.utils.toUtf8(item[0]),"Lasagnia");
-			assert.equal(web3.utils.toUtf8(item[1]),"Garfield would approve");
-			return menuInstance.methods.getEntry(1).call();
-		}).then(function(item){
-			assert.equal(web3.utils.toUtf8(item[0]),"Nachos");
-			assert.equal(web3.utils.toUtf8(item[1]),"Cheese topped");
-		});
-	});
-
-	// Items : lasagnia (5,4,3) (4), Nachos (4,5) (4)
-	// options : chocolate, strawbery, penut butter, extraSpicey, large, small
-	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
-
-	it("can remove multiple options", function(){
-		return menuInstance.methods.setOptionsInactive([0,1]).send({from: theAccounts[2], gas: 6000000}).then(function(){
-			return menuInstance.methods.getOption(0).call();
-		}).then(function(option){
-			assert.equal(option[2],false);
-			return menuInstance.methods.getOption(1).call();
-		}).then(function(option){
-			assert.equal(option[2],false);
-		});
-	});
-
-	// Items : lasagnia (5,4,3) (4), Nachos (4,5) (4)
-	// options : chocolate, strawbery, penut butter, extraSpicey, large, small
-	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel
-
-	let integerFlags = [2,3,2,3,2,2,2,4,2,2,4,2,1,1,1,2,4,2];
+	let integerFlags = [2,3,2,3,1,2,1,1,1,2,4,2,1,1,1,2,4,2];
 	let integerArray = [1,2,				// set extras inactive index
 
 						200,200,300,		// add extra: price
@@ -351,16 +351,16 @@ describe('Contract: Restaurant', function(){
 
 						100,200,300,		// add option price
 
-						0,1, 				// remove item at index			
+						1, 					// remove item at index			
 
-						0,1, 				// add item at index
+						1,2, 				// add item at index
 
-						0,1, 				// unassign options : item id
-						1,2,2,3,			// option id
-						2,2, 				// flags
+						0,	 				// unassign options : item id
+						5,				// option id
+						1, 					// flags
 
 						0,1, 				// assign options : item id
-						5,8,4,5,			// option id
+						6,8,4,5,			// option id
 						2,2, 				// flags
 
 						0, 					// unassign extras item ids
@@ -378,48 +378,80 @@ describe('Contract: Restaurant', function(){
 						web3.utils.fromAscii("custom pizza"), web3.utils.fromAscii("100% beef")
 						];
 
-	// lassagnia natchos
+	// Items : lasagnia (6,8) (5,6), Pizza (4,5) (5,6), Burger () ()
+	// options : chocolate, strawbery, penut butter, extraSpicey, large, small, Small, Medium, Large
+	// Extras: extra Cheese, Extra Spicey, loaded, cream, caramel, tomato sauce, bbq sauce, extra cheese
 
-	// ToDo write better tests for this
-	it("Can run the batch menu update", function(){
+	// // ToDo write better tests for this
+	// it("Can run the batch menu update", function(){
+	// 	return menuInstance.methods.updateMenu(integerArray,integerFlags,stringArray, stringFlags).send({from: theAccounts[2], gas: 6000000}).then(function(res){
+	// 		return menuInstance.methods.getExtra(0).call();
+	// 	}).then((extra)=>{
+	// 		assert.equal(extra[2],false);
+	// 		return menuInstance.methods.getExtra(1).call();
+	// 	}).then((extra)=>{
+	// 		assert.equal(extra[2],false);
+	// 		return menuInstance.methods.getExtra(6).call();
+	// 	}).then((extra)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(extra[0]),"tomato sauce");
+	// 		assert.equal(extra[1],200);
+	// 		return menuInstance.methods.getExtra(7).call();
+	// 	}).then((extra)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(extra[0]),"bbq sauce");
+	// 		assert.equal(extra[1],200);
+	// 		return menuInstance.methods.getExtra(8).call();
+	// 	}).then((extra)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(extra[0]),"extra Cheese");
+	// 		assert.equal(extra[1],300);
+	// 		return menuInstance.methods.getOption(1).call();
+	// 	}).then((option)=>{
+	// 		assert.equal(option[2],false);
+	// 		return menuInstance.methods.getOption(2).call();
+	// 	}).then((option)=>{
+	// 		assert.equal(option[2],false);
+	// 		return menuInstance.methods.getOption(7).call();
+	// 	}).then((option)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(option[0]),"Small");
+	// 		assert.equal(option[1],100);
+	// 		return menuInstance.methods.getOption(8).call();
+	// 	}).then((option)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(option[0]),"Medium");
+	// 		assert.equal(option[1],200);
+	// 		return menuInstance.methods.getOption(9).call();
+	// 	}).then((option)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(option[0]),"Large");
+	// 		assert.equal(option[1],300);
+	// 		return menuInstance.methods.getEntry(0).call();
+	// 	}).then((item)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(item[0]),"Lasagnia");
+	// 		assert.equal(web3.utils.hexToUtf8(item[1]),"Garfield would approve");
+	// 		assert.equal(item[2][0],6);
+	// 		assert.equal(item[2][1],8);
+	// 		assert.equal(item[3][0],5);
+	// 		assert.equal(item[3][1],6);
+	// 		return menuInstance.methods.getEntry(1).call();
+	// 	}).then((item)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(item[0]),"Pizza");
+	// 		assert.equal(web3.utils.hexToUtf8(item[1]),"custom pizza");
+	// 		assert.equal(item[2][0],4);
+	// 		assert.equal(item[2][1],5);
+	// 		assert.equal(item[3][0],5);
+	// 		assert.equal(item[3][1],6);
+	// 		return menuInstance.methods.getEntry(2).call();
+	// 	}).then((item)=>{
+	// 		assert.equal(web3.utils.hexToUtf8(item[0]),"Burger");
+	// 		assert.equal(web3.utils.hexToUtf8(item[1]),"100% beef");
+	// 	});
+	// });
+
+	integerArray = [1,1,1,1,1,1,0,0,1,2,3,3,0,1,2,3,3];
+	integerFlags = [0,3,0,3,0,1,0,0,0,1,3,1,0,0,0,1,3,1];
+	stringArray =  ["0x64","0x65","0x66","0x61","0x62","0x63","0x74657374","0x74657374"];
+	stringFlags = [3,3,1,1];
+
+	it("can run a sparse update menu", function(){
 		return menuInstance.methods.updateMenu(integerArray,integerFlags,stringArray, stringFlags).send({from: theAccounts[2], gas: 6000000}).then(function(res){
-			return menuInstance.methods.getExtra(0).call();
-		}).then((extra)=>{
-			assert.equal(extra[2],false);
-			return menuInstance.methods.getExtra(1).call();
-		}).then((extra)=>{
-			assert.equal(extra[2],false);
-			return menuInstance.methods.getExtra(6).call();
-		}).then((extra)=>{
-			assert.equal(web3.utils.hexToUtf8(extra[0]),"tomato sauce");
-			assert.equal(extra[1],200);
-			return menuInstance.methods.getExtra(7).call();
-		}).then((extra)=>{
-			assert.equal(web3.utils.hexToUtf8(extra[0]),"bbq sauce");
-			assert.equal(extra[1],200);
-			return menuInstance.methods.getExtra(8).call();
-		}).then((extra)=>{
-			assert.equal(web3.utils.hexToUtf8(extra[0]),"extra Cheese");
-			assert.equal(extra[1],300);
-			return menuInstance.methods.getOption(1).call();
-		}).then((option)=>{
-			assert.equal(option[2],false);
-			return menuInstance.methods.getOption(2).call();
-		}).then((option)=>{
-			assert.equal(option[2],false);
-			return menuInstance.methods.getOption(7).call();
-		}).then((option)=>{
-			assert.equal(web3.utils.hexToUtf8(option[0]),"Small");
-			assert.equal(option[1],100);
-			return menuInstance.methods.getOption(8).call();
-		}).then((option)=>{
-			assert.equal(web3.utils.hexToUtf8(option[0]),"Medium");
-			assert.equal(option[1],200);
-			return menuInstance.methods.getOption(9).call();
-		}).then((option)=>{
-			assert.equal(web3.utils.hexToUtf8(option[0]),"Large");
-			assert.equal(option[1],300);
-			return menuInstance.methods.getEntry(0).call();
+			console.log(res);
 		});
 	});
 

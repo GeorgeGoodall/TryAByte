@@ -20,11 +20,13 @@ function MenuItem(){
 	this.id;
 	this.name = "";
 	this.description = "";
-	this.options = [];
 	this.itemExtras = []; // int array pointing to extras IDs
 	this.itemExtrasOnchain = [];
 	this.itemExtrasToDelete = []; // int array of extra ID's to remove from the blockchain
-	this.options[0] = new ItemOption();
+	this.itemOptions = [];
+	this.itemOptionsOnChain = [];
+	this.itemOptionToDelete = [];
+	this.toBeDeleted = false;
 	this.onChain = false;
 }
 
@@ -55,8 +57,14 @@ class Restaurant{
 		this.menuInstance = null,
 
 		this.menu = [];
-		this.extrasIdCap = 0;
-		this.extras = [];
+		this.extrasIdCap = 1;
+		this.optionsIdCap = 1;
+		this.extras = {
+			values : [],
+		};
+		this.options = {
+			values : [],
+		};
 
 		this.onChain = false;
 	}
@@ -80,53 +88,52 @@ class Restaurant{
 			this.menuInstance = await new App.contracts.Menu(this.menuAddress);
 
 			await this.getRestaurantExtras();
+			await this.getRestaurantOptions();
 
-			let currentItem = await this.menuInstance.getEntry(0);
-			let i = 0;
+			
+			
 
 			// should come up with a better way of knowing when the menu has been traversed
-			while(currentItem[0] != "0x0000000000000000000000000000000000000000000000000000000000000000" && currentItem[1] != "0x0000000000000000000000000000000000000000000000000000000000000000"){
+			let length = await this.menuInstance.length();
+			for(let i = 0; i < length; i++){
+				let currentItem = await this.menuInstance.getEntry(i);
 				console.log(currentItem);
 				this.menu[i] = new MenuItem();
 				this.menu[i].id = i;
 				this.menu[i].name = web3.toUtf8(currentItem[0]);
 				this.menu[i].description = web3.toUtf8(currentItem[1]);
 				for(var j = 0; j < currentItem[2].length; j++){
-					this.menu[i].options[j] = new ItemOption(j,web3.toUtf8(currentItem[2][j]),currentItem[3][j],true);
+					this.addOptionToItem(i,currentItem[2][j]);
 				}
-				for(var j = 0; j < currentItem[4].length; j++){
-					if(currentItem[4][j]["c"][0] != 9999){
-						this.menu[i].itemExtras[j] = currentItem[4][j]["c"][0];
-						this.menu[i].itemExtrasOnchain[j] = true;
-					}
+				for(var j = 0; j < currentItem[3].length; j++){
+					this.addExtraToItem(i,currentItem[3][j]);
 				}
 				this.menu[i].onChain = true;
 				this.menu[i].id = i;
-
-				i++;
-				currentItem = await this.menuInstance.getEntry(i);
 			}
 		}
 	}
 
 	async getRestaurantExtras(){
-		this.extrasIdCap = await this.menuInstance.extraHead.call();
+		this.extrasIdCap = await this.menuInstance.getExtraHead();
 		this.extrasIdCap = this.extrasIdCap["c"][0];
-		for(let i = 0 ; i < this.extrasIdCap; i++){
-			let currentExtra = await this.menuInstance.extras(i);
+		for(let i = 1 ; i < this.extrasIdCap; i++){
+			let currentExtra = await this.menuInstance.getExtra(i);
 			if(currentExtra[2] == true){// if extra is active
 				this.addMenuExtra(web3.toUtf8(currentExtra[0]),currentExtra[1]["c"][0],i,true);
 			}
 		}
 	}
 
-	getExtrasList(){
-		let extras = [];
-		for(let i = 0; i < this.extras.length; i++){
-			if(typeof this.extras[i] != "undefined")
-				extras.push(this.extras[i].name + " : " + this.extras[i].price);
+	async getRestaurantOptions(){
+		this.optionsIdCap = await this.menuInstance.getOptionHead();
+		this.optionsIdCap = this.optionsIdCap["c"][0];
+		for(let i = 1 ; i < this.optionsIdCap; i++){
+			let currentOption = await this.menuInstance.getOption(i);
+			if(currentOption[2] == true){// if extra is active
+				this.addMenuOption(web3.toUtf8(currentOption[0]),currentOption[1]["c"][0],i,true);
+			}
 		}
-		return extras;
 	}
 
 	async setRestaurant(){
@@ -134,15 +141,16 @@ class Restaurant{
 	}
 
 	getExtraFromNameAndPrice(name,price){
-		for(let i = 0; i < this.extras.length; i++){
-			if(this.extras[i].name == name.trim() && this.extras[i].price == price.trim()){
-				return this.extras[i];
+		for(let i = 0; i < this.extras.values.length; i++){
+			if(this.extras.values[i].name == name.trim() && this.extras.values[i].price == price.trim()){
+				return this.extras.values[i];
 			}
 		}
 		return false;
 	}
 
 	addExtraToItem(_itemId, _extraId){
+		console.log(_itemId);
 		if(this.menu[_itemId].itemExtrasToDelete.includes(_extraId)){
 			// delete from to delete array
 			let index = this.menu[_itemId].itemExtrasToDelete.indexOf(_extraId);
@@ -193,8 +201,8 @@ class Restaurant{
 
 
 		let extraExists = false;
-		for(let i = 0; i < this.extras.length; i++){
-			if(this.extras[i].name == _name && this.extras[i].price == _price){
+		for(let i = 0; i < this.extras.values.length; i++){
+			if(this.extras.values[i].name == _name && this.extras.values[i].price == _price){
 				extraExists = true;
 				break;
 			}
@@ -210,7 +218,91 @@ class Restaurant{
 				console.log(typeof this.extrasIdCap, this.extrasIdCap);
 				this.extrasIdCap = _id + 1;
 			}
-			this.extras[_id] = new ItemExtra(_id,_name,_price,_onChain);
+			this.extras.values[_id-1] = new ItemExtra(_id,_name,_price,_onChain);
+			return true;
+		}
+		return false;
+	}
+
+	getOptionFromNameAndPrice(name,price){
+		for(let i = 0; i < this.options.values.length; i++){
+			if(this.options.values[i].name == name.trim() && this.options.values[i].price == price.trim()){
+				return this.options.values[i];
+			}
+		}
+		return false;
+	}
+
+	addOptionToItem(_itemId, _optionId){
+		if(this.menu[_itemId].itemOptionToDelete.includes(_optionId)){
+			// delete from to delete array
+			let index = this.menu[_itemId].itemOptionToDelete.indexOf(_optionId);
+			this.menu[_itemId].itemOptionToDelete.splice(index,1);
+			// add back in with onchain
+			if(!this.menu[_itemId].itemOptions.includes(_optionId)){
+				this.menu[_itemId].itemOptions.push(_optionId);
+				this.menu[_itemId].itemOptionsOnChain.push(true); // maybe should check here
+				return true;
+			}
+			else{
+				index = this.menu[_itemId].itemOptions.indexOf(_optionId);
+				this.menu[_itemId].itemOptionsOnChain[index] = true;
+				return true;
+			}
+
+		}
+		else if(!this.menu[_itemId].itemOptions.includes(_optionId)){
+			this.menu[_itemId].itemOptions.push(_optionId);
+			this.menu[_itemId].itemOptionsOnChain.push(false);
+			return true;
+		}
+		return false;
+	}
+
+	unassignOption(_itemId,_optionId){
+		let index = this.menu[_itemId].itemOptions.indexOf(_optionId);
+		if(index != null){
+
+			if(this.menu[_itemId].itemOptionsOnChain[index]){
+				this.menu[_itemId].itemOptionToDelete.push(_optionId);
+			}
+
+			this.menu[_itemId].itemOptions.splice(index,1);
+			this.menu[_itemId].itemOptionsOnChain.splice(index,1);
+			return true;
+		}
+		return false;
+	}
+
+	addMenuOption(_name = "",_price = "",_id=null,_onChain = false){
+
+		_name = _name.trim();
+		if(typeof _price == 'string'){
+			_price = _price.trim();
+			_price = parseInt(_price);
+		}
+
+
+		let optionExists = false;
+		for(let i = 0; i < this.options.values.length; i++){
+			console.log(this.options)
+			if(this.options.values[i].name == _name && this.options.values[i].price == _price){
+				optionExists = true;
+				break;
+			}
+		}
+
+		if(!optionExists){
+			if(_id == null){
+				_id = this.optionsIdCap;
+			}
+			if(_id >= this.optionsIdCap){
+				console.log("===============");
+				console.log(typeof _id, _id);
+				console.log(typeof this.optionsIdCap, this.optionsIdCap);
+				this.optionsIdCap = _id + 1;
+			}
+			this.options.values[_id - 1] = new ItemOption(_id,_name,_price,_onChain);
 			return true;
 		}
 		return false;
@@ -220,7 +312,7 @@ class Restaurant{
 	removeMenuItem(id){
 		if(id < this.menu.length){
 			this.menu[id].toBeDeleted = true;
-			for(option in this.menu[id].options){
+			for(option in this.menu[id].options.values){
 				option.toBeDeleted = false;
 			}
 		}
@@ -228,8 +320,8 @@ class Restaurant{
 
 
 	removeMenuOption(id,optionID){
-		if(id < this.menu.length && optionID < this.menu[id].options.length){
-			this.menu[id].options[optionID].toBeDeleted = true;
+		if(id < this.menu.length && optionID < this.menu[id].options.values.length){
+			this.menu[id].options.values[optionID].toBeDeleted = true;
 		}
 	}
 

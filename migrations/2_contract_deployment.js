@@ -24,6 +24,10 @@ module.exports = async function(deployer) {
 	deployer.link(uintArray,RestaurantFactory);
 	deployer.link(menuHelper,RestaurantFactory);
 
+	deployer.link(b32Array,Menu);
+	deployer.link(uintArray,Menu);
+	deployer.link(menuHelper,Menu);
+
   	await deployer.deploy(Controller).then(
   		async function(instance){
 	  		var restFactAddress;
