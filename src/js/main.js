@@ -5,7 +5,6 @@ var loadingPage;
 
 window.onload = function(){
 	loadingPage = document.getElementById("loadingpage");
-
 }
 
 window.onhashchange = function(){
@@ -31,18 +30,19 @@ async function main_init(){
 
 	// renderHome();
 
-	SearchPage.init();
-	var p1 = new Promise(async function(resolve,reject){await RestaurantSettingsPage.init();resolve();});
+	const searchPagePromise = SearchPage.init();
+	const RestaurantSettingsPagePromise = RestaurantSettingsPage.init();
 	
 
-	Promise.all([p1]).then(function(){
+	Promise.all([RestaurantSettingsPagePromise, searchPagePromise]).then(function(){
 		if(RestaurantSettingsPage.restaurantAddress != null && RestaurantSettingsPage.restaurantAddress != "0x0000000000000000000000000000000000000000"){
 			let name = RestaurantSettingsPage.restaurant.name;
 			document.getElementById("RestaurantSettingsNavItem").innerHTML = name + "'s Settings";
 			document.getElementById("RestaurantSettingsNavItem").href = "#settings";
 		}
-		renderHome();	
-	})
+		renderHome();
+		console.timeEnd("overAll");
+	});
 
 }
 
@@ -133,7 +133,6 @@ async function render(hashKey){
 }
 
 var waitForInitialised = function(object, callback){
-	console.log("waiting");
 	if(object.initialised){
 		callback();
 	}

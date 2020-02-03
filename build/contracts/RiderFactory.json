@@ -5720,10 +5720,37 @@
       "links": {},
       "address": "0x1971aC61140480346B8cACdB423FFB4bF8dD3f2F",
       "transactionHash": "0xe93fa65d477953b3af0b70631a40f202f953875c724d809e8b7f3d53c5147668"
+    },
+    "1580576023675": {
+      "events": {
+        "0x774807777626d19d23f691f9b712c34a898582836153c143540f15bf5764fa40": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "riderAddress",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "createrAddress",
+              "type": "address"
+            }
+          ],
+          "name": "RiderMade",
+          "type": "event",
+          "signature": "0x774807777626d19d23f691f9b712c34a898582836153c143540f15bf5764fa40"
+        }
+      },
+      "links": {},
+      "address": "0xf7e27491F8404fec11683EDD7c32D7d2374D8BB9",
+      "transactionHash": "0x32e14bb53908d1a6e71f7f9868901a04a3dd08c48e7539de80a6c936b89453ae"
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2020-02-01T11:38:26.050Z",
+  "updatedAt": "2020-02-01T16:54:16.480Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

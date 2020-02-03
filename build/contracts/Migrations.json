@@ -1527,10 +1527,16 @@
       "links": {},
       "address": "0x21cbEBa344695453450bccd8071de3f615eC8aBA",
       "transactionHash": "0xbefa27bf5d5b69d54f35b15e2fb2792f978a68566931f19f44302ba9f529a761"
+    },
+    "1580576023675": {
+      "events": {},
+      "links": {},
+      "address": "0xebcF0373A5A8BE86a6e2537939981912e89d6D2e",
+      "transactionHash": "0xdd949579adde2c195241e4d67c0e1b8c65113a1a42b5671d7e031363cba11290"
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2020-02-01T11:38:26.144Z",
+  "updatedAt": "2020-02-01T16:54:16.571Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

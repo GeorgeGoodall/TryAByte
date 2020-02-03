@@ -55526,10 +55526,48 @@
       },
       "address": "0x89Ac6769F8ABbE5880d0526a18b9A40021D1A454",
       "transactionHash": "0x2141f6ba04ee3a5933f76e5177288206dd7bcc622387efbcd7346dcf9dbe5021"
+    },
+    "1580576023675": {
+      "events": {
+        "0x2f50fbfa89e10026c273a59cb3202a86c6c09a4116d874b4ad412c42d9042468": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "message",
+              "type": "string"
+            }
+          ],
+          "name": "debug",
+          "type": "event",
+          "signature": "0x2f50fbfa89e10026c273a59cb3202a86c6c09a4116d874b4ad412c42d9042468"
+        },
+        "0x19b0c4df82b88e6cd77d0bcd200bf5899f7271f3bbb940a9c82604da5e7132a4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "number",
+              "type": "uint256"
+            }
+          ],
+          "name": "debuguint",
+          "type": "event",
+          "signature": "0x19b0c4df82b88e6cd77d0bcd200bf5899f7271f3bbb940a9c82604da5e7132a4"
+        }
+      },
+      "links": {
+        "bytes32ArrayExtension": "0xb723E7648997248ceb0C89b3551E68B5685A0C97",
+        "uintArrayExtension": "0xf189F445602Ee9146A278f429554bc2531B2C35B"
+      },
+      "address": "0x67BF72EA91115e70ACA889a7e5889191d0696203",
+      "transactionHash": "0x4b96cc641441e04348549455fc9f20d19fcf1948e10a08abb60463c512218207"
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2020-02-01T11:38:26.121Z",
+  "updatedAt": "2020-02-01T16:54:16.542Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

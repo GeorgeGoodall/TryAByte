@@ -16,6 +16,7 @@ RestaurantSettingsPage = {
 	},
 
 	init: async function(){
+		console.time("init RestaurantSettingsPage");
 		if(typeof this.restaurant == "undefined" || this.restaurant == null){
 			this.restaurant = new Restaurant();
 			if(this.restaurantAddress == null || this.restaurantAddress == "0x0000000000000000000000000000000000000000")
@@ -25,6 +26,7 @@ RestaurantSettingsPage = {
 		this.updateDisplay();
 		this.updateMenuStagingDisplay();
 		this.initialised = true;
+		console.timeEnd("init RestaurantSettingsPage");
 		return true;
 	},
 	
@@ -106,7 +108,6 @@ RestaurantSettingsPage = {
 		}else if(variable[0] == 'onChain'){
 			this.restaurant.menu[variable[1]].onChain = value;
 		}
-		//this.updateMenuDisplay();
 	},
 
 	uploadLogo: function(input) {
@@ -153,7 +154,6 @@ RestaurantSettingsPage = {
 	//**********************************************************************************************//
 	updateDisplay: function(){
 		this.updateRestaurantDeetailsDisplay();
-		//this.updateMenuDisplay();
 	},
 
 
@@ -170,17 +170,6 @@ RestaurantSettingsPage = {
 	},
 
 
-	updateMenuDisplay: function(){
-		document.getElementById('menu').innerHTML = "";
-
-		for(var i = 0; i < this.restaurant.menu.length; i++){
-			item = this.restaurant.menu[i];
-			if(typeof item != "undefined"){
-				this.printMenuItem(item);
-			}
-		}
-	},
-
 	updateMenuStagingDisplay: function(){
 		document.getElementById('menuBody').innerHTML = "";
 		for(var i = 0; i < this.restaurant.menu.length; i++){
@@ -192,49 +181,9 @@ RestaurantSettingsPage = {
 		}
 	},
 
-	printMenuItem: function(item) {
-
-		console.log("printing menu item: " + item.name);
-		if(item.toBeDeleted){
-			
-		}
-		else{
-			// print item to left menu display
-			if(item.itemOptions.length <= 1)
-				html = 
-					'<div class="product">'+
-						'<h1 class="title is-7">'+
-							'<span>'+item.name+'</span>'+
-							'<span><button class="button is-small itemAddButton">Add</button></span>'+
-							'<span class="price">'+item.itemOptions[0].price+'</span>'+
-						'</h1>'+
-						'<h1 class="subtitle is-7" style="margin-right: 150px;">'+item.description+'</h1>'+
-					'</div>';
-			else{
-				html = 
-					'<div class="product">'+
-						'<h1 class="title is-7">'+item.name+'</h1>'+
-						'<h1 class="subtitle is-7" style="margin-right: 150px; margin-bottom: 50px;">'+item.description+'</h1>';
-						
-				for(var i = 0; i < item.itemOptions.length; i++){
-					if(!item.itemOptions[i].toBeDeleted){
-						var option = item.itemOptions[i];
-						optionHTML = '<div class="title is-7">'+
-									'<span>'+option.name+'</span>'+
-									'<span><button class="button is-small itemAddButton">Add</button></span>'+
-									'<span class="price">'+option.price+'</span>'+
-								'</div>';
-						html += optionHTML;
-					}
-				}
-				html += '</div>';
-			}
-			document.getElementById('menu').insertAdjacentHTML('beforeend',html); 
-		}	
-	},
-
 
 	menuStagingAddRow: function(item = new MenuItem()){
+		
 		if(typeof(this.restaurant.menu[this.totalRows]) == 'undefined'){
 			this.restaurant.menu[this.totalRows] = item;
 		}

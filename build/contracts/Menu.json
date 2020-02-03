@@ -17638,10 +17638,74 @@
       "links": {
         "menuHelper": "0x89Ac6769F8ABbE5880d0526a18b9A40021D1A454"
       }
+    },
+    "1580576023675": {
+      "events": {
+        "0x2f50fbfa89e10026c273a59cb3202a86c6c09a4116d874b4ad412c42d9042468": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "message",
+              "type": "string"
+            }
+          ],
+          "name": "debug",
+          "type": "event"
+        },
+        "0x19b0c4df82b88e6cd77d0bcd200bf5899f7271f3bbb940a9c82604da5e7132a4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "number",
+              "type": "uint256"
+            }
+          ],
+          "name": "debuguint",
+          "type": "event"
+        },
+        "0xc5b9ef6e4f8ad1dccb88123d4b39b1cd6440d526c7826cafaf8712240c46fd5a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "itemId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "addAtIndex",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "optionName",
+              "type": "bytes32"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "optionPrice",
+              "type": "uint256"
+            }
+          ],
+          "name": "addOptionEvent",
+          "type": "event"
+        }
+      },
+      "links": {
+        "menuHelper": "0x67BF72EA91115e70ACA889a7e5889191d0696203"
+      }
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2020-02-01T11:38:26.081Z",
+  "updatedAt": "2020-02-01T16:54:16.509Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

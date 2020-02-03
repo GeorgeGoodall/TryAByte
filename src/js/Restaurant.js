@@ -70,70 +70,103 @@ class Restaurant{
 	}
 
 	async getRestaurant(address = "0x0"){
+		console.time('getting restaurant ' + address);
 		console.log("getting restaurant at address: " + address);
 		// if an address was assigned, overwrite the default parameters
 		if(address != "0x0000000000000000000000000000000000000000"){
+
 			this.onChain = true;
 			this.contractAddress = address;
 			this.restaurantInstance = await new App.contracts.Restaurant(address);
 
-			this.name = web3.toUtf8(await this.restaurantInstance.name());
-			this.address = web3.toUtf8(await this.restaurantInstance.location());
-			this.number = await this.restaurantInstance.contactNumber();
-			this.logoHash = await this.restaurantInstance.logoHash();
-			this.logoAddress = web3.toUtf8(await this.restaurantInstance.logoURI());
+			const namePromise = this.restaurantInstance.name();
+			const addressPromise = this.restaurantInstance.location();
+			const contactNumberPromise = this.restaurantInstance.contactNumber();
+			const logoHashPromise = this.restaurantInstance.logoHash();
+			const logoURIPromise = this.restaurantInstance.logoURI();
+			const menuAddressPromise = this.restaurantInstance.getMenuAddress();
 
-			this.menuAddress = await this.restaurantInstance.getMenuAddress();
-			console.log("got menu at address: " + this.menuAddress);
+			let result = await Promise.all([namePromise,addressPromise,contactNumberPromise,logoHashPromise,logoURIPromise,menuAddressPromise]);
+
+			this.name = web3.toUtf8(result[0]);
+			this.address = web3.toUtf8(result[1]);
+			this.number = result[2];
+			this.logoHash = result[3];
+			this.logoAddress = web3.toUtf8(result[4]);
+			this.menuAddress = result[5];
+
 			this.menuInstance = await new App.contracts.Menu(this.menuAddress);
 
-			await this.getRestaurantExtras();
-			await this.getRestaurantOptions();
+			this.getRestaurantExtras();
+			this.getRestaurantOptions();	
+			const length = await this.menuInstance.length();
+
 
 			
-			
-
-			// should come up with a better way of knowing when the menu has been traversed
-			let length = await this.menuInstance.length();
+			let menuItemPromises = [];
 			for(let i = 0; i < length; i++){
-				let currentItem = await this.menuInstance.getEntry(i);
-				console.log(currentItem);
-				this.menu[i] = new MenuItem();
-				this.menu[i].id = i;
-				this.menu[i].name = web3.toUtf8(currentItem[0]);
-				this.menu[i].description = web3.toUtf8(currentItem[1]);
-				for(var j = 0; j < currentItem[2].length; j++){
-					this.addOptionToItem(i,currentItem[2][j]);
-				}
-				for(var j = 0; j < currentItem[3].length; j++){
-					this.addExtraToItem(i,currentItem[3][j]);
-				}
-				this.menu[i].onChain = true;
-				this.menu[i].id = i;
+				const menuPromise = this.menuInstance.getEntry(i);
+				menuItemPromises.push(menuPromise);
 			}
+
+			await Promise.all(menuItemPromises).then((values)=>{
+				for(let i = 0; i < values.length; i++){
+					this.menu[i] = new MenuItem();
+					this.menu[i].id = i;
+					this.menu[i].name = web3.toUtf8(values[i][0]);
+					this.menu[i].description = web3.toUtf8(values[i][1]);
+					for(var j = 0; j < values[i][2].length; j++){
+						this.addOptionToItem(i,values[i][2][j]);
+					}
+					for(var j = 0; j < values[i][3].length; j++){
+						this.addExtraToItem(i,values[i][3][j]);
+					}
+					this.menu[i].onChain = true;
+				}
+				console.timeEnd('getting restaurant ' + address);
+			});
+
+			
 		}
 	}
 
 	async getRestaurantExtras(){
 		this.extrasIdCap = await this.menuInstance.getExtraHead();
 		this.extrasIdCap = this.extrasIdCap["c"][0];
+
+		let promiseArray = [];
 		for(let i = 1 ; i < this.extrasIdCap; i++){
-			let currentExtra = await this.menuInstance.getExtra(i);
-			if(currentExtra[2] == true){// if extra is active
-				this.addMenuExtra(web3.toUtf8(currentExtra[0]),currentExtra[1]["c"][0],i,true);
-			}
+			let currentExtraPromise = this.menuInstance.getExtra(i);
+			promiseArray.push(currentExtraPromise);
 		}
+
+		Promise.all(promiseArray).then((values)=>{
+			for(let i = 0; i < values.length; i++){
+				if(values[i][2] == true){// if extra is active
+					this.addMenuExtra(web3.toUtf8(values[i][0]),values[i][1]["c"][0],i+1,true);
+				}
+			}
+		});
+
 	}
 
 	async getRestaurantOptions(){
 		this.optionsIdCap = await this.menuInstance.getOptionHead();
 		this.optionsIdCap = this.optionsIdCap["c"][0];
+
+		let promiseArray = [];
 		for(let i = 1 ; i < this.optionsIdCap; i++){
-			let currentOption = await this.menuInstance.getOption(i);
-			if(currentOption[2] == true){// if extra is active
-				this.addMenuOption(web3.toUtf8(currentOption[0]),currentOption[1]["c"][0],i,true);
-			}
+			let currentOptionPromise = this.menuInstance.getOption(i);
+			promiseArray.push(currentOptionPromise);
 		}
+
+		Promise.all(promiseArray).then((values)=>{
+			for(let i = 0; i < values.length; i++){
+				if(values[i][2] == true){// if extra is active
+					this.addMenuOption(web3.toUtf8(values[i][0]),values[i][1]["c"][0],i+1,true);
+				}
+			}
+		});
 	}
 
 	async setRestaurant(){
@@ -150,7 +183,6 @@ class Restaurant{
 	}
 
 	addExtraToItem(_itemId, _extraId){
-		console.log(_itemId);
 		if(this.menu[_itemId].itemExtrasToDelete.includes(_extraId)){
 			// delete from to delete array
 			let index = this.menu[_itemId].itemExtrasToDelete.indexOf(_extraId);
@@ -285,7 +317,6 @@ class Restaurant{
 
 		let optionExists = false;
 		for(let i = 0; i < this.options.values.length; i++){
-			console.log(this.options)
 			if(this.options.values[i].name == _name && this.options.values[i].price == _price){
 				optionExists = true;
 				break;
@@ -368,6 +399,30 @@ class Restaurant{
 		    readerRaw.readAsArrayBuffer(logoInput.files[0]);
 
 		    
+		}
+	}
+
+	getItem(itemId) {
+		let item = this.menu[itemId];
+		if(typeof item == "undefined")
+			return null;
+		let options = [];
+		let extras = [];
+		for(let i = 0; i < item.itemOptions.length; i++){
+			options.push(this.options.values[item.itemOptions[i]-1]);
+		}
+		for(let i = 0; i < item.itemExtras.length; i++){
+			extras.push(this.extras.values[item.itemExtras[i]-1]);
+		}
+		return {"item":item, "options":options, "extras":extras};
+	}
+
+	makeOrder(order){
+		if(Customer.getCustomer()){
+			Customer.customerInstance.makeOrder(this.contractAddress, order.paramIntegers, order.itemCount, order.deliveryFee, );
+		}
+		else{
+			alert("no customer account");
 		}
 	}
 }

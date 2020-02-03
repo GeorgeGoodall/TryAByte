@@ -1,5 +1,5 @@
-var controllerAddressRemote = "0x35240ff547B59f1308DCFC07d9438EDeB5722838";
-var controllerAddressLocal = "0x35240ff547B59f1308DCFC07d9438EDeB5722838";
+var controllerAddressRemote = "0xbC81eaF987aA5e1a5f8134B4beF26CcCa567e6bf";
+var controllerAddressLocal = "0xbC81eaF987aA5e1a5f8134B4beF26CcCa567e6bf";
 
 
 
@@ -33,7 +33,6 @@ App = {
 
 
   	if(!App.initialised){
-	  	console.log("Initialising App");
 	  	if(typeof web3 != 'undefined'){
 			if(App.web3Provider != web3.currentProvider){
 				App.initWeb3();
@@ -42,7 +41,7 @@ App = {
 		else{
 			alert("no web3 provider found");
 		}
-	  	await App.getEthPrice();
+	  	App.getEthPrice();
 		await App.initContracts();
 		App.initialised = true;
 	}
@@ -100,7 +99,6 @@ App = {
   initWeb3: function (){
     if(typeof web3 !== 'undefined' && !App.local){
       App.web3Provider = web3.currentProvider;
-      console.log(App.web3Provider);
       console.log("Found Web3 Provider");
       web3 = new Web3(web3.currentProvider);
       return true;
@@ -119,12 +117,13 @@ App = {
 
   // lots of redundent code, could clean this up
   initContracts: async function () {
-  	console.log("Init Contracts");
+  	console.time("Init Contracts");
+
 	var controllerRequest = $.ajax({
 	  url: '/Contracts/Controller.json',
-	  async: false,
+	  async: true,
 	  success: function(controller){
-	  	console.log("success loading controller JSON");
+	  	
 	    App.contracts["Controller"] = TruffleContract(controller);
 	    App.contracts["Controller"].setProvider(App.web3Provider);
 	  },
@@ -134,36 +133,37 @@ App = {
 	});
 	var RestaurantFactoryRequest = $.ajax({
 	  url: '/Contracts/RestaurantFactory.json',
-	  async: false,
+	  async: true,
 	  success: function(RestaurantFactory){
-	  	console.log("success loading restaurantFactory JSON");
+	  	
 	    App.contracts["RestaurantFactory"] = TruffleContract(RestaurantFactory);
 	    App.contracts["RestaurantFactory"].setProvider(App.web3Provider);
 	  }
 	});
 	var CustomerFactoryRequest = $.ajax({
 	  url: '/Contracts/CustomerFactory.json',
-	  async: false,
+	  async: true,
 	  success: function(CustomerFactory){
-	  	console.log("success loading customerFactory JSON");
+	  	
 	    App.contracts["CustomerFactory"] = TruffleContract(CustomerFactory);
 	    App.contracts["CustomerFactory"].setProvider(App.web3Provider);
 	  }
 	});
 	var RiderFactoryRequest = $.ajax({
 	  url: '/Contracts/RiderFactory.json',
-	  async: false,
+	  async: true,
 	  success: function(RiderFactory){
-	  	console.log("success loading RiderFactory JSON");
+	  	
 	    App.contracts["RiderFactory"] = TruffleContract(RiderFactory);
 	    App.contracts["RiderFactory"].setProvider(App.web3Provider);
 	  }
 	});
+
 	var RestaurantRequest = $.ajax({
 	  url: '/Contracts/Restaurant.json',
 	  async: true,
 	  success: function(Restaurant){
-	    console.log("success loading restaurant JSON");
+	    
 	    App.contracts["Restaurant"] = TruffleContract(Restaurant);
 	    App.contracts["Restaurant"].setProvider(App.web3Provider);
 	  }
@@ -172,7 +172,7 @@ App = {
 	  url: '/Contracts/Menu.json',
 	  async: true,
 	  success: function(Menu){
-	    console.log("success loading menu JSON");
+	    
 	    App.contracts["Menu"] = TruffleContract(Menu);
 	    App.contracts["Menu"].setProvider(App.web3Provider);
 	  }
@@ -181,7 +181,7 @@ App = {
 	  url: '/Contracts/Customer.json',
 	  async: true,
 	  success: function(Customer){
-	    console.log("success loading Customer JSON");
+	    
 	    App.contracts["Customer"] = TruffleContract(Customer);
 	    App.contracts["Customer"].setProvider(App.web3Provider);
 	  }
@@ -190,7 +190,7 @@ App = {
 	  url: '/Contracts/Rider.json',
 	  async: true,
 	  success: function(Rider){
-	    console.log("success loading Rider JSON");
+	    
 	    App.contracts["Rider"] = TruffleContract(Rider);
 	    App.contracts["Rider"].setProvider(App.web3Provider);
 	  }
@@ -199,12 +199,13 @@ App = {
 	  url: '/Contracts/Order.json',
 	  async: true,
 	  success: function(Order){
-	    console.log("success loading Order JSON");
+	    
 	    App.contracts["Order"] = TruffleContract(Order);
 	    App.contracts["Order"].setProvider(App.web3Provider);
 	  }
 	});
-	//return App.initFactories(); modified after controller migration changed
+	await Promise.all([controllerRequest,RestaurantFactoryRequest,CustomerFactoryRequest,RiderFactoryRequest,RestaurantRequest,RestaurantRequest,CustomerRequest,RiderRequest,OrderRequest]);
+	console.timeEnd("Init Contracts");
 
 	if(!App.local)
 		await App.initFactories();
@@ -240,27 +241,20 @@ initFactories2: async function(){
 },
 
 initFactories: async function(){
-	console.log("init initFactories");
+	console.time("init initFactories");
 	App.controllerInstance = await new App.contracts.Controller(App.controllerAddress);
 
-	await App.controllerInstance.restaurantFactoryAddress().then(function(address){
-		console.log("restaurantFactoryAddress: " + address);
-		return new App.contracts.RestaurantFactory(address);
-	}).then(function(instance){
-		App.restaurantFactoryInstance = instance;
-		return App.controllerInstance.customerFactoryAddress();
-	}).then(function(address){
-		console.log("CustomerFactoryAddress: " + address);
-		return new App.contracts.CustomerFactory(address);
-	}).then(function(instance){
-		App.customerFactoryInstance = instance;
-		return App.controllerInstance.riderFactoryAddress();
-	}).then(function(address){
-		console.log("RiderFactoryAddress: " + address);
-		return new App.contracts.RiderFactory(address);
-	}).then(function(instance){
-		App.riderFactoryInstance = instance;
+	const p1 = App.controllerInstance.restaurantFactoryAddress();
+	const p2 = App.controllerInstance.customerFactoryAddress();
+	const p3 = App.controllerInstance.riderFactoryAddress();
+
+	await Promise.all([p1,p2,p3]).then((values)=>{
+		App.restaurantFactoryInstance = new App.contracts.RestaurantFactory(values[0]);
+		App.customerFactoryInstance = new App.contracts.CustomerFactory(values[1]);
+		App.riderFactoryInstance = new App.contracts.RiderFactory(values[2]);
 	});
+
+	console.timeEnd("init initFactories");
 },
 
 getEthPrice: function(){
@@ -294,9 +288,12 @@ getEthPrice: function(){
 
 $(function() {
   $(window).load(async function() {
+  	console.time("overAll");
   	await App.checkLogin();
+  	console.time("Init");
   	await App.init();
   	await main_init();
+  	console.timeEnd("Init");
   });
 });
 
