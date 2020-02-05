@@ -1,5 +1,5 @@
-var controllerAddressRemote = "0xbC81eaF987aA5e1a5f8134B4beF26CcCa567e6bf";
-var controllerAddressLocal = "0xbC81eaF987aA5e1a5f8134B4beF26CcCa567e6bf";
+var controllerAddressRemote = "0xe4C5DBc6B66d39B0BaC25283893BF2541aCBad4a";
+var controllerAddressLocal = "0xe4C5DBc6B66d39B0BaC25283893BF2541aCBad4a";
 
 
 
@@ -289,6 +289,7 @@ getEthPrice: function(){
 $(function() {
   $(window).load(async function() {
   	console.time("overAll");
+  	console.time("loading View");
   	await App.checkLogin();
   	console.time("Init");
   	await App.init();

@@ -36,7 +36,7 @@ contract Rider {
             owner.transfer(msg.value - cost);
         }
 
-        orderInstance.riderOfferDelivery.value(cost)(keyHash);
+        orderInstance.riderOfferDelivery.value(cost)(owner,keyHash);
         orders[totalOrders] = orderAddress;
 
         emit deliveryOfferedEvent(orderAddress);

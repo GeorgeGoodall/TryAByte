@@ -2,6 +2,7 @@ ViewPage = {
 
 	restaurant: null,
 	trolly: [],
+	trollyTotal: 0,
 
 	populatePage: async function(restaurant){
 
@@ -60,7 +61,7 @@ ViewPage = {
 								'<h1 class="subtitle is-6">'+item.description+'</h1>	'+
 							'</div>'+
 							'<div class="column is-3">'+
-								'<h1 class="title is-6" style="text-align: right">'+item.options[0].price+'</h1>'+
+								'<h1 class="title is-6" style="text-align: right">'+this.restaurant.options.values[item.itemOptions[0]-1].price+'</h1>'+
 							'</div>'+
 							'<div class="column is-1">'+
 								'<img class="plus image is-16x16" src="images/plus.png" onclick="ViewPage.addToTrolly('+item.id+',0)">'+
@@ -79,7 +80,6 @@ ViewPage = {
 								'<div class="column is-8">';
 
 			for(let i = 0; i < item.itemOptions.length; i++){
-				console.log(item.itemOptions[i]);
 				html+=				'<h1 class="title is-6">'+this.restaurant.options.values[item.itemOptions[i]-1].name+'</h1>';
 			}
 			html+=				'</div>'+
@@ -261,6 +261,8 @@ ViewPage = {
 		}
 		document.getElementById("trollyPaymentArea").children[0].innerHTML = 	'<h1 class="title is-6">Total:</h1>'+
 																				'<h1 class="subtitle is-6">ETH: '+total+'</h1>';
+
+		this.trollyTotal = total;
 	},
 
 	// function to checkout
@@ -279,7 +281,7 @@ ViewPage = {
 		}
 
 		alert("checking out");
-		let order = new Order(this.trolly,2000000000000000);
+		let order = new Order(this.trolly,2000000000000000,this.trollyTotal);
 		this.restaurant.makeOrder(order);		
 
 	}

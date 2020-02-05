@@ -90,19 +90,18 @@ contract Restaurant {
 
         uint[] memory integers = _integers;
         
-		Order newOrder = (new Order).value(msg.value)(integers, itemCount, controllerAddress, customer, riderKeyHash);
+        address payable[] memory addresses = new address payable[](3);
+        addresses[0] = owner;
+        addresses[1] = msg.sender;
+        addresses[2] = customer;
+
+		Order newOrder = (new Order).value(msg.value)(integers, itemCount, controllerAddress, addresses, riderKeyHash);
 		orders[totalOrders] = order(true,address(newOrder));
         totalOrders ++;
 
         emit OrderMadeEvent(orders[totalOrders - 1].orderAddress);
 
 		return orders[totalOrders - 1].orderAddress;       
-    }
-
-    // the order should keep a reference to the owner and not the restaurant contract to avoid needing this function
-    function setStatus(address orderAddress, uint status) public{
-        require(msg.sender == owner, "you are not the owner");
-        Order(orderAddress).setOrderStatus(status);
     }
 
     function pay() external payable {

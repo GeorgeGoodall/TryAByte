@@ -17,6 +17,10 @@ contract Order{
 	uint public restaurantStatus;
 	uint public customerStatus;
 
+	uint public creationTime;
+	uint public pickupTime;
+	uint public deliveryTime;
+
 	uint public id;
 	
 	bool public restaurantPaid = false;
@@ -25,6 +29,9 @@ contract Order{
 	address payable public restaurant;
 	address payable public rider; 	 
 	address payable public customer; 
+	address public restaurantOwner;
+	address public riderOwner; 	 
+	address public customerOwner; 
 
 	address controller;
 
@@ -50,8 +57,7 @@ contract Order{
 
 	event statusUpdated();
 
-	//uint _id, uint price, uint _deliveryFee, uint[] memory itemIds, uint[] memory optionIds, uint[] memory extraFlags, uint[] memory extraIds
-	constructor(uint[] memory integers, uint _itemCount, address _controller, address payable _customer, bytes32 keyHash) public payable {
+	constructor(uint[] memory integers, uint _itemCount, address _controller, address payable[] memory addresses, bytes32 keyHash) public payable {
 	    // require sent from a restaurant contract
 	    require(RestaurantFactory(Controller(_controller).restaurantFactoryAddress()).restaurantExists(msg.sender),"attempted to make order from address that is not a restaurant");
 
@@ -61,21 +67,25 @@ contract Order{
 
 		require(msg.value >= cost + deliveryFee,"not enough ether sent to the order");
 
-	    uint extraIndex = 0;
 	    totalItems = _itemCount;
+
+	    uint index = 0;
+
 	    Item memory currentItem;
 	    for(uint i = 0; i < _itemCount; i++){
-	    	currentItem = Item(integers[i+2],integers[i+_itemCount+2], new uint[](integers[i+(_itemCount*2)+2]));
-	    	for(uint j = 0; j < integers[i+(_itemCount*2)+2]; j++){
-	    		currentItem.extraIds[j] = integers[extraIndex+(_itemCount*3)+2];
-	    		extraIndex++;
+	    	currentItem = Item(integers[index + i+2],integers[index + i+1+2], new uint[](integers[index + i+2+2]));
+	    	for(uint j = 0; j < integers[index + i+2+2]; j++){
+	    		currentItem.extraIds[j] = integers[index + i+2+2 +1+j];
 	    	}
-	    	items[i] = currentItem;	
+	    	items[i] = currentItem;
+	    	index += integers[index + i+2+2] + 2;
 	    }
 		
 		// set contract infomation
 		restaurant = msg.sender;
-		customer = _customer;
+		restaurantOwner = addresses[0];
+		customer = addresses[1];
+		customerOwner = addresses[2];
 		orderTime = block.timestamp;
 		controller = _controller;
 		
@@ -85,20 +95,23 @@ contract Order{
 
 		keyHashRider = keyHash;
 		keyRiderSet = true;
+
+		creationTime = block.timestamp;
 	}
 
 	function getItemRaw(uint _id) public view returns(uint, uint, uint[] memory){
-		require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender, "you dont have permission to view this order"); // removed as asking for contract address where as should be owner addresses
+		require(customer == msg.sender || restaurant == msg.sender || rider == msg.sender || customerOwner == msg.sender || restaurantOwner == msg.sender || riderOwner == msg.sender,  "you dont have permission to view this order"); // removed as asking for contract address where as should be owner addresses
 		return (items[_id].itemId,items[_id].optionId,items[_id].extraIds);
 	}
 
 
-	function riderOfferDelivery(bytes32 keyHash) public payable{
+	function riderOfferDelivery(address _riderOwner,bytes32 keyHash) public payable{
 		require(riderStatus == uint(riderState.unassigned),"this order allready has delivery organised");
 		require(RiderFactory(Controller(controller).riderFactoryAddress()).riderExists(msg.sender), "must be called via a rider smart contract");
 		require(msg.value >= cost, "the deposit sent is not enough");
 		
 		riderStatus = uint(riderState.accepted);
+		riderOwner = _riderOwner;
 		rider = msg.sender;
 
 		keyHashRestaurant = keyHash;
@@ -108,7 +121,7 @@ contract Order{
 	}
 
 	function setOrderStatus(uint status) public payable{
-		require(msg.sender == restaurant, "You dont have permission to see this order, did you get the order address wrong?");
+		require(msg.sender == restaurant || msg.sender == restaurantOwner, "You dont have permission to see this order, did you get the order address wrong?");
 		require(status > restaurantStatus, "status cannot be backtracked");
 		require(status <= 3 && status > 0, "given Status not valid");
 		restaurantStatus = status;
@@ -144,6 +157,7 @@ contract Order{
 		payRestaurant();
 		restaurantStatus = uint(restaurantState.HandedOver);
 		riderStatus = uint(riderState.hasCargo);
+		pickupTime = block.timestamp;
 		emit statusUpdated();
 		return true;
 	}
@@ -154,6 +168,7 @@ contract Order{
 		payRider();
 		riderStatus = uint(riderState.Delivered);
 		customerStatus = uint(customerState.hasCargo);
+		deliveryTime = block.timestamp;
 		emit statusUpdated();
 		return true;
 	}

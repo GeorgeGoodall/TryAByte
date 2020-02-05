@@ -55,7 +55,17 @@ library menuHelper {
     return menuLength;
   }
 
+  function getOptionFromOptionIndex(menuStruct storage self,uint itemId, uint i) public view returns (uint){
+  	(uint itemIndex, bool found) = getItemMappingIndex(self,itemId);
+  	require(found == true);
+    return self.items[itemIndex].optionsIds.getValueAtIndex(i);
+  }
 
+  function getExtraFromExtraIndex(menuStruct storage self,uint itemId, uint i) public view returns (uint){
+  	(uint itemIndex, bool found) = getItemMappingIndex(self,itemId);
+  	require(found == true);
+    return self.items[itemIndex].extrasIds.getValueAtIndex(i);
+  }
 
   function getEntry(menuStruct storage self, uint itemId) public view returns (bytes32,bytes32,uint[] memory, uint[] memory){
     (uint itemIndex, bool found) = getItemMappingIndex(self,itemId);

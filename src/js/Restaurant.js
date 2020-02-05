@@ -66,11 +66,13 @@ class Restaurant{
 			values : [],
 		};
 
+		this.orders = [];
+
 		this.onChain = false;
 	}
 
 	async getRestaurant(address = "0x0"){
-		console.time('getting restaurant ' + address);
+		
 		console.log("getting restaurant at address: " + address);
 		// if an address was assigned, overwrite the default parameters
 		if(address != "0x0000000000000000000000000000000000000000"){
@@ -123,7 +125,6 @@ class Restaurant{
 					}
 					this.menu[i].onChain = true;
 				}
-				console.timeEnd('getting restaurant ' + address);
 			});
 
 			
@@ -165,6 +166,22 @@ class Restaurant{
 				if(values[i][2] == true){// if extra is active
 					this.addMenuOption(web3.toUtf8(values[i][0]),values[i][1]["c"][0],i+1,true);
 				}
+			}
+		});
+	}
+
+	async getOrders(fullDeetails = false){
+		this.totalOrders = await this.restaurantInstance.totalOrders();
+		console.log("getting " + this.totalOrders + " orders");
+		let promises = [];
+		for(let i = 0; i < this.totalOrders; i++){
+			promises.push(this.restaurantInstance.orders(i));
+		}
+		await Promise.all(promises).then(async (values)=>{
+			for(let i = 0; i < values.length; i++){
+				let o = new Order();
+				await o.getOrder(values[i][1], fullDeetails);	
+				this.orders.push(o);
 			}
 		});
 	}
@@ -417,12 +434,33 @@ class Restaurant{
 		return {"item":item, "options":options, "extras":extras};
 	}
 
-	makeOrder(order){
+	async makeOrder(order){
+
+		//customerInstance.makeOrder(restaurants[currentRestaurant].address,cart,deliveryFee,hash,{from: App.account, value:toSend})
+
 		if(Customer.getCustomer()){
-			Customer.customerInstance.makeOrder(this.contractAddress, order.paramIntegers, order.itemCount, order.deliveryFee, );
+			let customerKey = makeid(12);
+			let hash = await App.controllerInstance.getHash(customerKey);
+			console.log(order.paramIntegers, order.itemCount, order.deliveryFee, hash, order.price);
+			console.log(order);
+			Customer.customerInstance.makeOrder(this.contractAddress, order.paramIntegers, order.itemCount, order.deliveryFee, hash,{value:order.deliveryFee+order.price}).then(async (res)=>{
+				let orderAddress = await Customer.customerInstance.getOrder(await Customer.customerInstance.getTotalOrders() - 1);
+				localStorage.setItem('customerKey'+orderAddress,customerKey);
+			});
 		}
 		else{
 			alert("no customer account");
 		}
 	}
+}
+
+
+function makeid(length) {
+	var text = "";
+  	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  	for (var i = 0; i < length; i++)
+    	text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  	return text;
 }

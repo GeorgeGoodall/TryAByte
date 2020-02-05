@@ -215,9 +215,9 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.12+commit.7709ece9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"constant\":true,\"inputs\":[],\"name\":\"customerFactoryAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"startIndex\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"size\",\"type\":\"uint256\"},{\"internalType\":\"bytes32[]\",\"name\":\"strArray\",\"type\":\"bytes32[]\"}],\"name\":\"getPartitionOfBytesArray\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"startIndex\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"size\",\"type\":\"uint256\"},{\"internalType\":\"uint256[]\",\"name\":\"intArray\",\"type\":\"uint256[]\"}],\"name\":\"getPartitionOfIntArray\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"minimumDeliveryFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"resetApplication\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"restaurantFactoryAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"riderFactoryAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_restaurantFactoryAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_customerFactoryAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_riderFactoryAddress\",\"type\":\"address\"}],\"name\":\"setFactoryAddresses\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newFee\",\"type\":\"uint256\"}],\"name\":\"updateMinDeliveryFee\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":\"Controller\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":{\"keccak256\":\"0xff6dc2d7921b09befb5c226ad0ec008df922903ad015f26d6653a3cfe99078a5\",\"urls\":[\"bzz-raw://12769000ca9134142c9c2b5d99b655fb3a2f2025dda209b41dbbffd07ae4870c\",\"dweb:/ipfs/QmUZMdxEK2TX5TmDt4rwe9UUL7TZj3ZGMvaQfeBMAE85oW\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Customer.sol\":{\"keccak256\":\"0x4e7852d4fcb61793e98ec5190a40efb6a1115869bff3707c0f773ba4d96c4c29\",\"urls\":[\"bzz-raw://b66fa1bba10d0f1245816134cacd0448654fd3d5850bab4ce99d479a6af262a5\",\"dweb:/ipfs/Qmecf3J2ep3i8gf6KpfsZzbXhFC3YSppqQY7b5SG1RV3GJ\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/CustomerFactory.sol\":{\"keccak256\":\"0x26a329b16a9e1a110e99d0ce77995da6d98273f25c5eb2422b36c3aac775478d\",\"urls\":[\"bzz-raw://aa4895300a34e45609d420e918723d014ca801bb8ac92a7d14b722e3f12b8d94\",\"dweb:/ipfs/QmZRoEY2w9n4hUhHLQk3qFTPTngyxRY3RWKDPfR9U2NxaL\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Menu.sol\":{\"keccak256\":\"0x97951584878bb6f0855959f0cdfeee3aeab4785cb51939cfe1202d50c689ab1e\",\"urls\":[\"bzz-raw://7c08b5df697a746f7602a1c1cd9a194c5859ea64c8d20333fd23a4c0e134732b\",\"dweb:/ipfs/QmdUoJ2PSeMTWqH2SfTJsR9SiyiLBPErtV7ihQwBFPziCB\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Order.sol\":{\"keccak256\":\"0x9e4269988d2f3f682bacce65061b8eb04e70dfb3b251d52056c6ce0f03f93e42\",\"urls\":[\"bzz-raw://71f647bfdb47dc5a8fb7d8fcdd970279c79163846dbf053c9553794aefef3665\",\"dweb:/ipfs/QmXLLi633HVQbpgsZ5BJ1RTV9rqH4j3TdPL5toNm939M3p\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Restaurant.sol\":{\"keccak256\":\"0x6fdaf9aeb7d50dcd8f470fde3d0b7f0b83df4d4d1d96e7063be2e4d6c030a1fa\",\"urls\":[\"bzz-raw://f5df9a165cd70240c3969f809005f482d7e87ef2ea0386d4824315a51bb54e6c\",\"dweb:/ipfs/QmQHUgMPzU3pRm9TBphN4xyBdCdowztrGBkJWGirJYgxbQ\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RestaurantFactory.sol\":{\"keccak256\":\"0xafa6d13a53ccdd4a635737d7c5d58d309500167ec7fbe0a79aad8978fd04a6aa\",\"urls\":[\"bzz-raw://a9b99399d3bc8d355004133474e8dfdf97deb83e4b4136c7e85a36718bdac68d\",\"dweb:/ipfs/QmbCJkBZzfEpPubWjeSkMMX7UZr52Hq5pGD4YNd3LXvCg6\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol\":{\"keccak256\":\"0x0d8593f5f0e1b7934a6911ba7a319f1c7603c375011423d2a0b0e7e02ce8aa92\",\"urls\":[\"bzz-raw://2610c3787155c66111695eec5f1f6e9586885c4b57044035e04bfbea5e79cc72\",\"dweb:/ipfs/QmZ9RSk9rTDy6ioniJskEmBcuRtbfkMwYkE3sJEVXGXQLz\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RiderFactory.sol\":{\"keccak256\":\"0x00185de3177a72eda8f052faa24fdf9eb0bdab091afab73da20fbb2433994c97\",\"urls\":[\"bzz-raw://7d21e880073f3f6b3bae2d5e9db7051e0eb8406836bdf6f69a89b1920cd353e6\",\"dweb:/ipfs/QmdjpeeE6K6MfLrhVtTLoDwg5NLv1cGP5sxvGA8wAfW67c\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/StructuredLinkedList.sol\":{\"keccak256\":\"0x8bf1259b90130c114eadd224bb8cc92bca30730e26a3d7d7611eccf2598e882d\",\"urls\":[\"bzz-raw://4b7195127ebdde406a6da8acef5e0775c73da2054e2731a028e61ad1b75fd820\",\"dweb:/ipfs/QmRjaeLo5j5dkCXMpwaGqBH35Mj4o6CZkuhfPmxE2QMCVH\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/bytes32ArrayExtension.sol\":{\"keccak256\":\"0x6bab0f431ca903983728bf4f3edd7edc0145f3e764d3a9e3e5c963122e868781\",\"urls\":[\"bzz-raw://f7f0b4e36562641a0839b97ae8e670db4e5fe0a9303604b803de66f45ad02f2f\",\"dweb:/ipfs/QmdviW5ZdX2wpNstuQRq3WwDw5rpnHiGHkoP5mC9EcArNQ\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/menuHelper.sol\":{\"keccak256\":\"0xb0add767055f4a986807b816951daebb1232c6eb30eed525e3f8cb1fbb938441\",\"urls\":[\"bzz-raw://46d8289df9c69c13de2e743c7fa5960f32ec9115be92f2b78142c91ac348e2ab\",\"dweb:/ipfs/QmcGKyNqVioTELT4PkNXopHBZhXMArih6yKrHJE5zfmS2D\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/uintArrayExtension.sol\":{\"keccak256\":\"0xfe45c519953a961a8e2d0a233c59117f54a4f9bd5b3b5b7727c8b6c48f30a566\",\"urls\":[\"bzz-raw://3b082b770665640e9cabdcd7e5c45c5fc4067f248de3277b341fa5375f171412\",\"dweb:/ipfs/QmPS9bV9TUQHwmArEjkbPE5Z6xggjiSWbz9qKDJg5qd7xB\"]}},\"version\":1}",
-  "bytecode": "0x608060405234801561001057600080fd5b50600080546001600160a01b0319163317905566071afd498d00006004556106b58061003d6000396000f3fe608060405234801561001057600080fd5b50600436106100a95760003560e01c8063a5b8f59d11610071578063a5b8f59d14610119578063aedbfd7014610138578063b6fe955914610140578063ba89c9161461023f578063c9286d5714610277578063fb6d2fb01461027f576100a9565b80633cf5040a146100ae5780635ed097f3146100dd5780636455e5ac146100e557806368db65a4146101095780638da5cb5b14610111575b600080fd5b6100cb600480360360208110156100c457600080fd5b503561032e565b60408051918252519081900360200190f35b6100cb610352565b6100ed610358565b604080516001600160a01b039092168252519081900360200190f35b6100ed610367565b6100ed610376565b6101366004803603602081101561012f57600080fd5b5035610385565b005b6101366103e1565b6101ef6004803603606081101561015657600080fd5b81359160208101359181019060608101604082013564010000000081111561017d57600080fd5b82018360208201111561018f57600080fd5b803590602001918460208302840111640100000000831117156101b157600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610532945050505050565b60408051602080825283518183015283519192839290830191858101910280838360005b8381101561022b578181015183820152602001610213565b505050509050019250505060405180910390f35b6101366004803603606081101561025557600080fd5b506001600160a01b0381358116916020810135821691604090910135166105ab565b6100ed610601565b6101ef6004803603606081101561029557600080fd5b8135916020810135918101906060810160408201356401000000008111156102bc57600080fd5b8201836020820111156102ce57600080fd5b803590602001918460208302840111640100000000831117156102f057600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610610945050505050565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b6002546001600160a01b031681565b6001546001600160a01b031681565b6000546001600160a01b031681565b6000546001600160a01b031633146103dc576040805162461bcd60e51b81526020600482015260156024820152743cb7ba9030b932903737ba103a34329037bbb732b960591b604482015290519081900360640190fd5b600455565b6000546001600160a01b031633146103f857600080fd5b600160009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561044857600080fd5b505af115801561045c573d6000803e3d6000fd5b50505050600260009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b1580156104b057600080fd5b505af11580156104c4573d6000803e3d6000fd5b50505050600360009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561051857600080fd5b505af115801561052c573d6000803e3d6000fd5b50505050565b6060808360405190808252806020026020018201604052801561055f578160200160208202803883390190505b50905060005b848110156105a257838187018151811061057b57fe5b602002602001015182828151811061058f57fe5b6020908102919091010152600101610565565b50949350505050565b6000546001600160a01b031633146105c257600080fd5b600180546001600160a01b039485166001600160a01b031991821617909155600280549385169382169390931790925560038054919093169116179055565b6003546001600160a01b031681565b6060808360405190808252806020026020018201604052801561063d578160200160208202803883390190505b50905060005b848110156105a257838187018151811061065957fe5b602002602001015182828151811061066d57fe5b602090810291909101015260010161064356fea265627a7a72315820d0ad27ba7bc438e3e212131fcfa605db7715290def72186970a3c88cc7fad4d964736f6c634300050c0032",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100a95760003560e01c8063a5b8f59d11610071578063a5b8f59d14610119578063aedbfd7014610138578063b6fe955914610140578063ba89c9161461023f578063c9286d5714610277578063fb6d2fb01461027f576100a9565b80633cf5040a146100ae5780635ed097f3146100dd5780636455e5ac146100e557806368db65a4146101095780638da5cb5b14610111575b600080fd5b6100cb600480360360208110156100c457600080fd5b503561032e565b60408051918252519081900360200190f35b6100cb610352565b6100ed610358565b604080516001600160a01b039092168252519081900360200190f35b6100ed610367565b6100ed610376565b6101366004803603602081101561012f57600080fd5b5035610385565b005b6101366103e1565b6101ef6004803603606081101561015657600080fd5b81359160208101359181019060608101604082013564010000000081111561017d57600080fd5b82018360208201111561018f57600080fd5b803590602001918460208302840111640100000000831117156101b157600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610532945050505050565b60408051602080825283518183015283519192839290830191858101910280838360005b8381101561022b578181015183820152602001610213565b505050509050019250505060405180910390f35b6101366004803603606081101561025557600080fd5b506001600160a01b0381358116916020810135821691604090910135166105ab565b6100ed610601565b6101ef6004803603606081101561029557600080fd5b8135916020810135918101906060810160408201356401000000008111156102bc57600080fd5b8201836020820111156102ce57600080fd5b803590602001918460208302840111640100000000831117156102f057600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610610945050505050565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b6002546001600160a01b031681565b6001546001600160a01b031681565b6000546001600160a01b031681565b6000546001600160a01b031633146103dc576040805162461bcd60e51b81526020600482015260156024820152743cb7ba9030b932903737ba103a34329037bbb732b960591b604482015290519081900360640190fd5b600455565b6000546001600160a01b031633146103f857600080fd5b600160009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561044857600080fd5b505af115801561045c573d6000803e3d6000fd5b50505050600260009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b1580156104b057600080fd5b505af11580156104c4573d6000803e3d6000fd5b50505050600360009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561051857600080fd5b505af115801561052c573d6000803e3d6000fd5b50505050565b6060808360405190808252806020026020018201604052801561055f578160200160208202803883390190505b50905060005b848110156105a257838187018151811061057b57fe5b602002602001015182828151811061058f57fe5b6020908102919091010152600101610565565b50949350505050565b6000546001600160a01b031633146105c257600080fd5b600180546001600160a01b039485166001600160a01b031991821617909155600280549385169382169390931790925560038054919093169116179055565b6003546001600160a01b031681565b6060808360405190808252806020026020018201604052801561063d578160200160208202803883390190505b50905060005b848110156105a257838187018151811061065957fe5b602002602001015182828151811061066d57fe5b602090810291909101015260010161064356fea265627a7a72315820d0ad27ba7bc438e3e212131fcfa605db7715290def72186970a3c88cc7fad4d964736f6c634300050c0032",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.12+commit.7709ece9\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"constant\":true,\"inputs\":[],\"name\":\"customerFactoryAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"data\",\"type\":\"bytes32\"}],\"name\":\"getHash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"startIndex\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"size\",\"type\":\"uint256\"},{\"internalType\":\"bytes32[]\",\"name\":\"strArray\",\"type\":\"bytes32[]\"}],\"name\":\"getPartitionOfBytesArray\",\"outputs\":[{\"internalType\":\"bytes32[]\",\"name\":\"\",\"type\":\"bytes32[]\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"startIndex\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"size\",\"type\":\"uint256\"},{\"internalType\":\"uint256[]\",\"name\":\"intArray\",\"type\":\"uint256[]\"}],\"name\":\"getPartitionOfIntArray\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"minimumDeliveryFee\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"resetApplication\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"restaurantFactoryAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"riderFactoryAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"address\",\"name\":\"_restaurantFactoryAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_customerFactoryAddress\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_riderFactoryAddress\",\"type\":\"address\"}],\"name\":\"setFactoryAddresses\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"newFee\",\"type\":\"uint256\"}],\"name\":\"updateMinDeliveryFee\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":\"Controller\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/george/Documents/WorkSpace/TryAByte/contracts/Controller.sol\":{\"keccak256\":\"0xff6dc2d7921b09befb5c226ad0ec008df922903ad015f26d6653a3cfe99078a5\",\"urls\":[\"bzz-raw://12769000ca9134142c9c2b5d99b655fb3a2f2025dda209b41dbbffd07ae4870c\",\"dweb:/ipfs/QmUZMdxEK2TX5TmDt4rwe9UUL7TZj3ZGMvaQfeBMAE85oW\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Customer.sol\":{\"keccak256\":\"0x4e7852d4fcb61793e98ec5190a40efb6a1115869bff3707c0f773ba4d96c4c29\",\"urls\":[\"bzz-raw://b66fa1bba10d0f1245816134cacd0448654fd3d5850bab4ce99d479a6af262a5\",\"dweb:/ipfs/Qmecf3J2ep3i8gf6KpfsZzbXhFC3YSppqQY7b5SG1RV3GJ\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/CustomerFactory.sol\":{\"keccak256\":\"0x26a329b16a9e1a110e99d0ce77995da6d98273f25c5eb2422b36c3aac775478d\",\"urls\":[\"bzz-raw://aa4895300a34e45609d420e918723d014ca801bb8ac92a7d14b722e3f12b8d94\",\"dweb:/ipfs/QmZRoEY2w9n4hUhHLQk3qFTPTngyxRY3RWKDPfR9U2NxaL\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Menu.sol\":{\"keccak256\":\"0xd966657ae59e126cd7e5dcc2a651c282dd0f1723964e792b94210f293e2c8369\",\"urls\":[\"bzz-raw://af5480431dcb0400c0c97d1a8b823fc5a5e2138bc4e97cc010caa4ecea0613bd\",\"dweb:/ipfs/QmWBQhLAFCsaciu7dXQigoSpZTumGze4GgkEkFhid8zsv3\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Order.sol\":{\"keccak256\":\"0xd0176950ad3a9b784b603edb421086f1979f753a191f4c40444532df9114808e\",\"urls\":[\"bzz-raw://a4e227f2cc5f6945e7c7b93cffe9c2305ba788d879c692cf159094fde787dd8f\",\"dweb:/ipfs/QmSQk2mNAvyNeKm5HWQyYYHRMZsMsksGEJsZgX7kZk9KuZ\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Restaurant.sol\":{\"keccak256\":\"0x2266f095029e34b12b471114c4074bbc685c7f00b9bd9740d42d83855a3894a9\",\"urls\":[\"bzz-raw://d618820324f4fd1f0e13f1f8c6d5b47e4a45d50f76cf32ed66165ad5ce78e8e8\",\"dweb:/ipfs/QmPQqMbm5DmsZKqJ4LP8sTV3P3gcnbuTUc5LnkHe73R5qX\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RestaurantFactory.sol\":{\"keccak256\":\"0xafa6d13a53ccdd4a635737d7c5d58d309500167ec7fbe0a79aad8978fd04a6aa\",\"urls\":[\"bzz-raw://a9b99399d3bc8d355004133474e8dfdf97deb83e4b4136c7e85a36718bdac68d\",\"dweb:/ipfs/QmbCJkBZzfEpPubWjeSkMMX7UZr52Hq5pGD4YNd3LXvCg6\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/Rider.sol\":{\"keccak256\":\"0x6f6794316f920304b14a2dcb57a9f67de6b114ee0ee539e8151f6331814b6437\",\"urls\":[\"bzz-raw://f15b57ea96d25e9aff7543faf7ef288e554123ff449351b70643bdd2848ea480\",\"dweb:/ipfs/QmUERNdGXW8wEkJHULgLvzsAKwb2dmLGJ6rGgdTXcUZR5D\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/RiderFactory.sol\":{\"keccak256\":\"0x00185de3177a72eda8f052faa24fdf9eb0bdab091afab73da20fbb2433994c97\",\"urls\":[\"bzz-raw://7d21e880073f3f6b3bae2d5e9db7051e0eb8406836bdf6f69a89b1920cd353e6\",\"dweb:/ipfs/QmdjpeeE6K6MfLrhVtTLoDwg5NLv1cGP5sxvGA8wAfW67c\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/StructuredLinkedList.sol\":{\"keccak256\":\"0x621425e27689e67ec0e451dd760ff780dec21c3ef15494431cb291e950f383df\",\"urls\":[\"bzz-raw://560cd2ba290471fde030973c557d65daa7fe0bf8d2738ad140b4b1db774bb3a7\",\"dweb:/ipfs/QmXek3uL9wPP7euPpqTucEmvCF3oXRr7VqUJ2LBGjJcjbw\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/bytes32ArrayExtension.sol\":{\"keccak256\":\"0x6bab0f431ca903983728bf4f3edd7edc0145f3e764d3a9e3e5c963122e868781\",\"urls\":[\"bzz-raw://f7f0b4e36562641a0839b97ae8e670db4e5fe0a9303604b803de66f45ad02f2f\",\"dweb:/ipfs/QmdviW5ZdX2wpNstuQRq3WwDw5rpnHiGHkoP5mC9EcArNQ\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/menuHelper.sol\":{\"keccak256\":\"0xede3c95a9beab480b9422e85ccb322149b1d54bd5e2e23bb396143f8de948736\",\"urls\":[\"bzz-raw://6d338e3c6bd668c9edb19ba5d36937eab28fa9d495f9969198f543bb770876a1\",\"dweb:/ipfs/QmScS6bqV5gqu8MJSxJNxkjJKbJMjQ6yT9e6tvHnm9iybf\"]},\"/home/george/Documents/WorkSpace/TryAByte/contracts/uintArrayExtension.sol\":{\"keccak256\":\"0xfe45c519953a961a8e2d0a233c59117f54a4f9bd5b3b5b7727c8b6c48f30a566\",\"urls\":[\"bzz-raw://3b082b770665640e9cabdcd7e5c45c5fc4067f248de3277b341fa5375f171412\",\"dweb:/ipfs/QmPS9bV9TUQHwmArEjkbPE5Z6xggjiSWbz9qKDJg5qd7xB\"]}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50600080546001600160a01b0319163317905566071afd498d00006004556106b58061003d6000396000f3fe608060405234801561001057600080fd5b50600436106100a95760003560e01c8063a5b8f59d11610071578063a5b8f59d14610119578063aedbfd7014610138578063b6fe955914610140578063ba89c9161461023f578063c9286d5714610277578063fb6d2fb01461027f576100a9565b80633cf5040a146100ae5780635ed097f3146100dd5780636455e5ac146100e557806368db65a4146101095780638da5cb5b14610111575b600080fd5b6100cb600480360360208110156100c457600080fd5b503561032e565b60408051918252519081900360200190f35b6100cb610352565b6100ed610358565b604080516001600160a01b039092168252519081900360200190f35b6100ed610367565b6100ed610376565b6101366004803603602081101561012f57600080fd5b5035610385565b005b6101366103e1565b6101ef6004803603606081101561015657600080fd5b81359160208101359181019060608101604082013564010000000081111561017d57600080fd5b82018360208201111561018f57600080fd5b803590602001918460208302840111640100000000831117156101b157600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610532945050505050565b60408051602080825283518183015283519192839290830191858101910280838360005b8381101561022b578181015183820152602001610213565b505050509050019250505060405180910390f35b6101366004803603606081101561025557600080fd5b506001600160a01b0381358116916020810135821691604090910135166105ab565b6100ed610601565b6101ef6004803603606081101561029557600080fd5b8135916020810135918101906060810160408201356401000000008111156102bc57600080fd5b8201836020820111156102ce57600080fd5b803590602001918460208302840111640100000000831117156102f057600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610610945050505050565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b6002546001600160a01b031681565b6001546001600160a01b031681565b6000546001600160a01b031681565b6000546001600160a01b031633146103dc576040805162461bcd60e51b81526020600482015260156024820152743cb7ba9030b932903737ba103a34329037bbb732b960591b604482015290519081900360640190fd5b600455565b6000546001600160a01b031633146103f857600080fd5b600160009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561044857600080fd5b505af115801561045c573d6000803e3d6000fd5b50505050600260009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b1580156104b057600080fd5b505af11580156104c4573d6000803e3d6000fd5b50505050600360009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561051857600080fd5b505af115801561052c573d6000803e3d6000fd5b50505050565b6060808360405190808252806020026020018201604052801561055f578160200160208202803883390190505b50905060005b848110156105a257838187018151811061057b57fe5b602002602001015182828151811061058f57fe5b6020908102919091010152600101610565565b50949350505050565b6000546001600160a01b031633146105c257600080fd5b600180546001600160a01b039485166001600160a01b031991821617909155600280549385169382169390931790925560038054919093169116179055565b6003546001600160a01b031681565b6060808360405190808252806020026020018201604052801561063d578160200160208202803883390190505b50905060005b848110156105a257838187018151811061065957fe5b602002602001015182828151811061066d57fe5b602090810291909101015260010161064356fea265627a7a72315820a196470485764a4dd4fa790734c162310ed9a54485010e36b05a224e5172aec064736f6c634300050c0032",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100a95760003560e01c8063a5b8f59d11610071578063a5b8f59d14610119578063aedbfd7014610138578063b6fe955914610140578063ba89c9161461023f578063c9286d5714610277578063fb6d2fb01461027f576100a9565b80633cf5040a146100ae5780635ed097f3146100dd5780636455e5ac146100e557806368db65a4146101095780638da5cb5b14610111575b600080fd5b6100cb600480360360208110156100c457600080fd5b503561032e565b60408051918252519081900360200190f35b6100cb610352565b6100ed610358565b604080516001600160a01b039092168252519081900360200190f35b6100ed610367565b6100ed610376565b6101366004803603602081101561012f57600080fd5b5035610385565b005b6101366103e1565b6101ef6004803603606081101561015657600080fd5b81359160208101359181019060608101604082013564010000000081111561017d57600080fd5b82018360208201111561018f57600080fd5b803590602001918460208302840111640100000000831117156101b157600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610532945050505050565b60408051602080825283518183015283519192839290830191858101910280838360005b8381101561022b578181015183820152602001610213565b505050509050019250505060405180910390f35b6101366004803603606081101561025557600080fd5b506001600160a01b0381358116916020810135821691604090910135166105ab565b6100ed610601565b6101ef6004803603606081101561029557600080fd5b8135916020810135918101906060810160408201356401000000008111156102bc57600080fd5b8201836020820111156102ce57600080fd5b803590602001918460208302840111640100000000831117156102f057600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610610945050505050565b60408051602080820193909352815180820384018152908201909152805191012090565b60045481565b6002546001600160a01b031681565b6001546001600160a01b031681565b6000546001600160a01b031681565b6000546001600160a01b031633146103dc576040805162461bcd60e51b81526020600482015260156024820152743cb7ba9030b932903737ba103a34329037bbb732b960591b604482015290519081900360640190fd5b600455565b6000546001600160a01b031633146103f857600080fd5b600160009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561044857600080fd5b505af115801561045c573d6000803e3d6000fd5b50505050600260009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b1580156104b057600080fd5b505af11580156104c4573d6000803e3d6000fd5b50505050600360009054906101000a90046001600160a01b03166001600160a01b031663d826f88f6040518163ffffffff1660e01b8152600401600060405180830381600087803b15801561051857600080fd5b505af115801561052c573d6000803e3d6000fd5b50505050565b6060808360405190808252806020026020018201604052801561055f578160200160208202803883390190505b50905060005b848110156105a257838187018151811061057b57fe5b602002602001015182828151811061058f57fe5b6020908102919091010152600101610565565b50949350505050565b6000546001600160a01b031633146105c257600080fd5b600180546001600160a01b039485166001600160a01b031991821617909155600280549385169382169390931790925560038054919093169116179055565b6003546001600160a01b031681565b6060808360405190808252806020026020018201604052801561063d578160200160208202803883390190505b50905060005b848110156105a257838187018151811061065957fe5b602002602001015182828151811061066d57fe5b602090810291909101015260010161064356fea265627a7a72315820a196470485764a4dd4fa790734c162310ed9a54485010e36b05a224e5172aec064736f6c634300050c0032",
   "sourceMap": "122:1765:0:-;;;326:123;8:9:-1;5:2;;;30:1;27;20:12;5:2;-1:-1;350:5:0;:18;;-1:-1:-1;;;;;;350:18:0;358:10;350:18;;;393:16;372:18;:37;122:1765;;;;;;",
   "deployedSourceMap": "122:1765:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;122:1765:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;921:107;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;921:107:0;;:::i;:::-;;;;;;;;;;;;;;;;291:30;;;:::i;213:37::-;;;:::i;:::-;;;;-1:-1:-1;;;;;213:37:0;;;;;;;;;;;;;;171:39;;;:::i;146:20::-;;;:::i;778:140::-;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;778:140:0;;:::i;:::-;;1073:223;;;:::i;1299:284::-;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;1299:284:0;;;;;;;;;;;;;;;;;;21:11:-1;5:28;;2:2;;;46:1;43;36:12;2:2;1299:284:0;;35:9:-1;28:4;12:14;8:25;5:40;2:2;;;58:1;55;48:12;2:2;1299:284:0;;;;;;101:9:-1;95:2;81:12;77:21;67:8;63:36;60:51;39:11;25:12;22:29;11:108;8:2;;;132:1;129;122:12;8:2;1299:284:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;30:3:-1;22:6;14;1:33;99:1;81:16;;74:27;;;;-1:-1;1299:284:0;;-1:-1:-1;1299:284:0;;-1:-1:-1;;;;;1299:284:0:i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;8:100:-1;33:3;30:1;27:10;8:100;;;90:11;;;84:18;71:11;;;64:39;52:2;45:10;8:100;;;12:14;1299:284:0;;;;;;;;;;;;;;;;;452:323;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;-1:-1;;;;;;452:323:0;;;;;;;;;;;;;;;;;;;:::i;253:34::-;;;:::i;1588:297::-;;;;;;13:2:-1;8:3;5:11;2:2;;;29:1;26;19:12;2:2;1588:297:0;;;;;;;;;;;;;;;;;;21:11:-1;5:28;;2:2;;;46:1;43;36:12;2:2;1588:297:0;;35:9:-1;28:4;12:14;8:25;5:40;2:2;;;58:1;55;48:12;2:2;1588:297:0;;;;;;101:9:-1;95:2;81:12;77:21;67:8;63:36;60:51;39:11;25:12;22:29;11:108;8:2;;;132:1;129;122:12;8:2;1588:297:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;30:3:-1;22:6;14;1:33;99:1;81:16;;74:27;;;;-1:-1;1588:297:0;;-1:-1:-1;1588:297:0;;-1:-1:-1;;;;;1588:297:0:i;921:107::-;1001:22;;;;;;;;;;;;;26:21:-1;;;22:32;;6:49;;1001:22:0;;;;;;991:33;;;;;;921:107::o;291:30::-;;;;:::o;213:37::-;;;-1:-1:-1;;;;;213:37:0;;:::o;171:39::-;;;-1:-1:-1;;;;;171:39:0;;:::o;146:20::-;;;-1:-1:-1;;;;;146:20:0;;:::o;778:140::-;853:5;;-1:-1:-1;;;;;853:5:0;839:10;:19;831:52;;;;;-1:-1:-1;;;831:52:0;;;;;;;;;;;;-1:-1:-1;;;831:52:0;;;;;;;;;;;;;;;887:18;:27;778:140::o;1073:223::-;1135:5;;-1:-1:-1;;;;;1135:5:0;1121:10;:19;1113:28;;;;;;1163:24;;;;;;;;;-1:-1:-1;;;;;1163:24:0;-1:-1:-1;;;;;1145:49:0;;:51;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1145:51:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1145:51:0;;;;1216:22;;;;;;;;;-1:-1:-1;;;;;1216:22:0;-1:-1:-1;;;;;1200:45:0;;:47;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1200:47:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1200:47:0;;;;1264:19;;;;;;;;;-1:-1:-1;;;;;1264:19:0;-1:-1:-1;;;;;1251:39:0;;:41;;;;;;;;;;;;;;;;;;;;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;1251:41:0;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;1251:41:0;;;;1073:223::o;1299:284::-;1402:13;1423:22;1459:4;1448:16;;;;;;;;;;;;;;;;;;;;;;29:2:-1;21:6;17:15;117:4;105:10;97:6;88:34;136:17;;-1:-1;1448:16:0;-1:-1:-1;1423:41:0;-1:-1:-1;1475:6:0;1471:85;1492:4;1487:1;:10;1471:85;;;1526:8;1546:1;1535:10;:12;1526:22;;;;;;;;;;;;;;1512:8;1521:1;1512:11;;;;;;;;;;;;;;;;;:36;1499:3;;1471:85;;;-1:-1:-1;1569:8:0;1299:284;-1:-1:-1;;;;1299:284:0:o;452:323::-;611:5;;-1:-1:-1;;;;;611:5:0;597:10;:19;589:28;;;;;;621:24;:52;;-1:-1:-1;;;;;621:52:0;;;-1:-1:-1;;;;;;621:52:0;;;;;;;677:22;:48;;;;;;;;;;;;;;;729:19;:42;;;;;;;;;;;452:323::o;253:34::-;;;-1:-1:-1;;;;;253:34:0;;:::o;1588:297::-;1697:16;1721:25;1763:4;1749:19;;;;;;;;;;;;;;;;;;;;;;29:2:-1;21:6;17:15;117:4;105:10;97:6;88:34;136:17;;-1:-1;1749:19:0;-1:-1:-1;1721:47:0;-1:-1:-1;1779:6:0;1775:85;1796:4;1791:1;:10;1775:85;;;1830:8;1850:1;1839:10;:12;1830:22;;;;;;;;;;;;;;1816:8;1825:1;1816:11;;;;;;;;;;;;;;;;;:36;1803:3;;1775:85;",
   "source": "pragma solidity ^0.5.0;\n\nimport \"./RestaurantFactory.sol\";\nimport \"./CustomerFactory.sol\";\nimport \"./RiderFactory.sol\";\n\n\ncontract Controller {\n\n\taddress public owner;\n\t\n\taddress public restaurantFactoryAddress;\n\taddress public customerFactoryAddress;\n\taddress public riderFactoryAddress;\n\n\tuint public minimumDeliveryFee;\n\n\n\tconstructor() public{\n\t\towner = msg.sender;\n\t\tminimumDeliveryFee = 2000000000000000; // set min delivery fee to 0.02 eth\n\t}\n\n\tfunction setFactoryAddresses(address _restaurantFactoryAddress, address _customerFactoryAddress, address _riderFactoryAddress) public{\n\t\trequire(msg.sender == owner);\n\t\trestaurantFactoryAddress = _restaurantFactoryAddress;\n\t\tcustomerFactoryAddress = _customerFactoryAddress;\n\t\triderFactoryAddress = _riderFactoryAddress;\n\t}\n\n\tfunction updateMinDeliveryFee(uint newFee) public{\n\t\trequire(msg.sender == owner,\"you are not the owner\");\n\t\tminimumDeliveryFee = newFee;\n\t}\n\n\tfunction getHash(bytes32 data) public pure returns(bytes32){\n\t\treturn keccak256(abi.encodePacked(data));\n\t}\n\n\t// removes all user accounts and orders.\n\tfunction resetApplication() public { \n\t\trequire(msg.sender == owner);\n\t\tRestaurantFactory(restaurantFactoryAddress).reset();\n\t\tCustomerFactory(customerFactoryAddress).reset();\n\t\tRiderFactory(riderFactoryAddress).reset();\n\t}\n\n\tfunction getPartitionOfIntArray(uint startIndex,uint size,uint[] memory intArray) public pure returns (uint[] memory){\n\t    uint[] memory toReturn = new uint[](size);\n\t    for(uint i = 0; i < (size); i++){\n\t      toReturn[i] = intArray[startIndex+i];\n\t    }\n\t    return toReturn;\n\t  }\n\n  \tfunction getPartitionOfBytesArray(uint startIndex,uint size, bytes32[] memory strArray) public pure returns (bytes32[] memory){\n\t    bytes32[] memory toReturn = new bytes32[](size);\n\t    for(uint i = 0; i < (size); i++){\n\t      toReturn[i] = strArray[startIndex+i];\n\t    }\n\t    return toReturn;\n\t}\n}",
@@ -249,7 +249,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 218,
-        "sourceUnit": 2724,
+        "sourceUnit": 2833,
         "src": "25:33:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -271,7 +271,7 @@
         "id": 4,
         "nodeType": "ImportDirective",
         "scope": 218,
-        "sourceUnit": 3097,
+        "sourceUnit": 3207,
         "src": "91:28:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -460,7 +460,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6566,
+                        "referencedDeclaration": 6710,
                         "src": "358:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -598,7 +598,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6566,
+                            "referencedDeclaration": 6710,
                             "src": "597:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -652,10 +652,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        6569,
-                        6570
+                        6713,
+                        6714
                       ],
-                      "referencedDeclaration": 6569,
+                      "referencedDeclaration": 6713,
                       "src": "589:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -956,7 +956,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6566,
+                            "referencedDeclaration": 6710,
                             "src": "839:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -1032,10 +1032,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        6569,
-                        6570
+                        6713,
+                        6714
                       ],
-                      "referencedDeclaration": 6570,
+                      "referencedDeclaration": 6714,
                       "src": "831:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -1200,7 +1200,7 @@
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6553,
+                            "referencedDeclaration": 6697,
                             "src": "1001:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
@@ -1247,7 +1247,7 @@
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6560,
+                      "referencedDeclaration": 6704,
                       "src": "991:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -1383,7 +1383,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6566,
+                            "referencedDeclaration": 6710,
                             "src": "1121:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -1437,10 +1437,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        6569,
-                        6570
+                        6713,
+                        6714
                       ],
-                      "referencedDeclaration": 6569,
+                      "referencedDeclaration": 6713,
                       "src": "1113:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -1499,10 +1499,10 @@
                           "name": "RestaurantFactory",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2723,
+                          "referencedDeclaration": 2832,
                           "src": "1145:17:0",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_RestaurantFactory_$2723_$",
+                            "typeIdentifier": "t_type$_t_contract$_RestaurantFactory_$2832_$",
                             "typeString": "type(contract RestaurantFactory)"
                           }
                         },
@@ -1516,7 +1516,7 @@
                         "nodeType": "FunctionCall",
                         "src": "1145:43:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_RestaurantFactory_$2723",
+                          "typeIdentifier": "t_contract$_RestaurantFactory_$2832",
                           "typeString": "contract RestaurantFactory"
                         }
                       },
@@ -1527,7 +1527,7 @@
                       "lValueRequested": false,
                       "memberName": "reset",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2722,
+                      "referencedDeclaration": 2831,
                       "src": "1145:49:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$__$returns$__$",
@@ -1673,10 +1673,10 @@
                           "name": "RiderFactory",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3096,
+                          "referencedDeclaration": 3206,
                           "src": "1251:12:0",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_RiderFactory_$3096_$",
+                            "typeIdentifier": "t_type$_t_contract$_RiderFactory_$3206_$",
                             "typeString": "type(contract RiderFactory)"
                           }
                         },
@@ -1690,7 +1690,7 @@
                         "nodeType": "FunctionCall",
                         "src": "1251:33:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_RiderFactory_$3096",
+                          "typeIdentifier": "t_contract$_RiderFactory_$3206",
                           "typeString": "contract RiderFactory"
                         }
                       },
@@ -1701,7 +1701,7 @@
                       "lValueRequested": false,
                       "memberName": "reset",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 3095,
+                      "referencedDeclaration": 3205,
                       "src": "1251:39:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$__$returns$__$",
@@ -2963,7 +2963,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 218,
-        "sourceUnit": 2724,
+        "sourceUnit": 2833,
         "src": "25:33:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2985,7 +2985,7 @@
         "id": 4,
         "nodeType": "ImportDirective",
         "scope": 218,
-        "sourceUnit": 3097,
+        "sourceUnit": 3207,
         "src": "91:28:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -3174,7 +3174,7 @@
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 6566,
+                        "referencedDeclaration": 6710,
                         "src": "358:3:0",
                         "typeDescriptions": {
                           "typeIdentifier": "t_magic_message",
@@ -3312,7 +3312,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6566,
+                            "referencedDeclaration": 6710,
                             "src": "597:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -3366,10 +3366,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        6569,
-                        6570
+                        6713,
+                        6714
                       ],
-                      "referencedDeclaration": 6569,
+                      "referencedDeclaration": 6713,
                       "src": "589:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -3670,7 +3670,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6566,
+                            "referencedDeclaration": 6710,
                             "src": "839:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -3746,10 +3746,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        6569,
-                        6570
+                        6713,
+                        6714
                       ],
-                      "referencedDeclaration": 6570,
+                      "referencedDeclaration": 6714,
                       "src": "831:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
@@ -3914,7 +3914,7 @@
                             "name": "abi",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6553,
+                            "referencedDeclaration": 6697,
                             "src": "1001:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_abi",
@@ -3961,7 +3961,7 @@
                       "name": "keccak256",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 6560,
+                      "referencedDeclaration": 6704,
                       "src": "991:9:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -4097,7 +4097,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 6566,
+                            "referencedDeclaration": 6710,
                             "src": "1121:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -4151,10 +4151,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        6569,
-                        6570
+                        6713,
+                        6714
                       ],
-                      "referencedDeclaration": 6569,
+                      "referencedDeclaration": 6713,
                       "src": "1113:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -4213,10 +4213,10 @@
                           "name": "RestaurantFactory",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2723,
+                          "referencedDeclaration": 2832,
                           "src": "1145:17:0",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_RestaurantFactory_$2723_$",
+                            "typeIdentifier": "t_type$_t_contract$_RestaurantFactory_$2832_$",
                             "typeString": "type(contract RestaurantFactory)"
                           }
                         },
@@ -4230,7 +4230,7 @@
                         "nodeType": "FunctionCall",
                         "src": "1145:43:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_RestaurantFactory_$2723",
+                          "typeIdentifier": "t_contract$_RestaurantFactory_$2832",
                           "typeString": "contract RestaurantFactory"
                         }
                       },
@@ -4241,7 +4241,7 @@
                       "lValueRequested": false,
                       "memberName": "reset",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2722,
+                      "referencedDeclaration": 2831,
                       "src": "1145:49:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$__$returns$__$",
@@ -4387,10 +4387,10 @@
                           "name": "RiderFactory",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3096,
+                          "referencedDeclaration": 3206,
                           "src": "1251:12:0",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_contract$_RiderFactory_$3096_$",
+                            "typeIdentifier": "t_type$_t_contract$_RiderFactory_$3206_$",
                             "typeString": "type(contract RiderFactory)"
                           }
                         },
@@ -4404,7 +4404,7 @@
                         "nodeType": "FunctionCall",
                         "src": "1251:33:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_RiderFactory_$3096",
+                          "typeIdentifier": "t_contract$_RiderFactory_$3206",
                           "typeString": "contract RiderFactory"
                         }
                       },
@@ -4415,7 +4415,7 @@
                       "lValueRequested": false,
                       "memberName": "reset",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 3095,
+                      "referencedDeclaration": 3205,
                       "src": "1251:39:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$__$returns$__$",
@@ -5786,10 +5786,52 @@
       "links": {},
       "address": "0xbC81eaF987aA5e1a5f8134B4beF26CcCa567e6bf",
       "transactionHash": "0x76a76cedef702597e90abe10d07db50826fdf2bbb47ae5558cb8e8205989892e"
+    },
+    "1580816285824": {
+      "events": {},
+      "links": {},
+      "address": "0x989F30C2b2cBCfbAD783FB2c09B48a997AE65667",
+      "transactionHash": "0x37c34a9920b60bd35a7a34ee1aa317c79f9df539aecddc46eaf86d99415c1bf8"
+    },
+    "1580817129791": {
+      "events": {},
+      "links": {},
+      "address": "0x6F6A47bB11fF946c725D8a7C45E65246B6171672",
+      "transactionHash": "0x179723b581d6371780f0a53c76e013058472006f796f22f8364c68f59636d85a"
+    },
+    "1580833999451": {
+      "events": {},
+      "links": {},
+      "address": "0x68e24bEE58da54f64481983D5a6E0a5BbD9Fa00D",
+      "transactionHash": "0x9e5236f45822ce1294a176519dabc73b0cb7a2261e829409b5efbf6cac0c97f0"
+    },
+    "1580834554640": {
+      "events": {},
+      "links": {},
+      "address": "0xd3fB43574684E2D8f19eEACF1215D64300106641",
+      "transactionHash": "0x3aec0508a519ff5e15bfd8ddfa4d726fad4c400b2b7ffca420145851e183bd9e"
+    },
+    "1580907224955": {
+      "events": {},
+      "links": {},
+      "address": "0x69bb5B9303286F1E1300330d210b7fDe93Cd546a",
+      "transactionHash": "0x3e81187c7f79a3c5437f175201f41bb28ff02df2a558c5687e9174c57d73e70c"
+    },
+    "1580907551245": {
+      "events": {},
+      "links": {},
+      "address": "0xD833215cBcc3f914bD1C9ece3EE7BF8B14f841bb",
+      "transactionHash": "0x7dad5cfdb002b1e3b174600713c653bf9df89e6b203ec5443148331d0e26a9e3"
+    },
+    "1580908032480": {
+      "events": {},
+      "links": {},
+      "address": "0xe4C5DBc6B66d39B0BaC25283893BF2541aCBad4a",
+      "transactionHash": "0x9fbe4a7c3c4bde55fe8fffd272d618d5b46f0797385c247d32cdd3b8d7203468"
     }
   },
   "schemaVersion": "3.0.19",
-  "updatedAt": "2020-02-01T16:54:16.432Z",
+  "updatedAt": "2020-02-05T16:16:42.018Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

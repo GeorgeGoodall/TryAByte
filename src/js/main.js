@@ -15,33 +15,39 @@ window.onhashchange = function(){
 // start loading data in the background
 async function main_init(){
 	
-	// if(){ // if they have a restaurant, prioritise loading the restaurant info and change the become a partner to restaurant settings
-			
-	// }
-
-	// RestaurantSettingsPage.init().then(function(){
-	// 	if(RestaurantSettingsPage.restaurantAddress != null && RestaurantSettingsPage.restaurantAddress != "0x0000000000000000000000000000000000000000"){
-	// 		let name = RestaurantSettingsPage.restaurant.name;
-	// 		document.getElementById("RestaurantSettingsNavItem").innerHTML = name + "'s Settings";
-	// 		document.getElementById("RestaurantSettingsNavItem").href = "#settings";
-	// 	}
-	// });
-	// SearchPage.init();
-
-	// renderHome();
-
 	const searchPagePromise = SearchPage.init();
 	const RestaurantSettingsPagePromise = RestaurantSettingsPage.init();
+	const CustomerAccountPromise = Customer.getCustomer();
+	const RiderAccountPromise = Rider.getRider();
 	
 
-	Promise.all([RestaurantSettingsPagePromise, searchPagePromise]).then(function(){
+	await Promise.all([RestaurantSettingsPagePromise, searchPagePromise, CustomerAccountPromise, RiderAccountPromise]).then(async function(){
+		let promises = [];
+
 		if(RestaurantSettingsPage.restaurantAddress != null && RestaurantSettingsPage.restaurantAddress != "0x0000000000000000000000000000000000000000"){
 			let name = RestaurantSettingsPage.restaurant.name;
 			document.getElementById("RestaurantSettingsNavItem").innerHTML = name + "'s Settings";
 			document.getElementById("RestaurantSettingsNavItem").href = "#settings";
+			document.getElementById("nav_links").insertAdjacentHTML('afterbegin','<a href="/#orders/recived" class="navbar-item">Orders recived</a>');
+		}
+		if(Rider.address != "0x0000000000000000000000000000000000000000" && Rider.address != null){
+			document.getElementById("nav_links").insertAdjacentHTML('afterbegin','<a href="/#orders/taken" class="navbar-item">Your jobs</a>');
+			document.getElementById("nav_links").insertAdjacentHTML('afterbegin','<a href="/#jobs" class="navbar-item">View jobs</a>');
+			promises.push(JobsPage.init());
+			promises.push(Rider.getOrders());
 		}
 		renderHome();
-		console.timeEnd("overAll");
+		console.timeEnd("loading View");
+		
+		promises.push(Customer.init());
+
+		await Promise.all(promises).then(()=>{
+			console.log("test");
+			if(Customer.address != "0x0000000000000000000000000000000000000000" && Customer.address != null){
+				document.getElementById("nav_links").insertAdjacentHTML('afterbegin','<a href="/#orders/made" class="navbar-item">Your orders</a>');
+			}
+			console.timeEnd("overAll");
+		});
 	});
 
 }
@@ -119,6 +125,39 @@ async function render(hashKey){
 					loadingPage.style.display = "none";
 				}
 			}
+			break;
+		case "#orders":
+			loadingPage.style.display = "block";
+			if(url[1] == "made"){
+				OrderListPage.init(Customer.orders, false);
+				document.getElementById("orderlistpage").style.display = 'block';
+				loadingPage.style.display = "none";
+			}
+			else if(url[1] == "recived"){
+				OrderListPage.init(RestaurantSettingsPage.restaurant.orders, true);
+				document.getElementById("orderlistpage").style.display = 'block';
+				loadingPage.style.display = "none";
+			}
+			else if(url[1] == "taken"){
+				OrderListPage.init(Rider.orders, false ,true);
+				document.getElementById("orderlistpage").style.display = 'block';
+				loadingPage.style.display = "none";
+			}
+			else{
+				renderHome();
+			}
+			break;
+		case "#order":
+			loadingPage.style.display = "block";
+			
+			document.getElementById("orderpage").style.display = 'block';
+			loadingPage.style.display = "none";
+			break;
+		case "#jobs":
+			loadingPage.style.display = "block";
+			
+			document.getElementById("jobslistpage").style.display = 'block';
+			loadingPage.style.display = "none";
 			break;
 		default:
 			var page = document.getElementById(hashKey.substr(1) + "page");

@@ -168,22 +168,22 @@ contract Menu {
   //integers is uint[] calldata itemIds, uint[] calldata optionIds, uint[] calldata extraFlags, uint[] calldata extraIds
   function getOrderPrice(uint[] memory integers, uint itemCount) public view returns (uint){
       uint price = 0;
+      uint intIndex = 0;
       for(uint i = 0; i < itemCount; i++){
 
-        // get item/option price
-        (uint index, bool found) = menu.getItemMappingIndex(integers[i]);
-        require(found == true);
-
-        price += menu.options[integers[i+itemCount]].optionPrice;
+        price += menu.options[menu.getOptionFromOptionIndex(integers[intIndex],integers[intIndex+1])].optionPrice;
 
         // get menu.extras total
-        uint extrasIdsIndex = 0;
-        for(uint j = 0; j < integers[i+itemCount*2]; j++){
-          price += menu.extras[integers[extrasIdsIndex+itemCount*3]].extraPrice;
-          extrasIdsIndex ++;
+        for(uint j = 0; j < integers[intIndex+2]; j++){
+          price += menu.extras[menu.getExtraFromExtraIndex(integers[intIndex],integers[intIndex+3+j])].extraPrice;
         }
+        intIndex += integers[intIndex+2] + 3;
       }
       return price;
+  }
+
+  function getExtraFromExtraIndex(uint itemId, uint optionId) public view returns(uint){
+    return menu.extras[menu.getExtraFromExtraIndex(itemId,optionId)].extraPrice;
   }
 
 }

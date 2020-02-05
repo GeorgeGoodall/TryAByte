@@ -259,6 +259,23 @@ library StructuredLinkedList {
     }
 
     /**
+     * @dev returns the item at the index
+     * @param self stored linked list from contract
+     * @param index of the item
+     * @return uint, the item
+     */
+    function getValueAtIndex(List storage self, uint index) internal view returns (uint){
+        bool exists;
+        uint256 toReturn;
+        uint256[] memory values = new uint256[](sizeOf(self));
+        (exists, toReturn) = getAdjacent(self, HEAD, NEXT); 
+        for(uint i = 0; i < index; i++){
+            (exists, toReturn) = getAdjacent(self, toReturn, NEXT); 
+        }
+        return toReturn;
+    }
+
+    /**
      * @dev Swaps two items position in the list
      * @param self stored linked list from contract
      * @param item1 the first item that is going to be swapped

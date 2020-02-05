@@ -10,9 +10,7 @@ RestaurantSettingsPage = {
 
 	checkHasRestaurant: async function(){
 		this.restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
-		if(this.restaurantAddress != "0x0000000000000000000000000000000000000000")
-			return true;
-		return false;
+		return this.restaurantAddress != "0x0000000000000000000000000000000000000000";
 	},
 
 	init: async function(){
@@ -22,6 +20,8 @@ RestaurantSettingsPage = {
 			if(this.restaurantAddress == null || this.restaurantAddress == "0x0000000000000000000000000000000000000000")
 				this.restaurantAddress = await App.restaurantFactoryInstance.restaurants2(App.account);
 			await this.restaurant.getRestaurant(this.restaurantAddress);
+			if(await this.checkHasRestaurant())
+				await this.restaurant.getOrders(true);
 		}
 		this.updateDisplay();
 		this.updateMenuStagingDisplay();

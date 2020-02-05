@@ -30,15 +30,19 @@ button {
   box-shadow: 0px 7px 3px 2px rgb(100, 100, 100, 0.8);
   position: relative;
   top: -100px;
+  max-width: 85%;
+}
 
+#move-up {
+	position: relative;
+	top: -100px;
+}
+
+#page {
+	box-shadow: 0px 7px 3px 2px rgb(100, 100, 100, 0.8);
 }
 
 #Homepage-Content {
-
-}
-
-#postCodeEnterArea {
-  max-width: 85%;
 
 }
 

@@ -249,7 +249,7 @@ async function makeMenu(restaurant){
 
 	restaurant.menuInstance.updateMenu(intArray,intFlags,strArray,strFlags).then(function(err,res){
 		console.log(err);
-		console.log(result);
+		console.log(res);
 	});
 
 	// console.log(itemNames, itemDescriptions, optionNames, optionPrices, optionFlags);

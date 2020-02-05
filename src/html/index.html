@@ -4,7 +4,6 @@
 	<title>TryAByte</title>
 
 	<script type="text/javascript" src="js/main.js"></script>
-	<script type="text/javascript" src="http://livejs.com/live.js"></script>
 	<script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -17,13 +16,19 @@
 	
 	<script type="text/javascript" src="js/EthereumInterface.js"></script>
 	<script type="text/javascript" src="js/Restaurant.js"></script>
+	<script type="text/javascript" src="js/Rider.js"></script>
 	<script type="text/javascript" src="js/Customer.js"></script>
+	<script type="text/javascript" src="js/Order.js"></script>
 
 	<!-- Page Scripts -->
 	<script type="text/javascript" src="js/RestaurantSettingsPage.js"></script>
 	<script type="text/javascript" src="js/SearchPage.js"></script>
 	<script type="text/javascript" src="js/ViewPage.js"></script>
+	<script type="text/javascript" src="js/OrderListPage.js"></script>
+	<script type="text/javascript" src="js/OrderPage.js"></script>
+	<script type="text/javascript" src="js/JobsPage.js"></script>
 	<script type="text/javascript" src="js/Components/autofill.js"></script>
+	<script type="text/javascript" src="js/Components/qrcode.js"></script>
 
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,6 +36,8 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.css">
 </head>
 <body>
+
+	
 
 	<div class="block" id='pageBanner'>
 		<div class="block" id="header">
@@ -45,9 +52,8 @@
 						
 					</a>
 				</div>
-				<div class="navbar-end navbar-menu">
+				<div class="navbar-end navbar-menu" id="nav_links">
 					<a href="/#becomeapartner" class="navbar-item" id="RestaurantSettingsNavItem">Become a partner</a>
-					<a class="navbar-item" onclick="App.login()">Log in</a>
 					<a href="" class="navbar-item">Help</a>
 				</div>
 			</nav>
@@ -145,7 +151,8 @@
 				<h1 class="title">Prerequisits.</h1>
 				<p class="content">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa, quis, rerum? Aperiam reiciendis, voluptatibus, ut voluptates voluptas eaque eos? Debitis blanditiis animi corporis veniam totam cumque laboriosam rem illum aliquam neque reprehenderit, temporibus quam, quos aut, atque quae sunt. Non assumenda, rerum autem. Delectus quam id minus aperiam illo numquam temporibus atque nihil expedita omnis accusamus commodi, harum perspiciatis eos quasi pariatur velit et deleniti. Nostrum quas corporis fuga ea inventore veniam alias reiciendis facilis, repellendus distinctio, dolore, aliquid accusantium culpa illo nulla iusto maxime cumque? Assumenda sint minima ratione asperiores ipsam, alias qui deserunt consequatur veritatis deleniti, expedita modi.</p>
 
-				<a href="/#settings" class="button">Become a partner</a>
+				<a href="/#settings" class="button">Sign up as a restaurant</a>
+				<a href="/#home" class="button" onclick="Rider.makeRider()">Sign up as a delivery worker</a>
 			</div>
 		</div>
 
@@ -222,32 +229,118 @@
 						<button class="button" onclick="RestaurantSettingsPage.menuStagingAddRow(); return false;">Add Item</button>
 					</div>
 
-					<!-- not currently implemented
-					<div class="field">
-						<label class="label title is-4">ToDelete:</label>
-						<div class="field">
-							<table class="table">
-								<thead>
-									<tr>
-										<th>Item name</th>
-										<th>Description</th>
-										<th>Options</th>
-										<th>Item/Option Price</th>
-									</tr>
-								</thead>
-								<tbody id="toDeleteList">
-									
-								</tbody>
-							</table>				
-						</div>
-						<button class="button" onclick="RestaurantSettingsPage.menuStagingAddRow(); return false;">Add Item</button>
-					</div>
-					-->
 					<button class="button" onclick="RestaurantSettingsPage.makeMenu(); return false;">update you restaurant menu</button>	
 			</div>		
 		</div>
 
 		<!-- ************* End make restaurant page ************************ -->
+
+		<!-- ************* order list page ************************ -->
+
+		<div class="page" id="orderlistpage" style="display: none; padding: 0px 20px 0px 20px">
+			
+			<div class="box" style="padding-left: 15%; padding-top: 25px">
+				<h1 class="title is-2">Current Orders</h1>
+				<div id="currentOrdersList">
+					
+				</div>
+				<h1 class="title is-2">Previous Orders</h1>
+				<div id="previousOrdersList">
+					
+				</div>
+			</div>
+			
+		</div>
+
+		<!-- ************* End order list page ************************ -->
+
+		<!-- ************* jobs list page ************************ -->
+
+		<div class="page" id="jobslistpage" style="display: none; padding: 0px 20px 0px 20px">
+			
+			<div class="box" style="padding-left: 15%; padding-top: 25px">
+				<h1 class="title is-2">Availible Jobs</h1>
+				<div id="currentJobsList">
+					
+				</div>
+			</div>
+			
+		</div>
+
+		<!-- ************* End jobs list page ************************ -->
+
+		<!-- ************* order view page ************************ -->
+
+		<div class="page  move-up" id="orderpage" style="display: none; padding: 0px 20px 0px 20px">
+			<div class="box" style="padding-left: 15%; padding-right: 15%; padding-top: 25px">
+				<div style="text-align: center;">
+					<h1 class="subtitle" id="orderPage_date">09/01/2020</h1>
+					<h1 class="title is-2" id="orderPage_status">Delivered</h1>
+					
+				</div>
+				<div class="columns" style="margin-top: 10px">
+					<div class="column is-6">
+						<div class="box" style="height: 400px">
+							<div style="text-align: center; border-bottom: grey 1px dashed; padding: 5px; margin-bottom: 20px">
+								<figure class="image is-64x64" style="float: left">
+									<img src="Images/burger.jpg">
+								</figure>
+								<h1 class="title is-1" id="orderPage_restaurant_name">George's Burgers</h1>		
+							</div>
+
+							<div id="orderItems">
+								
+							</div>
+
+							
+
+						</div>
+					</div>
+					<div class="column is-6">
+						<div class="box">
+							<div class="columns">
+								<div class="column is-3">
+									<figure class="image is-32x32" style="float: left">
+										<img src="Images/location.png">
+									</figure>
+								</div>
+								<div class="column is-9">
+									<h1 class="title is-3">Delivering to</h1>
+									<h1 class="title is-5">George Goodall</h1>
+									<h1 class="subtitle is-6">36 clwyd park, Kinmel Bay, Conwy, LL185EJ</h1>
+								</div>
+							</div>
+						</div>
+
+						<div class="box" style="margin-top: 20px">
+							<div class="columns">
+								<div class="column is-3">
+									<figure class="image is-32x32" style="float: left">
+										<img src="Images/questionMark.jpg">
+									</figure>
+								</div>
+								<div class="column is-9">
+									<h1 class="title is-3">Order Actions</h1>
+									<div id="order_actions">
+										<button class="button">Accept Order</button>
+										<button class="button">Mark Order Ready For Collection</button>
+										<button class="button">Authenticate Delivery Rider</button>
+										<br>
+										<button class="button"></button>
+										<button class="button">Mark Order Ready For Collection</button>
+										<button class="button">Authenticate Delivery Rider</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- ************* End order view page ************************ -->
+
 
 		<!-- ************* customer page ************************** -->
 		<!--

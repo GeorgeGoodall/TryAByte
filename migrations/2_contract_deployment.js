@@ -33,24 +33,28 @@ module.exports = async function(deployer) {
 	  		var restFactAddress;
 	  		await deployer.deploy(RestaurantFactory,instance.address).then(async function(restaurantFactInstance){
 				restFactAddress = restaurantFactInstance.address;
-				// await restaurantFactInstance.createRestaurant( "0x47656f726765277320546573742052657374617572616e74","0x46616b65204164647265737320537472656574",200,300,"0x30313233343536373839",{gas: 5000000}).then(async function(){
-		  // 			console.log("Test restaurant Made");
-		  // 		// 	await restaurantFactInstance.restaurants0(0).then(async function(address){
-		  // 		// 		console.log("restaurant address: " + address);
-				// 		// var menuStaging = [["0x46697368",2],["0x4368697073",1],["0x6265616e73",1],["0x70656173",1]];
-				// 		// var itemNames = [];
-				// 		// var itemPrices = [];
-				// 		// for(var i = 0; i< menuStaging.length; i++){
-				// 		// 	itemNames[i] = menuStaging[i][0];
-				// 		// 	// change value from finney (10^-3 eth) to wei (10^-18 eth)
-				// 		// 	itemPrices[i] = menuStaging[i][1] * Math.pow(10,15);
-				// 		// }
-				//   //     	var restaurant = await new Restaurant(address)
-				//   //     	await restaurant.menuAddItems(itemNames,itemPrices);
-				//   //     	console.log("Test restaurant Menu updated");
-				//   //     });
-			 //    });
-			 //  return;
+				await restaurantFactInstance.createRestaurant( "0x47656f726765277320546573742052657374617572616e74","0x46616b65204164647265737320537472656574",200,300,"0x30313233343536373839",{gas: 5000000}).then(async function(){
+		  			console.log("Test restaurant Made");
+		  			await restaurantFactInstance.restaurants0(0).then(async function(address){
+		  				console.log("restaurant address: " + address);
+
+				      	var restaurant = await new Restaurant(address)
+
+				      	integerArray = [50,50,50,100,100,100,100,100,100,100,0,1,2,0,1,2,1,2,3,4,5,6,7,3,3,1,1,1,2,3,3];
+				      	integerFlags = [0,3,0,7,0,3,0,0,0,3,7,3,0,0,0,1,3,1];
+						stringArray = ["0x6368656573650000000000000000000000000000000000000000000000000000",  "0x6772617665790000000000000000000000000000000000000000000000000000",  "0x6375727279000000000000000000000000000000000000000000000000000000",  "0x636f640000000000000000000000000000000000000000000000000000000000",  "0x686164646f6b0000000000000000000000000000000000000000000000000000",  "0x73616c6d6f6e0000000000000000000000000000000000000000000000000000",  "0x736d616c6c000000000000000000000000000000000000000000000000000000",  "0x6d656469756d0000000000000000000000000000000000000000000000000000",  "0x6c61726765000000000000000000000000000000000000000000000000000000",  "0x726567756c617200000000000000000000000000000000000000000000000000",  "0x6669736800000000000000000000000000000000000000000000000000000000",  "0x6368697073000000000000000000000000000000000000000000000000000000",  "0x7065617300000000000000000000000000000000000000000000000000000000",  "0x6672657368000000000000000000000000000000000000000000000000000000",  "0x676f6c64656e0000000000000000000000000000000000000000000000000000",  "0x677265656e000000000000000000000000000000000000000000000000000000"];
+						stringFlags = [3,7,3,3];
+
+						let menuaddress = await restaurant.getMenuAddress();
+						var menuInstance = await new Menu(menuaddress);
+
+				      	await menuInstance.updateMenu(integerArray,integerFlags,stringArray, stringFlags,{gas: 6000000}).then(function(){
+				      		console.log("added items to menu");
+				      	})
+				      	console.log("Test restaurant Menu updated");
+				      });
+			    });
+			  return;
 	  		});
 	  		
 	  		var custFactAddress;
