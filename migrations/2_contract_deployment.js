@@ -1,3 +1,8 @@
+var fs = require("fs");
+var configFileName = "AppConfig.json";
+var configFile = require("../"+configFileName);
+
+
 var Controller = artifacts.require("./Controller.sol");
 var RestaurantFactory = artifacts.require("./RestaurantFactory.sol");
 var Restaurant = artifacts.require("./Restaurant.sol");
@@ -30,6 +35,17 @@ module.exports = async function(deployer) {
 
   	await deployer.deploy(Controller).then(
   		async function(instance){
+
+  			// update address of controller in config file
+  			configFile.controllerAddress = instance.address;
+
+  			await fs.writeFile(configFileName, JSON.stringify(configFile), function (err,res) {
+			  if (err) console.log(err);
+			  console.log(err);
+			  console.log(res);
+			});
+
+
 	  		var restFactAddress;
 	  		await deployer.deploy(RestaurantFactory,instance.address).then(async function(restaurantFactInstance){
 				restFactAddress = restaurantFactInstance.address;
